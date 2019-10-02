@@ -1,7 +1,7 @@
 {
-  "name": "intro-html5",
+  "name": "intro-js",
   "version": "1.0.0",
-  "description": "Exercício de Introdução ao HTML5",
+  "description": "Exercício de Introdução ao JavaScript",
   "main": "Gruntfile.js",
   "directories": {
     "test": "tests"
@@ -13,10 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "grunt": "^1.0.4",
-    "grunt-contrib-connect": "^2.0.0",
     "grunt-contrib-jasmine": "^2.1.0",
-    "grunt-eslint": "^22.0.0",
     "jasmine-core": "^3.4.0"
-  },
-  "dependencies": {}
+  }
 }

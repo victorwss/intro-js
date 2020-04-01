@@ -12,7 +12,8 @@
     "exe2": "./node_modules/grunt/bin/grunt jasmine --filter=Exe2Spec.js",
     "exe3": "./node_modules/grunt/bin/grunt jasmine --filter=Exe3Spec.js",
     "exe4": "./node_modules/grunt/bin/grunt jasmine --filter=Exe4Spec.js",
-    "exe5": "./node_modules/grunt/bin/grunt jasmine --filter=Exe5Spec.js"
+    "exe5": "./node_modules/grunt/bin/grunt jasmine --filter=Exe5Spec.js",
+    "exec": "./node_modules/grunt/bin/grunt jasmine"
   },
   "author": "Yuri Dirickson",
   "license": "Apache 2.0",

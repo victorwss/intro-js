@@ -1,8 +1,9 @@
 {
   "name": "intro-js",
   "version": "1.0.0",
-  "description": "Exercício de Introdução ao JavaScript",
+  "description": "Exercícios de Introdução ao JavaScript",
   "main": "Gruntfile.js",
+  "repository": "https://github.com/tecnologias-web/intro-js",
   "directories": {
     "test": "spec"
   },
@@ -14,7 +15,7 @@
     "exe5": "./node_modules/grunt/bin/grunt jasmine --filter=Exe5Spec.js"
   },
   "author": "Yuri Dirickson",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "devDependencies": {
     "grunt": "^1.1.0",
     "grunt-contrib-jasmine": "^2.1.0"

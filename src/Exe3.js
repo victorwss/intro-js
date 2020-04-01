@@ -11,11 +11,4 @@
  * @param {number} fim segundo número 
  * @return {number} o somatório de valores pares entre os dois números, contando com eles.
  */
-function somadorPares(inicio, fim) {
-    let soma = 0
-    while(inicio <= fim) {
-        if(inicio % 2 == 0) soma += inicio
-        inicio++
-    }
-    return soma
-}
+function somadorPares(inicio, fim) { }

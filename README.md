@@ -8,9 +8,20 @@ Dentro da pasta **src** existem cinco exercícios, alguns deles com mais de um i
 
 O nome da função ou dos parâmetros não devem ser trocados, mas outras funções podem ser criadas se julgar necessário.
 
+Edite o arquivo `membros.json` com as informações dos membros do grupo (até 3, no mínimo 1). Por exemplo, se forem dois membros:
+
+```json
+[{
+    "nome": "João da Silva",
+    "ra": 123456
+},{
+    "nome": "Maria da Silva",
+    "ra": 654321
+}]
+
 ## Como Testar
 
-Apenas abra o arquivo _SpecRunner.html_ em algum navegador moderno (Firefox ou Chrome de preferência).
+Apenas abra o arquivo _Exercicio.html_ em algum navegador moderno (Firefox ou Chrome de preferência).
 
 Ao abrir, o navegador irá realizar todos os testes e mostrará os resultados. Basta recarregar a página para executar novamente os testes.
 

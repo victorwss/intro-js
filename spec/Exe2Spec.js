@@ -1,3 +1,8 @@
+describe('Primeiro Nome', () => {
+    it('Yuri Dirickson deve retornar Yuri', () => expect(primeiro_nome('Yuri Dirickson')).toEqual('Yuri'));
+    it('Marina Silva deve retornar Marina', () => expect(primeiro_nome('Marina Silva')).toEqual('Marina'));
+    it('Robson deve retornar Robson', () => expect(primeiro_nome('Robson')).toEqual('Robson'));
+});
 describe('Abreviador de Nomes', () => {
     it('Yuri Dirickson deve retornar Yuri D.', () => expect(abreviadorNomes('Yuri Dirickson')).toEqual('Yuri D.'));
     it('Marina Silva deve retornar Marina S.', () => expect(abreviadorNomes('Marina Silva')).toEqual('Marina S.'));

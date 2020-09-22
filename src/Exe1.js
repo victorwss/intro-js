@@ -1,4 +1,22 @@
 /**
+ * Função que recebe dois números e retorna o maior deles
+ * @param {Number} a primeiro número.
+ * @param {Number} b segundo número.
+ * @returns {Number} resultado da operação.
+ */
+function maiorDosDois(a,b) { }
+
+/**
+ * Função que recebe quatro números e retorna o maior deles
+ * @param {Number} a primerio número.
+ * @param {Number} b segundo número.
+ * @param {Number} c terceiro número.
+ * @param {Number} d quarto número.
+ * @returns {Number} resultado da operação.
+ */
+function maiorDosQuatro(a,b,c,d) { }
+
+/**
  * Função que recebe uma operação em formato de texto e devolve o resultado desta operação com os dois números passados,
  * na ordem em que eles foram passados. (Use as funções do Math se necessário)
  * 
@@ -9,8 +27,8 @@
  *  - D: Divisão - Divide numero1 pelo numero2
  *  - P: Potência - Eleva o numero1 pelo numero2
  * 
- * Verifique onde é possível fazer a operação (cuidado com divisão por zero e raíz pares de números negativos). 
- * Nos casos em que não for definido, retornar NaN (not-a-number).
+ * Verifique onde é possível fazer a operação  
+ * Nos casos em que não for definido - divisão por zero, por exemplo - retornar NaN (not-a-number).
  * 
  * Se a operação passada não for uma das letras acima, retornar undefined.
  * 

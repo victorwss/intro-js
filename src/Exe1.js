@@ -19,17 +19,7 @@
  * @param {Number} numero2
  * @returns {Number} resultado da operação
  */
-function operacoesBasicas(operacao, numero1, numero2) {
-    let resultado
-
-    if(operacao === 'A'){
-        resultado = numero1 + numero2
-    } else if(operacao === 'S') {
-        resultado = numero1 - numero2
-    }
-
-    return resultado
-}
+function operacoesBasicas(operacao, numero1, numero2) { }
 
 /**
  * Escreva uma função que recebe dois elementos e retorna uma mensagem dizendo se eles são estritamente iguais,
@@ -43,10 +33,4 @@ function operacoesBasicas(operacao, numero1, numero2) {
  * @param {*} elemento2
  * @returns {string} mensagem com o resultado da comparação 
  */
-function comparadorBasico(elemento1, elemento2) {
-
-    if(elemento1 === elemento2) {
-        return "Elemento "+elemento1+" ("+typeof elemento1+") é estritamente igual ao elemento "+elemento2+" ("+typeof elemento2+")"
-    }
-
-}
+function comparadorBasico(elemento1, elemento2) {}

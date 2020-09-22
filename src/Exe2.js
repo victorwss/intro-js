@@ -7,11 +7,9 @@
  *  - Maria -> Maria
  * 
  * @param {String} nomeCompleto nome completo da pessoa.
- * @return string com o segundo nome abreviado
+ * @return {String} o segundo nome abreviado
  */
-function abreviadorNomes(nomeCompleto) {
-
-}
+function abreviadorNomes(nomeCompleto) { }
 
 /**
  * Escreva uma função que recebe uma String com a data no formato brasileiro (dia/mês/ano) e

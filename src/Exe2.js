@@ -1,5 +1,19 @@
 /**
  * Recebe uma string com o nome completo de uma pessoa (primeiro e último nome apenas) 
+ * e devolve o primeiro nome.
+ * Exemplos:
+ *  - Yuri Dirickson -> Yuri
+ *  - João Silva -> João
+ *  - Maria -> Maria
+ * 
+ * @param {String} nomeCompleto nome completo da pessoa.
+ * @return string com o primeiro nome apenas
+ */
+function primeiro_nome(nomeCompleto) {
+
+}
+/**
+ * Recebe uma string com o nome completo de uma pessoa (primeiro e último nome apenas) 
  * e devolve o nome com o sobrenome abreviado. Caso só o primeiro nome seja passado, não faça nada.
  * Exemplos:
  *  - Yuri Dirickson -> Yuri D.

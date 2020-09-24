@@ -1,13 +1,13 @@
 describe('Maior dos dois', () => {
-  it('O maior de 1 e 3 é 3', () => expect(maior_dos_dois(1,3)).toEqual(3))
-  it('O maior de 5 e 3 é 5', () => expect(maior_dos_dois(5,3)).toEqual(5))  
+  it('O maior de 1 e 3 é 3', () => expect(maiorDosDois(1,3)).toEqual(3))
+  it('O maior de 5 e 3 é 5', () => expect(maiorDosDois(5,3)).toEqual(5))  
 })
 
 describe('Maior dos quatro', () => {
-  it('O maior de 1,3,5,7 é 7', () => expect(maior_dos_quatro(1,3,5,7)).toEqual(7))
-  it('O maior de 10,3,5,7 é 10', () => expect(maior_dos_quatro(10,3,5,7)).toEqual(10))
-  it('O maior de 1,30,5,7 é 30', () => expect(maior_dos_quatro(1,30,5,7)).toEqual(30))
-  it('O maior de 1,3,50,7 é 50', () => expect(maior_dos_quatro(1,3,50,7)).toEqual(50))
+  it('O maior de 1,3,5,7 é 7', () => expect(maiorDosQuatro(1,3,5,7)).toEqual(7))
+  it('O maior de 10,3,5,7 é 10', () => expect(maiorDosQuatro(10,3,5,7)).toEqual(10))
+  it('O maior de 1,30,5,7 é 30', () => expect(maiorDosQuatro(1,30,5,7)).toEqual(30))
+  it('O maior de 1,3,50,7 é 50', () => expect(maiorDosQuatro(1,3,50,7)).toEqual(50))
 })
 describe('Operações Básicas', () => {
   it('3.5 + 4 deve voltar 7.5', () => expect(operacoesBasicas('A', 3.5, 4)).toEqual(7.5))

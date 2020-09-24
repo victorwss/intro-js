@@ -4,7 +4,13 @@
  * @param {Number} b segundo número.
  * @returns {Number} resultado da operação.
  */
-function maiorDosDois(a,b) { }
+function maiorDosDois(a,b) {
+    if(a > b) {
+        return a
+    } else {
+        return b
+    }
+}
 
 /**
  * Função que recebe quatro números e retorna o maior deles

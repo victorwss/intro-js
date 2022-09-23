@@ -1,6 +1,5 @@
 "use strict";
 
-
 let nota = 0;
 
 function teste(regra, execucao, esperado) {

@@ -134,7 +134,7 @@ grupo("Exercício 9", "Achar o menor", true, 0, 0.5, () => [
     teste("Para [1, 2, 3, 4, 5] retorna 1."             , () => acharMenor([1, 2,  3, 4, 5]), igual(        1)),
     teste("Para [1, 2, 3, 4, 0] retorna 0."             , () => acharMenor([1, 2,  3, 4, 0]), igual(        0)),
     teste("Para [1, 2, -3, 4, 0] retorna -3."           , () => acharMenor([1, 2, -3, 4, 0]), igual(       -3)),
-])
+]);
 
 grupo("Exercício 10", "Achar os pares", true, 0, 0.5, () => [
     teste("Se o vetor estiver vazio, devolve um vetor vazio.", () => acharPares([              ]), igual([        ])),
@@ -172,6 +172,8 @@ grupo("Exercício 12", "Tipo de triângulo", true, 0, 1, () => [
     teste('Deve devolver "não é um triângulo" para 2, -2 e 5.'   , () => tipoTriangulo( 2  ,-2  ,  5  ), igual("não é um triângulo")),
     teste('Deve devolver "não é um triângulo" para -7, 8 e 2.'   , () => tipoTriangulo(-7  , 8  ,  2  ), igual("não é um triângulo")),
 ]);
+
+//...
 
 grupo("Exercício 20", "Entrega", false, -1, 0, () => {
     function embaralhar(array) {

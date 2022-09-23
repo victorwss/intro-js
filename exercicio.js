@@ -271,7 +271,13 @@ function tipoTriangulo(a, b, c) {
     throw new Error("NÃO IMPLEMENTADO AINDA.");
 }
 
-
+// EXERCÍCIO 13.
+// EXERCÍCIO 14.
+// EXERCÍCIO 15.
+// EXERCÍCIO 16.
+// EXERCÍCIO 17.
+// EXERCÍCIO 18.
+// EXERCÍCIO 19.
 
 // EXERCÍCIO 20.
 

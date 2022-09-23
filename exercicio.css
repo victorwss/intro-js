@@ -1,0 +1,105 @@
+ul {
+    list-style-type: none;
+    padding-inline-start: 0;
+}
+
+.teste {
+    display: block;
+}
+
+.exercicio.ok {
+    background: #C0FFC0;
+}
+
+.exercicio.parcial {
+    background: #FFFFC0;
+}
+
+.exercicio.erro {
+    background: #FFC0C0;
+}
+
+.exercicio, .teste {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.teste.ok {
+    background: #80FF80;
+}
+
+.teste.erro {
+    background: #FF8080;
+}
+
+.teste, .exercicio {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.oculto {
+    display: none;
+}
+
+.botao {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    float: right;
+    border-radius: 1em;
+    background: blue;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    width: 2em;
+    font-size: 2em;
+}
+
+h1, h2, h3 {
+    margin: 0;
+}
+
+h1, h2 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.2em;
+}
+
+.codigo span {
+    font-family: monospace;
+}
+
+.regra span {
+    font-weight: bold;
+}
+
+.resultado span {
+    font-weight: bold;
+}
+
+#alunos li {
+    font-weight: bold;
+    font-size: 1.2em;
+    background: #FFE0C0;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px;
+    text-align: center;
+    display: inline;
+}
+
+#alunos li:first-child {
+    margin-left: 0;
+}
+
+#alunos li:last-child {
+    margin-right: 0;
+}

@@ -1,10 +1,14 @@
-[{
-    "nome": "",
-    "ra": 0
-},{
-    "nome": "",
-    "ra": 0
-},{
-    "nome": "",
-    "ra": 0
-}]
+[
+    {
+        "nome": "João da SIlva",
+        "ra": 123456
+    },
+    {
+        "nome": "Maria da Silva",
+         "ra": 654321
+    },
+    {
+        "nome": "Se você não enviar este JSON bem formado e com o conteúdo correto, eu vou tirar nota de você!",
+        "ra": 0
+    }
+]

@@ -1,30 +1,41 @@
-describe('Maior dos dois', () => {
-  it('O maior de 1 e 3 é 3', () => expect(maiorDosDois(1,3)).toEqual(3))
-  it('O maior de 5 e 3 é 5', () => expect(maiorDosDois(5,3)).toEqual(5))  
-})
+describe("Maior dos dois", () => {
+    it("O maior de 1 e 3 é 3.", () => expect(maiorDosDois(1, 3)).toEqual(3));
+    it("O maior de 5 e 3 é 5.", () => expect(maiorDosDois(5, 3)).toEqual(5));
+    it("O maior de 1 e 3 é 3.", () => expect(maiorDosDoisSimplificado(1, 3)).toEqual(3));
+    it("O maior de 5 e 3 é 5.", () => expect(maiorDosDoisSimplificado(5, 3)).toEqual(5));
+});
 
-describe('Maior dos quatro', () => {
-  it('O maior de 1,3,5,7 é 7', () => expect(maiorDosQuatro(1,3,5,7)).toEqual(7))
-  it('O maior de 10,3,5,7 é 10', () => expect(maiorDosQuatro(10,3,5,7)).toEqual(10))
-  it('O maior de 1,30,5,7 é 30', () => expect(maiorDosQuatro(1,30,5,7)).toEqual(30))
-  it('O maior de 1,3,50,7 é 50', () => expect(maiorDosQuatro(1,3,50,7)).toEqual(50))
-})
-describe('Operações Básicas', () => {
-  it('3.5 + 4 deve voltar 7.5', () => expect(operacoesBasicas('A', 3.5, 4)).toEqual(7.5))
-  it('9 - 1.75 deve voltar 7.25', () => expect(operacoesBasicas('S', 9, 1.75)).toEqual(7.25))
-  it('1.8 * 7 deve voltar 12.6', () => expect(operacoesBasicas('M', 1.8, 7)).toEqual(12.6))
-  it('7 / 2 deve voltar 3.5', () => expect(operacoesBasicas('D', 7, 2)).toEqual(3.5))
-  it('8 elevado a 3 deve voltar 512', () => expect(operacoesBasicas('P', 8, 3)).toEqual(512))
-  it('Divisão por zero não deve ser possível', () => expect(operacoesBasicas('D', 32, 0)).toEqual(NaN))
-  it('Operação que não existe deve voltar undefined', () => expect(operacoesBasicas('Z',1,2)).toEqual(undefined))
-})
+describe("Maior dos quatro", () => {
+    it("O maior de 1, 3, 5, 7 é 7.", () => expect(maiorDosQuatro(1, 3, 5, 7)).toEqual(7));
+    it("O maior de 10, 3, 5, 7 é 10.", () => expect(maiorDosQuatro(10, 3, 5, 7)).toEqual(10));
+    it("O maior de 1, 30, 5, 7 é 30.", () => expect(maiorDosQuatro(1, 30, 5, 7)).toEqual(30));
+    it("O maior de 1, 3, 50, 7 é 50.", () => expect(maiorDosQuatro(1, 3, 50, 7)).toEqual(50));
+});
 
-describe('Comparador Básico', () => {
-  it('3 e 3 são estritamente iguais', () => expect(comparadorBasico(3,3)).toEqual('Elemento 3 (number) é estritamente igual ao elemento 3 (number)'))
-  it('undefined e undefined são estritamente iguais', () => expect(comparadorBasico()).toEqual('Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)'))
-  it('"ABC" e "ABC" são estritamente iguais', () => expect(comparadorBasico("ABC","ABC")).toEqual('Elemento ABC (string) é estritamente igual ao elemento ABC (string)'))
-  it('3 e "3" são equivalentes', () => expect(comparadorBasico(3,"3")).toEqual('Elemento 3 (number) é equivalente ao elemento 3 (string)'))
-  it('null e undefined são equivalentes', () => expect(comparadorBasico(null)).toEqual('Elemento null (object) é equivalente ao elemento undefined (undefined)'))
-  it('1 e 2 são diferentes', () => expect(comparadorBasico(1,2)).toEqual('Elemento 1 (number) é diferente do elemento 2 (number)'))
-  it('"1" e 2 são diferentes', () => expect(comparadorBasico("1",2)).toEqual('Elemento 1 (string) é diferente do elemento 2 (number)'))
-})
+describe("Operações Básicas", () => {
+    it("3.5 + 4 deve voltar 7.5.", () => expect(operacoesBasicas("A", 3.5, 4)).toEqual(7.5));
+    it("9 - 1.75 deve voltar 7.25.", () => expect(operacoesBasicas("S", 9, 1.75)).toEqual(7.25));
+    it("1.8 * 7 deve voltar 12.6.", () => expect(operacoesBasicas("M", 1.8, 7)).toEqual(12.6));
+    it("7 / 2 deve voltar 3.5.", () => expect(operacoesBasicas("D", 7, 2)).toEqual(3.5));
+    it("8 elevado a 3 deve voltar 512.", () => expect(operacoesBasicas("P", 8, 3)).toEqual(512));
+    it("Divisão por zero não deve ser possível.", () => expect(operacoesBasicas("D", 32, 0)).toEqual(NaN));
+    it("Operação que não existe deve voltar undefined.", () => expect(operacoesBasicas("Z", 1, 2)).toEqual(undefined));
+});
+
+class Abacaxi {
+}
+
+class Laranja {
+}
+
+describe("Comparador Básico", () => {
+    it("3 e 3 são estritamente iguais.", () => expect(comparadorBasico(3, 3)).toEqual("Elemento 3 (number) é estritamente igual ao elemento 3 (number)."));
+    it("undefined e undefined são estritamente iguais.", () => expect(comparadorBasico()).toEqual("Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)."));
+    it('"ABC" e "ABC" são estritamente iguais.', () => expect(comparadorBasico("ABC", "ABC")).toEqual("Elemento ABC (string) é estritamente igual ao elemento ABC (string)."));
+    it('3 e "3" são equivalentes.', () => expect(comparadorBasico(3, "3")).toEqual("Elemento 3 (number) é equivalente ao elemento 3 (string)."));
+    it("null e undefined são equivalentes.", () => expect(comparadorBasico(null)).toEqual("Elemento null (object) é equivalente ao elemento undefined (undefined)."));
+    it("1 e 2 são diferentes.", () => expect(comparadorBasico(1, 2)).toEqual("Elemento 1 (number) é diferente do elemento 2 (number)."));
+    it('"1" e 2 são diferentes.', () => expect(comparadorBasico("1", 2)).toEqual("Elemento 1 (string) é diferente do elemento 2 (number)."));
+    it("Array e objeto são diferentes.", () => expect(comparadorBasico([], {})).toEqual("Elemento 1 (Array) é diferente do elemento 2 (object)."));
+    it("Abacaxi e Laranja são diferentes.", () => expect(comparadorBasico(new Abacaxi(), new Laranja())).toEqual("Elemento 1 (Abacaxi) é diferente do elemento 2 (Laranja)."));
+});

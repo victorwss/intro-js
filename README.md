@@ -42,7 +42,8 @@ teste("4 é menor que 7.", () => retornaMaiorNumero(4, 7), igual(7));
 teste("3 é maior que 2.", () => retornaMaiorNumero(3, 2), igual(3));
 
 // Esta é a implementação que visa burlar o teste.
-// Ela foi feita apenas para passar nos dois testes acima, mesmo estando totalmente errada em qualquer outro caso.
+// Ela foi feita apenas para passar nos dois testes acima, mesmo estando
+// totalmente errada em qualquer outro caso.
 function retornaMaiorNumero(a, b) {
     if (a === 4) return 7;
     return 3;
@@ -51,7 +52,7 @@ function retornaMaiorNumero(a, b) {
 
 ## Como fazer a entrega?
 
-- Caso múltiplas entregas sejam feitas por um mesmo grupo de alunos, apenas a última será considerada, mesmo se entregues por alunos diferentes do mesmo grupo.
 - Faça a entrega corretamente pelo Google Forms.
   - Ou seja, não entregue por e-mail e nem pelo classroom.
 - Coloque apenas o seu arquivo `exercicio.js` e nada mais.
+- Caso múltiplas entregas sejam feitas por um mesmo grupo de alunos, apenas a última será considerada, mesmo se entregues por alunos diferentes do mesmo grupo.

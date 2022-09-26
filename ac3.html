@@ -7,9 +7,9 @@
     <script type="text/javascript">
         // Cuidado: Expressões regulares são uma linguagem que parece ser alienígena.
         // E se você bagunçar com ela, bem... boa sorte para descobrir como arrumar depois!
-        const regexNumero      = /^(?:[1-9][0-9]*(?:\.[0-9]+)?|\-[1-9][0-9]*(?:\.[0-9]+)?|0(?:\.[0-9]+)?|\-0\.[0-9]+)$/g; // Formato de número genérico.
-        const regexNota        = /^(?:10(?:\.00?)?|[0-9](?:\.[0-9][0-9]?)?)$/g; // Número de 0 a 10 com até duas casas decimais.
-        const regexPorcentagem = /^(?:0|[1-9][0-9]?|100)$/g; // Número inteiro de 0 a 100.
+        const regexNumero      = () => /^(?:[1-9][0-9]*(?:\.[0-9]+)?|\-[1-9][0-9]*(?:\.[0-9]+)?|0(?:\.[0-9]+)?|\-0\.[0-9]+)$/g; // Formato de número genérico.
+        const regexNota        = () => /^(?:10(?:\.00?)?|[0-9](?:\.[0-9][0-9]?)?)$/g; // Número de 0 a 10 com até duas casas decimais.
+        const regexPorcentagem = () => /^(?:0|[1-9][0-9]?|100)$/g; // Número inteiro de 0 a 100.
 
         function limparForm12() {
             document.querySelectorAll(".ex12 input[type='text']").forEach(e => e.value = "");

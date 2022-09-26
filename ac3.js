@@ -272,7 +272,7 @@ function tipoTriangulo(a, b, c) {
 function verificarTriangulo() {
     // Deixe esta função interna do jeito que está.
     function lerNumero(texto) {
-        if (regexNumero.test(texto)) return parseFloat(texto);
+        if (regexNumero().test(texto)) return parseFloat(texto);
         throw new Error("Informe os números corretamente");
     }
 
@@ -442,11 +442,11 @@ function verificarAlunoMatriculado() {
 
     // Deixe estas funções internas do jeito que estão.
     function lerNota(texto, oQue) {
-        if (regexNota.test(texto)) return parseFloat(texto);
+        if (regexNota().test(texto)) return parseFloat(texto);
         throw new Error(`Informe a nota d${oQue} corretamente, entre 0 e 10, com até duas casas decimais.`);
     }
     function lerPresenca(texto) {
-        if (regexPorcentagem.test(texto)) return parseInt(texto);
+        if (regexPorcentagem().test(texto)) return parseInt(texto);
         throw new Error("Informe a presença corretamente, deve ser um inteiro entre 0 e 100.");
     }
     function lerTexto(texto, erro) {

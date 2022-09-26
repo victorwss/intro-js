@@ -624,16 +624,16 @@
             "Eu vou entregar o código em PDF.",
             "Eu vou entregar pelos correios.",
             "Eu não vou entregar nada.",
-            "Eu vou entregar o arquivo exercicio.js que eu alterei e nada mais.",
-            "Eu vou entregar o arquivo exercicio.js junto com outros arquivos.",
-            "Eu vou entregar o arquivo teste.js que eu alterei.",
-            "Eu vou entregar o arquivo teste.js junto com outros arquivos.",
-            "Eu vou entregar o arquivo testefw.js que eu alterei.",
-            "Eu vou entregar o arquivo testefw.js junto com outros arquivos.",
-            "Eu vou entregar o arquivo exercicio.html que eu alterei e nada mais.",
-            "Eu vou entregar o arquivo exercicio.html junto com outros arquivos.",
-            "Eu vou entregar o arquivo exercicio.css que eu alterei e nada mais.",
-            "Eu vou entregar o arquivo exercicio.css junto com outros arquivos.",
+            "Eu vou entregar o arquivo ac3.js que eu alterei e nada mais.",
+            "Eu vou entregar o arquivo ac3.js junto com outros arquivos.",
+            "Eu vou entregar o arquivo ac3-teste.js que eu alterei.",
+            "Eu vou entregar o arquivo ac3-teste.js junto com outros arquivos.",
+            "Eu vou entregar o arquivo ac3-testefw.js que eu alterei.",
+            "Eu vou entregar o arquivo ac3-testefw.js junto com outros arquivos.",
+            "Eu vou entregar o arquivo ac3.html que eu alterei e nada mais.",
+            "Eu vou entregar o arquivo ac3.html junto com outros arquivos.",
+            "Eu vou entregar o arquivo ac3.css que eu alterei e nada mais.",
+            "Eu vou entregar o arquivo ac3.css junto com outros arquivos.",
             "Eu vou entregar o arquivo hot-xxx-video.mp4 que eu baixei e nada mais.",
             "Eu vou entregar um arquivo RAR.",
             "Eu vou pegar uma arma, sequestrar o professor e assim ele vai ter que me dar nota.",
@@ -652,7 +652,7 @@
         ];
 
         const correto = [
-            "Eu vou entregar o arquivo exercicio.js que eu alterei e nada mais.",
+            "Eu vou entregar o arquivo ac3.js que eu alterei e nada mais.",
             "Eu vou entregar por meio do Google Forms.",
         ];
 

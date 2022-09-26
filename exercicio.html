@@ -4,13 +4,114 @@
     <meta charset="utf-8">
     <title>Introdução ao JavaScript</title>
     <link rel="stylesheet" href="exercicio.css">
-    <script src="exercicio.js" defer></script>
-    <script src="testefw.js" defer></script>
-    <script src="teste.js" defer></script>
+    <script type="text/javascript">
+        function lerNumero(texto, erro) {
+            if (!/^(?:[1-9][0-9]*(?:\.[0-9]+)?|\-[1-9][0-9]*(?:\.[0-9]+)?|0(?:\.[0-9]+)?|\-0\.[0-9]+)$/g.test(texto)) throw new Error(erro);
+            return parseFloat(texto);
+        }
+        function limparForm12() {
+            document.querySelectorAll(".ex12 input[type='text']").forEach(e => e.value = "");
+        }
+        function limparForm19() {
+            document.querySelectorAll(".ex19 input[type='text']").forEach(e => e.value = "");
+            document.querySelectorAll(".ex19 input[type='radio']").forEach(e => e.checked = "");
+        }
+        function limparListasForm19() {
+            document.querySelector("#notas").innerHTML = "";
+        }
+    </script>
+    <script type="text/javascript" src="testefw.js" defer></script>
+    <script type="text/javascript" src="exercicio.js" defer></script>
+    <script type="text/javascript" src="teste.js" defer></script>
   </head>
   <body>
-    <h1>Alunos</h1>
-    <ul id="alunos"></ul>
+    <div id="alunosAc" class="oculto">
+        <h1>Alunos</h1>
+        <ul id="alunos"></ul>
+    </div>
+    <div class="formzinho ex12">
+        <h1>Formulário para o exercício 12</h1>
+        <p>
+            <label for="ladoA">Lado A:</label>
+            <input type="text" id="ladoA" />
+        </p>
+        <p>
+            <label for="ladoB">Lado B:</label>
+            <input type="text" id="ladoB" />
+        </p>
+        <p>
+            <label for="ladoC">Lado C:</label>
+            <input type="text" id="ladoC" />
+        </p>
+        <p class="tem-botao">
+            <label for="botaoTriangulo" id="grupo">&nbsp;</label>
+            <button type="button" id="botaoTriangulo" onclick="javascript:verificarTriangulo();">Verificar</button>
+        </p>
+        <p>
+            <label for="media">Resultado:</label>
+            <input type="text" id="tipoTriangulo" class="grande" readonly />
+        </p>
+        <p class="tem-botao">
+            <label for="btLimpar1" id="grupo">&nbsp;</label>
+            <button type="button" id="btLimpar1" onclick="javascript:limparForm12();">Limpar</button>
+        </p>
+    </div>
+    <div class="formzinho ex19">
+        <h1>Formulário para o exercício 19</h1>
+        <p>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" class="grande" />
+        </p>
+        <p class="tem-radio">
+            <label for="ele">Ele</label>
+            <input type="radio" id="ele" value="M" class="genero" name="genero" />
+        </p>
+        <p class="tem-radio">
+            <label for="ela">Ela</label>
+            <input type="radio" id="ela" value="F" class="genero" name="genero" />
+        </p>
+        <p>
+            <label for="disciplina">Disciplina:</label>
+            <input type="text" id="disciplina" class="grande" />
+        </p>
+        <p>
+            <label for="ac1">ACs:</label>
+            <input type="text" id="ac1" />
+            <input type="text" id="ac2" />
+            <input type="text" id="ac3" />
+            <input type="text" id="ac4" />
+            <input type="text" id="ac5" />
+        </p>
+        <p>
+            <label for="prova">Prova:</label>
+            <input type="text" id="prova" />
+        </p>
+        <p>
+            <label for="sub">Sub:</label>
+            <input type="text" id="sub" />
+        </p>
+        <p>
+            <label for="presenca">Presença:</label>
+            <input type="text" id="presenca" />
+        </p>
+        <p class="tem-botao">
+            <label for="botaoCadastrar" id="grupo">&nbsp;</label>
+            <button type="button" id="botaoCadastrar" onclick="javascript:verificarAlunoMatriculado();">Verificar</button>
+        </p>
+        <p class="tem-botao">
+            <label for="btLimpar2" id="grupo">&nbsp;</label>
+            <button type="button" id="btLimpar2" onclick="javascript:limparForm19();">Limpar campos</button>
+        </p>
+        <p class="tem-botao">
+            <label for="btLimpar3" id="grupo">&nbsp;</label>
+            <button type="button" id="btLimpar3" onclick="javascript:limparListasForm19();">Limpar lista</button>
+        </p>
+        <div>
+            <label for="notas">Matrículas registradas:</label>
+            <ol id="notas">
+            </ol>
+        </div>
+    </div>
     <h1 class="nota">Nota: <span id="valor">0</span>/10</h1>
     <ul id="resultados"></ul>
   </body>

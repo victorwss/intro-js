@@ -1,64 +1,16 @@
+/* A formatação padrão é feia. Vamos melhorá-la. */
+
+* {
+    box-sizing: border-box;
+}
+
 ul {
     list-style-type: none;
     padding-inline-start: 0;
+    padding: 0;
 }
 
-.teste {
-    display: block;
-}
-
-.exercicio.ok {
-    background: #C0FFC0;
-}
-
-.exercicio.parcial {
-    background: #FFFFC0;
-}
-
-.exercicio.erro {
-    background: #FFC0C0;
-}
-
-.exercicio, .teste {
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.teste.ok {
-    background: #80FF80;
-}
-
-.teste.erro {
-    background: #FF8080;
-}
-
-.teste, .exercicio {
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 5px;
-    padding: 5px;
-}
-
-.oculto {
-    display: none;
-}
-
-.botao {
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
-    float: right;
-    border-radius: 1em;
-    background: blue;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    width: 2em;
-    font-size: 2em;
-}
-
-h1, h2, h3 {
+ul, ol, h1, h2, h3 {
     margin: 0;
 }
 
@@ -70,6 +22,52 @@ h3 {
     font-size: 1.2em;
 }
 
+/* Resultados de testes. */
+
+.teste {
+    display: block;
+}
+
+.exercicio.ok {
+    background: #C0FFC0;
+}
+
+.exercicio.niy, .exercicio.skip {
+    background: #A0A0A0;
+}
+
+.exercicio.parcial {
+    background: #FFFFC0;
+}
+
+.exercicio.erro {
+    background: #FFC0C0;
+}
+
+.exercicio, .teste {
+    border: 1px black solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.teste.ok {
+    background: #80FF80;
+}
+
+.teste.niy {
+    background: #E0E0E0;
+}
+
+.teste.erro {
+    background: #FF8080;
+}
+
+.teste.skip {
+    background: #C0C0C0;
+}
+
 .codigo span {
     font-family: monospace;
 }
@@ -78,22 +76,87 @@ h3 {
     font-weight: bold;
 }
 
-.resultado span {
+.resultado .esperado, .resultado .obtido, .resultado .inesperado {
     font-weight: bold;
+    background: yellow;
 }
+
+.botao {
+    border: 1px black solid;
+    background: blue;
+    color: white;
+    text-align: center;
+    float: right;
+    width: 2em;
+    font-size: 1.6em;
+    padding: 10px;
+    border-radius: 1em;
+    font-family: sans-serif;
+}
+
+.oculto {
+    display: none;
+}
+
+.perigo {
+    color: red;
+}
+
+/* Erros gravíssimos. */
+
+.gravissimo {
+    background: yellow;
+    border: 1px black solid;
+    position: sticky;
+    margin: 0;
+    top: 0;
+    text-align: center;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.gravissimo h1 {
+    animation: pisca-pisca-vermelho 0.3s linear infinite;
+    color: red;
+    margin: 20px;
+}
+
+.gravissimo p {
+    font-size: 1.2em;
+    margin-top: 0;
+}
+
+.gravissimo p:not(:last-child) {
+    margin-bottom: 0;
+}
+
+@keyframes pisca-pisca-vermelho {
+  20% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0;
+  }
+  70% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+}
+
+/* Lista dos alunos. */
 
 #alunos li {
     font-weight: bold;
     font-size: 1.2em;
     background: #FFE0C0;
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
+    border: 1px black solid;
     border-radius: 5px;
     padding: 5px;
     margin: 2px;
     text-align: center;
-    display: inline;
+    display: inline-block;
 }
 
 #alunos li:first-child {
@@ -102,4 +165,70 @@ h3 {
 
 #alunos li:last-child {
     margin-right: 0;
+}
+
+/* Formulários. */
+
+.formzinho {
+    border: 1px black solid;
+    background: #DFF;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.formzinho p {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: text-top;
+}
+
+.formzinho label {
+    display: block;
+    font-size: 1.2em;
+}
+
+button {
+    border: 1px black solid;
+    background: blue;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    height: 25px;
+    font-size: 1.25em;
+    border-radius: 10px;
+}
+
+input {
+    border: 1px black solid;
+    background: #0FF;
+    border-radius: 5px;
+    padding: 2px;
+    font-size: 1.25em;
+}
+
+input.grande {
+    width: 391px;
+}
+
+.tem-botao {
+    position: relative;
+}
+
+input:not(.grande), .tem-radio {
+    width: 75px;
+}
+
+.tem-radio  {
+    text-align: center;
+}
+
+input[type="radio"] {
+    margin: 0;
+}
+
+label, input[type="text"], input[type="radio"], button {
+    height: 25px;
 }

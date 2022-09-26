@@ -16,7 +16,7 @@ Faça o AC em grupos de 1 até 5 pessoas.
 
 Para executar e testar este AC, basta abrir o `ac3.html` em um navegador moderno (Chrome ou Firefox) e a mágica toda vai acontecer automaticamente.
 
-Esta página vai automaticamente rodar um montão de testes (exatos 400, para ser preciso) e se houverem problemas, ela vai descrever quais foram os testes que falharam.
+Esta página vai automaticamente rodar um montão de testes (exatos 415, para ser preciso) e se houverem problemas, ela vai descrever quais foram os testes que falharam.
 
 Obviamente, o arquivo `ac3.js` dado aqui vai tirar uma nota zero. Não só isso, já te dará de cara uma caixa de mensagem de erro amarela com letras grandes vermelhas piscando bem chamativas dizendo que você precisa configurar o JSON com o nome dos alunos (exercício 0). 
 

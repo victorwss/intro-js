@@ -57,7 +57,7 @@
                 zoado.innerHTML = ""
                         + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE VOCÊ NÃO DEFINIU CORRETAMENTE O JSON COM OS INTEGRANTES DO SEU GRUPO.</h1>"
                         + "<p>Arrumar isto é a primeira coisa que você tem que fazer neste AC, e assim que o fizer esta mensagem vai desaparecer.</p>"
-                        + "<p>Procure a função dadosDosAlunos() no arquivo exericio.js</p>"
+                        + "<p>Procure a função dadosDosAlunos() no arquivo ac3.js</p>"
                         + "<p>Quem entregar para o professor um JavaScript que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
                 document.body.prepend(zoado);
                 document.querySelector(".nota").style.display = "none";
@@ -157,7 +157,7 @@
         teste("Victor deve retornar Victor."        , () => abreviadorNomes("Victor"        ), igual("Victor"   ), testOk),
     ]);
 
-    grupo("Exercício 6", "Datas", true, 0, 0.7, () => {
+    grupo("Exercício 6", "Datas", true, 0, 0.6, () => {
         const datas = {
             "31/01/1975": "31 de Janeiro de 1975",
             "10/02/2219": "10 de Fevereiro de 2219",
@@ -548,52 +548,91 @@
 
     const alunosMatriculasInvalidos = [
         {
-            "criar": () => informarDados("Teste", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84),
+            "criar": '() => informarDados("Teste", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84)',
             "erro": "Escolha o gênero do(a) aluno(a) corretamente.",
+            "causa": `nenhum gênero escolhido`,
         }
     ];
 
     ["", "   "].forEach(e => {
         alunosMatriculasInvalidos.push({
-            "criar": () => informarDados(e, "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84),
+            "criar": `() => informarDados("${e}", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84)`,
             "erro": "Informe o nome do(a) aluno(a) corretamente.",
+            "causa": `o nome inválido "${e}"`,
         });
         alunosMatriculasInvalidos.push({
-            "criar": () => informarDados("Teste", "F", e, [8, 7, 9, 4.5, 8], 9, 0, 84),
+            "criar": `() => informarDados("Teste", "F", "${e}", [8, 7, 9, 4.5, 8], 9, 0, 84)`,
             "erro": "Informe o nome da disciplina corretamente.",
+            "causa": `a disciplina inválida "${e}"`,
         });
     });
-    ["", "   ", "-1", "-", "abc", "5.678", "11", "10.01", "5.", ".4", "."].forEach(e => {
+    ["", "   ", "-1", "-", "abc", "5.678", "11", "10.01", "5.", ".4", ".", "3.4.5"].forEach(e => {
         [0, 1, 2, 3, 4].forEach(j => {
             const arr = [8, 7, 9, 4.5, 8];
             arr[j] = e;
             alunosMatriculasInvalidos.push({
-                "criar": () => informarDados("Teste", "F", "Teste", arr, 9, 0, 84),
+                "criar": `() => informarDados("Teste", "F", "Teste", ${JSON.stringify(arr)}, 9, 0, 84)`,
                 "erro": `Informe a nota do AC ${j + 1} corretamente, entre 0 e 10, com até duas casas decimais.`,
+                "causa": `o valor inválido "${e}" para o AC ${j + 1}`,
             });
         });
         alunosMatriculasInvalidos.push({
-            "criar": () => informarDados("Teste", "F", "Teste", [8, 7, 9, 4.5, 8], e, 0, 84),
+            "criar": `() => informarDados("Teste", "F", "Teste", [8, 7, 9, 4.5, 8], "${e}", 0, 84)`,
             "erro": "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.",
+            "causa": `o valor inválido "${e}" para a prova`,
         });
         alunosMatriculasInvalidos.push({
-            "criar": () => informarDados("Teste", "F", "Teste", [8, 7, 9, 4.5, 8], 9, e, 84),
+            "criar": `() => informarDados("Teste", "F", "Teste", [8, 7, 9, 4.5, 8], 9, "${e}", 84)`,
             "erro": "Informe a nota da sub corretamente, entre 0 e 10, com até duas casas decimais.",
+            "causa": `o valor inválido "${e}" para a sub`,
         });
     });
     ["", "   ", "-1", "-", "abc", "5.6", "101", "5.", ".4", "."].forEach(e => {
         alunosMatriculasInvalidos.push({
-            "criar": () => informarDados("Teste", "F", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, e),
+            "criar": `() => informarDados("Teste", "F", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, "${e}")`,
             "erro": "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.",
+            "causa": `o valor inválido "${e}" para a presença`,
         });
     });
 
     grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0, 0.7, () =>
         alunosMatriculasInvalidos.map((aluno, i) =>
             teste(
-                `Não deve conseguir preencher uma instância de AlunoMatricula com dados incorretos no formulário [${i + 1}].`,
-                aluno.criar,
+                `Não deve conseguir preencher uma instância de AlunoMatricula com ${aluno.causa} [${i + 1}].`,
+                eval(aluno.criar),
                 igual(aluno.erro),
+                testOk
+            )
+        )
+    );
+
+    let alunosMatriculasValidos2 = [];
+
+    ["10.00", "10.0", "0.0", "0.00"].forEach(e => {
+        [0, 1, 2, 3, 4].forEach(j => {
+            const arr = ["10", "10", "10", "10", "10"];
+            arr[j] = e;
+            alunosMatriculasValidos2.push({
+                "criar": () => informarDados("Teste", "F", "Teste", arr, "10", "10", 84),
+                "campo": "AC " + (j + 1), "valor": e,
+            });
+        });
+        alunosMatriculasValidos2.push({
+            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], e, "10", 84),
+            "campo": "prova", "valor": e,
+        });
+        alunosMatriculasValidos2.push({
+            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", e, 84),
+            "campo": "sub", "valor": e,
+        });
+    });
+
+    grupo("Exercício 19 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0, 0.1, () =>
+        alunosMatriculasValidos2.map((aluno, i) =>
+            teste(
+                `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
+                aluno.criar,
+                igual("Teste tem média 10 na disciplina de Teste e foi aprovada com 84% de presença."),
                 testOk
             )
         )
@@ -657,7 +696,7 @@
         ];
 
         const testes = [];
-        for (let i = 1; i <= 25; i++) {
+        for (let i = 1; i <= 5; i++) {
             const bagunca = embaralhar([...formas]);
             testes.push(teste(`Deve achar a melhor forma de entregar [${i}].`, () => comoFazerEntrega(bagunca).sort(), igual(correto)));
         }

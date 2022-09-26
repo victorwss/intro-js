@@ -5,10 +5,6 @@
     <title>Introdução ao JavaScript</title>
     <link rel="stylesheet" href="exercicio.css">
     <script type="text/javascript">
-        function lerNumero(texto, erro) {
-            if (!/^(?:[1-9][0-9]*(?:\.[0-9]+)?|\-[1-9][0-9]*(?:\.[0-9]+)?|0(?:\.[0-9]+)?|\-0\.[0-9]+)$/g.test(texto)) throw new Error(erro);
-            return parseFloat(texto);
-        }
         function limparForm12() {
             document.querySelectorAll(".ex12 input[type='text']").forEach(e => e.value = "");
         }
@@ -113,6 +109,7 @@
         </div>
     </div>
     <h1 class="nota">Nota: <span id="valor">0</span>/10</h1>
+    <h2 class="nota">Testes com sucesso: <span id="contaTestes">0/0</span></h2>
     <ul id="resultados"></ul>
   </body>
 </html>

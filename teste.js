@@ -19,7 +19,7 @@
 
     grupo("Exercício 0", "JSON com a identificação do(a)(s) aluno(a)(s)", false, -10, 0, () => {
         function validarJsonAlunos() {
-            const alunos = dadosDosAlunos();
+            const alunos = dadosDosAlunos(), nomes = [], ras = [];
             if (!(alunos instanceof Array)) throw new Error("Os dados do(a)(s) aluno(a)(s) deveriam estar em um array.");
             if (alunos.length === 0) throw new Error("Você(s) se esqueceu(ram) de preencher os dados com o JSON do(a)(s) aluno(a)(s).");
             alunos.forEach(a => {
@@ -30,8 +30,13 @@
                 if (typeof a.nome !== "string") throw new Error("O nome do(a) aluno(a) deveria ser uma string.");
                 if (typeof a.ra !== "number") throw new Error("O RA do(a) aluno(a) deveria ser um número.");
                 if (["João da Silva", "Maria da Silva", ""].indexOf(a.nome.trim()) >= 0) throw new Error("Você esqueceu de editar os nomes do(a)(s) aluno(a)(s) corretamente.");
-                if (a.ra <= 0 || [123456, 654321].indexOf(a.ra) >= 0) throw new Error("Você esqueceu de editar os RAs do(a)(s) aluno(a)(s) corretamente.");
+                if ([123456, 654321].indexOf(a.ra) >= 0) throw new Error("Você esqueceu de editar os RAs do(a)(s) aluno(a)(s) corretamente.");
+                if (isNaN(a.ra) || a.ra !== Math.floor(a.ra) || a.ra <= 0) throw new Error("O RA do(a) aluno(a) é inválido.");
                 if (a.nome !== a.nome.trim()) throw new Error("Não deixe espaços em branco sobrando no começo ou no final do(s) nome(s) do(a)(s) aluno(a)(s) no JSON.");
+                if (nomes.indexOf(a.nome) >= 0) throw new Error("Há nomes repetidos no JSON.");
+                if (ras.indexOf(a.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
+                nomes.push(a.nome);
+                ras.push(a.ra);
             });
             if (alunos.length > 5) throw new Error("Vocês só podem fazer grupo de até 5 alunos(as).");
             return alunos;
@@ -95,38 +100,48 @@
         class Laranja    {                                         toString() { return "laranja verde"; }}
         class Cliente    { constructor(nome) { this.nome = nome; } toString() { return this.nome;       }}
         class Fornecedor { constructor(nome) { this.nome = nome; } toString() { return this.nome;       }}
+        class Uva        {                                         toString() { return "1";             }}
 
         // Criamos algumas instâncias dessas classes.
         const abcx1 = new Abacaxi(); // Temos um abacaxi aqui.
         const abcx2 = new Abacaxi(); // E um outro abacaxi aqui.
         const larnj = new Laranja();
+        const uva   = new Uva();
         const rafa  = new Cliente("Rafaela");
         const pedro = new Cliente("Pedro");
         const xara  = new Cliente("Pedro");   // Homônimo do cara acima. Temos dois clientes chamados Pedro.
         const paula = new Fornecedor("Paula");
+        const droga = "[E esse é um dos motivos pelo qual o == e o != são uma droga, prefira sempre o === e o !==]";
 
         return [
-            teste("3 e 3 são estritamente iguais."                  , () => comparadorBasico(3    , 3      ), igual("Elemento 3 (number) é estritamente igual ao elemento 3 (number)."                      ), testOk),
-            teste("undefined e undefined são estritamente iguais."  , () => comparadorBasico(              ), igual("Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)."), testOk),
-            teste('"ABC" e "ABC" são estritamente iguais.'          , () => comparadorBasico("ABC", "ABC"  ), igual("Elemento ABC (string) é estritamente igual ao elemento ABC (string)."                  ), testOk),
-            teste('3 e "3" são equivalentes.'                       , () => comparadorBasico(3    , "3"    ), igual("Elemento 3 (number) é equivalente ao elemento 3 (string)."                             ), testOk),
-            teste("null e undefined são equivalentes."              , () => comparadorBasico(null          ), igual("Elemento null (object) é equivalente ao elemento undefined (undefined)."               ), testOk),
-            teste("1 e 2 são diferentes."                           , () => comparadorBasico(1    , 2      ), igual("Elemento 1 (number) é diferente do elemento 2 (number)."                               ), testOk),
-            teste('"1" e 2 são diferentes.'                         , () => comparadorBasico(  "1", 2      ), igual("Elemento 1 (string) é diferente do elemento 2 (number)."                               ), testOk),
-            teste("Array e objeto são diferentes."                  , () => comparadorBasico([]   , {}     ), igual("Elemento  (Array) é diferente do elemento [object Object] (Object)."                   ), testOk),
-            teste("Abacaxi e laranja são diferentes."               , () => comparadorBasico(abcx1, larnj  ), igual("Elemento [object Object] (Abacaxi) é diferente do elemento laranja verde (Laranja)."   ), testOk),
-            teste("Cliente e fornecedor são diferentes."            , () => comparadorBasico(pedro, paula  ), igual("Elemento Pedro (Cliente) é diferente do elemento Paula (Fornecedor)."                  ), testOk),
-            teste("Dois clientes diferentes são diferentes."        , () => comparadorBasico(pedro, rafa   ), igual("Elemento Pedro (Cliente) é diferente do elemento Rafaela (Cliente)."                   ), testOk),
-            teste("Um cliente é igual a si mesmo."                  , () => comparadorBasico(pedro, pedro  ), igual("Elemento Pedro (Cliente) é estritamente igual ao elemento Pedro (Cliente)."            ), testOk),
-            teste("Dois clientes homônimos são diferentes."         , () => comparadorBasico(pedro, xara   ), igual("Elemento Pedro (Cliente) é diferente do elemento Pedro (Cliente)."                     ), testOk),
-            teste("Dois abacaxis são diferentes."                   , () => comparadorBasico(abcx1, abcx2  ), igual("Elemento [object Object] (Abacaxi) é diferente do elemento [object Object] (Abacaxi)." ), testOk),
+            teste("3 e 3 são estritamente iguais."                  , () => comparadorBasico(3    , 3    ), igual("Elemento 3 (number) é estritamente igual ao elemento 3 (number)."                      ), testOk),
+            teste("undefined e undefined são estritamente iguais."  , () => comparadorBasico(            ), igual("Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)."), testOk),
+            teste('"ABC" e "ABC" são estritamente iguais.'          , () => comparadorBasico("ABC", "ABC"), igual("Elemento ABC (string) é estritamente igual ao elemento ABC (string)."                  ), testOk),
+            teste('3 e "3" são equivalentes.'                       , () => comparadorBasico(3    , "3"  ), igual("Elemento 3 (number) é equivalente ao elemento 3 (string)."                             ), testOk),
+            teste("null e undefined são equivalentes."              , () => comparadorBasico(null        ), igual("Elemento null (object) é equivalente ao elemento undefined (undefined)."               ), testOk),
+            teste("1 e 2 são diferentes."                           , () => comparadorBasico(1    , 2    ), igual("Elemento 1 (number) é diferente do elemento 2 (number)."                               ), testOk),
+            teste('"1" e 2 são diferentes.'                         , () => comparadorBasico(  "1", 2    ), igual("Elemento 1 (string) é diferente do elemento 2 (number)."                               ), testOk),
+            teste("Array e objeto são diferentes."                  , () => comparadorBasico([]   , {}   ), igual("Elemento  (Array) é diferente do elemento [object Object] (Object)."                   ), testOk),
+            teste("Abacaxi e laranja são diferentes."               , () => comparadorBasico(abcx1, larnj), igual("Elemento [object Object] (Abacaxi) é diferente do elemento laranja verde (Laranja)."   ), testOk),
+            teste("Cliente e fornecedor são diferentes."            , () => comparadorBasico(pedro, paula), igual("Elemento Pedro (Cliente) é diferente do elemento Paula (Fornecedor)."                  ), testOk),
+            teste("Dois clientes diferentes são diferentes."        , () => comparadorBasico(pedro, rafa ), igual("Elemento Pedro (Cliente) é diferente do elemento Rafaela (Cliente)."                   ), testOk),
+            teste("Um cliente é igual a si mesmo."                  , () => comparadorBasico(pedro, pedro), igual("Elemento Pedro (Cliente) é estritamente igual ao elemento Pedro (Cliente)."            ), testOk),
+            teste("Dois clientes homônimos são diferentes."         , () => comparadorBasico(pedro, xara ), igual("Elemento Pedro (Cliente) é diferente do elemento Pedro (Cliente)."                     ), testOk),
+            teste("Dois abacaxis são diferentes."                   , () => comparadorBasico(abcx1, abcx2), igual("Elemento [object Object] (Abacaxi) é diferente do elemento [object Object] (Abacaxi)." ), testOk),
+            teste("true e false são diferentes."                    , () => comparadorBasico(true , false), igual("Elemento true (boolean) é diferente do elemento false (boolean)."                      ), testOk),
+            teste("true e 1 são equivalentes."                      , () => comparadorBasico(true , 1    ), igual("Elemento true (boolean) é equivalente ao elemento 1 (number)."                         ), testOk),
+            teste("true e 1 são equivalentes."                      , () => comparadorBasico(true , "1"  ), igual("Elemento true (boolean) é equivalente ao elemento 1 (string)."                         ), testOk),
+            teste("false e 0 são equivalentes."                     , () => comparadorBasico(false, 0    ), igual("Elemento false (boolean) é equivalente ao elemento 0 (number)."                        ), testOk),
+            teste("true e 2 são diferentes."                        , () => comparadorBasico(true , 2    ), igual("Elemento true (boolean) é diferente do elemento 2 (number)."                           ), testOk),
 
-            // E aqui está o motivo mais forte para nunca se usar == e sempre usar ===.
-            teste("Fornecedora Paula e nome Paula são equivalentes.", () => comparadorBasico(paula, "Paula"), igual("Elemento Paula (Fornecedor) é equivalente ao elemento Paula (string)."                 ), testOk),
+            // E eis aqui está o motivo mais forte para nunca se usar == e sempre usar ===.
+            teste(`Fornecedora Paula e nome Paula são equivalentes. ${droga}`, () => comparadorBasico(paula, "Paula"), igual("Elemento Paula (Fornecedor) é equivalente ao elemento Paula (string)."), testOk),
+            teste(`Uva e true são equivalentes. ${droga}`                    , () => comparadorBasico(uva  ,   true ), igual("Elemento 1 (Uva) é equivalente ao elemento true (boolean)."           ), testOk),
+
         ];
     });
 
-    grupo("Exercício 4", "Primeiro nome", true, 0, 0.3, () => [
+    grupo("Exercício 4", "Primeiro nome", true, 0, 0.4, () => [
         teste("Yuri Dirickson deve retornar Yuri.", () => primeiroNome("Yuri Dirickson"), igual("Yuri"  ), testOk),
         teste("Marina Silva deve retornar Marina.", () => primeiroNome("Marina Silva"  ), igual("Marina"), testOk),
         teste("Tatá Wernerck deve retornar Tatá." , () => primeiroNome("Tatá"          ), igual("Tatá"  ), testOk),
@@ -142,7 +157,7 @@
         teste("Victor deve retornar Victor."        , () => abreviadorNomes("Victor"        ), igual("Victor"   ), testOk),
     ]);
 
-    grupo("Exercício 6", "Datas", true, 0, 0.6, () => {
+    grupo("Exercício 6", "Datas", true, 0, 0.7, () => {
         const datas = {
             "31/01/1975": "31 de Janeiro de 1975",
             "10/02/2219": "10 de Fevereiro de 2219",
@@ -209,7 +224,7 @@
         teste("Para [6, 2, -3, -4, 0] retorna [6, 2, -4, 0]."    , () => acharPares([6, 2, -3, -4, 0]), igual([6, 2, -4, 0]), testOk),
     ]);
 
-    grupo("Exercício 10", "IMC", true, 0, 0.5, () => [
+    grupo("Exercício 10", "IMC", true, 0, 0.6, () => [
         teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso":  50    , "altura": 1.7  }), igual("Abaixo do peso"              ), testOk),
         teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso":  60    , "altura": 1.7  }), igual("Normal"                      ), testOk),
         teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso":  72.25 , "altura": 1.7  }), igual("Excesso de peso"             ), testOk),
@@ -297,18 +312,20 @@
         document.querySelector("#ladoA").value = "" + a;
         document.querySelector("#ladoB").value = "" + b;
         document.querySelector("#ladoC").value = "" + c;
-        const old = window.onerror;
-        let resultado = "";
-        window.onerror = function(ev, arquivo, linha, coluna, erro) { resultado = "" + erro; };
-        try {
-            document.querySelector("#botaoTriangulo").click();
-            resultado = document.querySelector("#tipoTriangulo").value;
-        } catch (e) {
-            /* Já tratado. */
-        } finally {
-            window.onerror = old;
-            limparForm12();
-        }
+        let resultado = "", crash = null;
+        const bt = document.querySelector("#botaoTriangulo"), oldClick = bt.onclick;
+        bt.onclick = function() {
+            try {
+                oldClick();
+                resultado = document.querySelector("#tipoTriangulo").value;
+            } catch (e) {
+                crash = e;
+            }
+        };
+        bt.click();
+        bt.onclick = oldClick;
+        limparForm12();
+        if (crash) throw crash;
         return resultado;
     }
 
@@ -402,7 +419,7 @@
         return mapped;
     };
 
-    grupo("Exercício 13", "Construtor da classe AlunoMatricula", true, 0, 0.3, () =>
+    grupo("Exercício 13", "Construtor da classe AlunoMatricula", true, 0, 0.4, () =>
         alunosMatriculasValidos.map((aluno, i) =>
             teste(
                 `Deve conseguir instanciar um aluno nome corretamente [${JSON.parse(aluno.json)._nome}].`,
@@ -500,23 +517,25 @@
         document.querySelector("#prova").value = "" + prova;
         document.querySelector("#sub").value = "" + sub;
         document.querySelector("#presenca").value = "" + presenca;
-        const old = window.onerror;
-        let resultado = "";
-        window.onerror = (ev, arquivo, linha, coluna, erro) => resultado = "" + erro + " - " + linha + " - " + coluna;
-        try {
-            document.querySelector("#botaoCadastrar").click();
-            resultado = document.querySelector("#notas :last-child").innerHTML;
-        } catch (e) {
-            /* Já tratado. */
-        } finally {
-            window.onerror = old;
-            limparForm19();
-            limparListasForm19();
-        }
+        let resultado = "", crash = null;
+        const bt = document.querySelector("#botaoCadastrar"), oldClick = bt.onclick;
+        bt.onclick = function() {
+            try {
+                oldClick();
+                resultado = document.querySelector("#notas :last-child").innerHTML;
+            } catch (e) {
+                crash = e;
+            }
+        };
+        bt.click();
+        bt.onclick = oldClick;
+        limparForm19();
+        limparListasForm19();
+        if (crash) throw crash;
         return resultado;
     }
 
-    grupo("Exercício 19 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0, 1, () =>
+    grupo("Exercício 19 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0, 0.7, () =>
         alunosMatriculasValidos.map((aluno, i) =>
             teste(
                 `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${JSON.parse(aluno.json)._nome}].`,
@@ -569,7 +588,7 @@
         });
     });
 
-    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0, 0.8, () =>
+    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0, 0.7, () =>
         alunosMatriculasInvalidos.map((aluno, i) =>
             teste(
                 `Não deve conseguir preencher uma instância de AlunoMatricula com dados incorretos no formulário [${i + 1}].`,

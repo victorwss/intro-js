@@ -9,7 +9,7 @@ function naoFizIssoAinda() {
 }
 
 const TesteFw = (() => {
-    let nota = 0;
+    let nota = 0, totalTestes = 0, totalSucessos = 0;
     const naoExecutado = "<span class='naoexecutado'>O teste não pôde ser executado por causa de erros detectados em testes anteriores.</span>";
 
     class ErroFormatado extends Error {
@@ -17,12 +17,7 @@ const TesteFw = (() => {
     }
 
     function escapeHtml(unsafe) {
-        return unsafe
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
+        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     function arredondar(num, casas) {
@@ -85,6 +80,8 @@ const TesteFw = (() => {
             if (resposta.tipo === "skip") pulados++;
             detalhes.innerHTML += resposta.elemento;
         });
+        totalTestes += testes.length;
+        totalSucessos += sucessos;
 
         const deveEsconder = sucessos === testes.length || niy + pulados === testes.length;
         const cabecalho = document.createElement("h2");
@@ -125,6 +122,7 @@ const TesteFw = (() => {
         if (fracionado || sucessos === testes.length) nota += peso * sucessos / testes.length;
         nota += minima;
         document.querySelector("#valor").innerHTML = "" + (nota < 0 ? 0 : arredondar(nota, 2));
+        document.querySelector("#contaTestes").innerHTML = totalSucessos + " / " + totalTestes;
         if (deveEsconder) detalhes.classList.add("oculto");
 
         return {
@@ -169,8 +167,7 @@ const TesteFw = (() => {
         zoado.classList.add("gravissimo");
         zoado.innerHTML = ""
                 + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE O SEU JAVASCRIPT NÃO RODOU.</h1>"
-                + `<p>Este é um erro gravíssimo. O erro especificamente foi ${erro ? erro.message : erro}, no arquivo ${arquivo}, na linha ${linha} e coluna ${coluna}.`
-                + "Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
+                + "<p>Este é um erro gravíssimo. Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
                 + "<p>Quem entregar para o professor um JavaScript que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
         document.body.prepend(zoado);
     };

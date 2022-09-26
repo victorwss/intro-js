@@ -1,7 +1,7 @@
 "use strict";
 
 // Implemente as funções abaixo, conforme pede o enunciado.
-// Carregue o arquivo exercicio.html para ver os resultados e a sua nota.
+// Carregue o arquivo ac3.html para ver os resultados e a sua nota.
 
 // EXEMPLO 1.
 /**
@@ -107,11 +107,13 @@ function operacoesBasicas(operacao, numero1, numero2) {
  * @returns {String} A mensagem com o resultado da comparação.
  */
 function comparadorBasico(elemento1, elemento2) {
+    // Deixe esta função interna do jeito que está.
     function determinarTipo(elemento) {
         if (elemento === null || typeof elemento !== "object") return typeof elemento;
         return elemento.constructor.name;
     }
 
+    // Comece a mexer no código daqui para baixo.
     naoFizIssoAinda();
 }
 
@@ -262,15 +264,19 @@ function tipoTriangulo(a, b, c) {
  * 3. Utilize a função tipoTriangulo do exercício 11 para saber qual tipo de triângulo é o resultado disso.
  * 4. Coloque o nome do tipo de triângulo resultante na <input> à direita do <button>.
  *
- * Se a função lerNumero lançar um erro, coloque a mensagem de erro "Informe os números corretamente" no <input> mais à direita.
+ * Se a função lerNumero lançar um erro, coloque a mensagem de erro dela no <input> mais à direita.
  *
  * Um esqueleto da implementação final já foi deixado pelo professor para ajudar.
+ * Dica: Procure ver funções de manipulação de DOM nas partes que faltam (o que está como naoFizIssoAinda()).
  */
 function verificarTriangulo() {
-    function lerNumero(texto, erro) {
-        if (/^(?:[1-9][0-9]*(?:\.[0-9]+)?|\-[1-9][0-9]*(?:\.[0-9]+)?|0(?:\.[0-9]+)?|\-0\.[0-9]+)$/g.test(texto)) return parseFloat(texto);
+    // Deixe esta função interna do jeito que está.
+    function lerNumero(texto) {
+        if (regexNumero.test(texto)) return parseFloat(texto);
         throw new Error("Informe os números corretamente");
     }
+
+    // Comece a mexer no código daqui para baixo.
     let texto;
     try {
         const a = lerNumero(naoFizIssoAinda());
@@ -280,7 +286,7 @@ function verificarTriangulo() {
     } catch (e) {
         texto = e.message;
     }
-    naoFizIssoAinda(texto);
+    naoFizIssoAinda();
 }
 
 // Classe para os exercícios 13 a 19.
@@ -295,9 +301,7 @@ function verificarTriangulo() {
  * As notas da prova e da sub também serão um número de 0 a 10. Caso o(a) aluno(a) não tenha feito
  * uma dessas provas, o valor 0 será considerado.
  *
- * A presença é um número entre 0 e 1, onde 0 significa que o(a) aluno(a) nunca compareceu às aulas,
- * 1 significa que nunca faltou e valores intermediários como 0.5 ou 0.7 significam que ele(a)
- * compareceu em algumas aulas e faltou noutras.
+ * A presença é um inteiro entre 0 e 100 representando a porcentagem de comparecimento às aulas.
  */
 class AlunoMatricula {
 
@@ -411,10 +415,10 @@ class AlunoMatricula {
      * const s1 = c1.status; // Isso vai ser "Maria Luiza tem média 8.5 na disciplina de Desenvolvimento Web e foi aprovada com 84% de presença."
      *
      * const c2 = new AlunoMatricula("Anderson", "M", "LP 2", [3.4, 5.0, 2.0, 4.8, 0], 2.9, 1.8, 80);
-     * const s2 = c2.status; // Isso vai ser "Anderson tem média 3.3 na disciplina de LP 2 e foi reprovado por média com 80% de presença."
+     * const s2 = c2.status; // Isso vai ser "Anderson tem média 3.5 na disciplina de LP 2 e foi reprovado por média com 80% de presença."
      *
      * const c3 = new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", [9, 8, 7, 6, 5], 4, 3, 21);
-     * const s3 = c3.status; // Isso vai ser "Chiquinha tem média 6.0 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença."
+     * const s3 = c3.status; // Isso vai ser "Chiquinha tem média 6 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença."
      *
      * @returns {String} O status descritivo do(a) aluno(a).
      */
@@ -431,17 +435,18 @@ class AlunoMatricula {
  * e colocar o status dessa instância no elemento #notas. Se ocorrer algum erro que impossibilite este processo,
  * a mensagem de erro será colocada em #notas.
  *
- * Tudo o que você precisa fazer é fechar os buracos que ficaram.
- * Não se preocupe com as funções auxiliares, elas são razoavelmente complexas, mas as partes que as utilizam
- * já estão prontas, então basta deixá-las quietas como estão.
+ * Um esqueleto da implementação final já foi deixado pelo professor para ajudar.
+ * Dica: Procure ver funções de manipulação de DOM nas partes que faltam (o que está como naoFizIssoAinda()).
  */
 function verificarAlunoMatriculado() {
+
+    // Deixe estas funções internas do jeito que estão.
     function lerNota(texto, oQue) {
-        if (/^(?:10(?:\.0)?|[0-9](?:\.[0-9][0-9]?)?)$/g.test(texto)) return parseFloat(texto);
+        if (regexNota.test(texto)) return parseFloat(texto);
         throw new Error(`Informe a nota d${oQue} corretamente, entre 0 e 10, com até duas casas decimais.`);
     }
     function lerPresenca(texto) {
-        if (/^(?:100|[1-9][0-9]?|0)$/g.test(texto)) return parseInt(texto);
+        if (regexPorcentagem.test(texto)) return parseInt(texto);
         throw new Error("Informe a presença corretamente, deve ser um inteiro entre 0 e 100.");
     }
     function lerTexto(texto, erro) {
@@ -449,6 +454,7 @@ function verificarAlunoMatriculado() {
         return texto.trim();
     }
 
+    // Comece a mexer no código daqui para baixo.
     let texto;
     try {
         const nome        = lerTexto(document.querySelector("#nome").value, "Informe o nome do(a) aluno(a) corretamente.");

@@ -5,6 +5,8 @@
     <title>Introdução ao JavaScript</title>
     <link rel="stylesheet" href="ac3.css">
     <script type="text/javascript">
+        "use strict";
+
         // Cuidado: Expressões regulares são uma linguagem que parece ser alienígena.
         // E se você bagunçar com ela, bem... boa sorte para descobrir como arrumar depois!
         const regexNumero      = () => /^(?:[1-9][0-9]*(?:\.[0-9]+)?|\-[1-9][0-9]*(?:\.[0-9]+)?|0(?:\.[0-9]+)?|\-0\.[0-9]+)$/g; // Formato de número genérico.
@@ -35,26 +37,26 @@
         <h1>Formulário para o exercício 12</h1>
         <p>
             <label for="ladoA">Lado A:</label>
-            <input type="text" id="ladoA" />
+            <input type="text" id="ladoA">
         </p>
         <p>
             <label for="ladoB">Lado B:</label>
-            <input type="text" id="ladoB" />
+            <input type="text" id="ladoB">
         </p>
         <p>
             <label for="ladoC">Lado C:</label>
-            <input type="text" id="ladoC" />
+            <input type="text" id="ladoC">
         </p>
         <p class="tem-botao">
-            <label for="botaoTriangulo" id="grupo">&nbsp;</label>
+            <label for="botaoTriangulo">&nbsp;</label>
             <button type="button" id="botaoTriangulo" onclick="javascript:verificarTriangulo();">Verificar</button>
         </p>
         <p>
-            <label for="media">Resultado:</label>
-            <input type="text" id="tipoTriangulo" class="grande" readonly />
+            <label for="tipoTriangulo">Resultado:</label>
+            <input type="text" id="tipoTriangulo" class="grande" readonly>
         </p>
         <p class="tem-botao">
-            <label for="btLimpar1" id="grupo">&nbsp;</label>
+            <label for="btLimpar1">&nbsp;</label>
             <button type="button" id="btLimpar1" onclick="javascript:limparForm12();">Limpar</button>
         </p>
     </div>
@@ -62,54 +64,54 @@
         <h1>Formulário para o exercício 19</h1>
         <p>
             <label for="nome">Nome:</label>
-            <input type="text" id="nome" class="grande" />
+            <input type="text" id="nome" class="grande">
         </p>
         <p class="tem-radio">
             <label for="ele">Ele</label>
-            <input type="radio" id="ele" value="M" class="genero" name="genero" />
+            <input type="radio" id="ele" value="M" class="genero" name="genero">
         </p>
         <p class="tem-radio">
             <label for="ela">Ela</label>
-            <input type="radio" id="ela" value="F" class="genero" name="genero" />
+            <input type="radio" id="ela" value="F" class="genero" name="genero">
         </p>
         <p>
             <label for="disciplina">Disciplina:</label>
-            <input type="text" id="disciplina" class="grande" />
+            <input type="text" id="disciplina" class="grande">
         </p>
         <p>
             <label for="ac1">ACs:</label>
-            <input type="text" id="ac1" />
-            <input type="text" id="ac2" />
-            <input type="text" id="ac3" />
-            <input type="text" id="ac4" />
-            <input type="text" id="ac5" />
+            <input type="text" id="ac1">
+            <input type="text" id="ac2">
+            <input type="text" id="ac3">
+            <input type="text" id="ac4">
+            <input type="text" id="ac5">
         </p>
         <p>
             <label for="prova">Prova:</label>
-            <input type="text" id="prova" />
+            <input type="text" id="prova">
         </p>
         <p>
             <label for="sub">Sub:</label>
-            <input type="text" id="sub" />
+            <input type="text" id="sub">
         </p>
         <p>
             <label for="presenca">Presença:</label>
-            <input type="text" id="presenca" />
+            <input type="text" id="presenca">
         </p>
         <p class="tem-botao">
-            <label for="botaoCadastrar" id="grupo">&nbsp;</label>
+            <label for="botaoCadastrar">&nbsp;</label>
             <button type="button" id="botaoCadastrar" onclick="javascript:verificarAlunoMatriculado();">Verificar</button>
         </p>
         <p class="tem-botao">
-            <label for="btLimpar2" id="grupo">&nbsp;</label>
+            <label for="btLimpar2">&nbsp;</label>
             <button type="button" id="btLimpar2" onclick="javascript:limparForm19();">Limpar campos</button>
         </p>
         <p class="tem-botao">
-            <label for="btLimpar3" id="grupo">&nbsp;</label>
+            <label for="btLimpar3">&nbsp;</label>
             <button type="button" id="btLimpar3" onclick="javascript:limparListasForm19();">Limpar lista</button>
         </p>
         <div>
-            <label for="notas">Matrículas registradas:</label>
+            <label>Matrículas registradas:</label>
             <ol id="notas">
             </ol>
         </div>

@@ -1,10 +1,12 @@
 "use strict";
 
-(()=> {
+(() => {
     const grupo = TesteFw.grupo;
     const teste = TesteFw.teste;
     const igual = TesteFw.igual;
     const naoDeuErro = TesteFw.naoDeuErro;
+    const numeroMaximoDeAlunos = 5;
+    let jsonOk = false;
 
     if (document.querySelectorAll(".gravissimo").length > 0) return;
 
@@ -15,30 +17,33 @@
         teste("O maior de 5 e 3 é 5.", () => maiorDosDoisSimplificado(5, 3), igual(5)),
     ]);
 
-    let jsonOk = false;
 
     grupo("Exercício 0", "JSON com a identificação do(a)(s) aluno(a)(s)", false, -10, 0, () => {
         function validarJsonAlunos() {
             const alunos = dadosDosAlunos(), nomes = [], ras = [];
             if (!(alunos instanceof Array)) throw new Error("Os dados do(a)(s) aluno(a)(s) deveriam estar em um array.");
             if (alunos.length === 0) throw new Error("Você(s) se esqueceu(ram) de preencher os dados com o JSON do(a)(s) aluno(a)(s).");
-            alunos.forEach(a => {
+ 
+            alunos.forEach((a, i) => {
+                const j = i + 1;
                 const k = Object.keys(a);
-                if (!a.hasOwnProperty("nome")) throw new Error("Há um(a) aluno(a) sem nome no JSON.");
-                if (!a.hasOwnProperty("ra")) throw new Error("Há um(a) aluno(a) sem RA no JSON.");
-                if (k.length !== 2) throw new Error("Há um(a) aluno(a) com coisas a mais além de nome e RA no JSON.");
-                if (typeof a.nome !== "string") throw new Error("O nome do(a) aluno(a) deveria ser uma string.");
-                if (typeof a.ra !== "number") throw new Error("O RA do(a) aluno(a) deveria ser um número.");
-                if (["João da Silva", "Maria da Silva", ""].indexOf(a.nome.trim()) >= 0) throw new Error("Você esqueceu de editar os nomes do(a)(s) aluno(a)(s) corretamente.");
-                if ([123456, 654321].indexOf(a.ra) >= 0) throw new Error("Você esqueceu de editar os RAs do(a)(s) aluno(a)(s) corretamente.");
-                if (isNaN(a.ra) || a.ra !== Math.floor(a.ra) || a.ra <= 0) throw new Error("O RA do(a) aluno(a) é inválido.");
-                if (a.nome !== a.nome.trim()) throw new Error("Não deixe espaços em branco sobrando no começo ou no final do(s) nome(s) do(a)(s) aluno(a)(s) no JSON.");
+
+                if (!a.hasOwnProperty("nome")) throw new Error(`O(a) aluno(a) ${j} está sem nome no JSON.`);
+                if (!a.hasOwnProperty("ra")) throw new Error(`O(a) aluno(a) ${j} está sem RA no JSON.`);
+                if (k.length !== 2) throw new Error(`O(a) aluno(a) ${j} coisas a mais além de nome e RA no JSON.`);
+
+                if (typeof a.nome !== "string") throw new Error(`O nome do(a) aluno(a) ${j} deveria ser uma string.`);
+                if (["João da Silva", "Maria da Silva", ""].indexOf(a.nome.trim()) >= 0) throw new Error(`O nome do(a) aluno(a) ${j} não está correto.`);
+                if (a.nome !== a.nome.trim()) throw new Error(`Não deixe espaços em branco sobrando no começo ou no final do nome do(a) aluno(a) ${j} no JSON.`);
                 if (nomes.indexOf(a.nome) >= 0) throw new Error("Há nomes repetidos no JSON.");
-                if (ras.indexOf(a.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
                 nomes.push(a.nome);
+
+                if (typeof a.ra !== "number") throw new Error(`O RA do(a) aluno(a) ${j} deveria ser um número.`);
+                if (Number.isNaN(a.ra) || a.ra !== Math.floor(a.ra) || a.ra <= 0 || a.ra === 123456 || a.ra === 654321) throw new Error(`O RA do(a) aluno(a) ${j} não está correto.`);
+                if (ras.indexOf(a.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
                 ras.push(a.ra);
             });
-            if (alunos.length > 5) throw new Error("Vocês só podem fazer grupo de até 5 alunos(as).");
+            if (alunos.length > 5) throw new Error(`Vocês só podem fazer grupo de até ${numeroMaximoDeAlunos} alunos(as).`);
             return alunos;
         }
 
@@ -57,7 +62,7 @@
                 zoado.innerHTML = ""
                         + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE VOCÊ NÃO DEFINIU CORRETAMENTE O JSON COM OS INTEGRANTES DO SEU GRUPO.</h1>"
                         + "<p>Arrumar isto é a primeira coisa que você tem que fazer neste AC, e assim que o fizer esta mensagem vai desaparecer.</p>"
-                        + "<p>Procure a função dadosDosAlunos() no arquivo ac3.js</p>"
+                        + "<p>Procure a função dadosDosAlunos() no arquivo ac3.js.</p>"
                         + "<p>Quem entregar para o professor um JavaScript que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
                 document.body.prepend(zoado);
                 document.querySelector(".nota").style.display = "none";
@@ -137,7 +142,6 @@
             // E eis aqui está o motivo mais forte para nunca se usar == e sempre usar ===.
             teste(`Fornecedora Paula e nome Paula são equivalentes. ${droga}`, () => comparadorBasico(paula, "Paula"), igual("Elemento Paula (Fornecedor) é equivalente ao elemento Paula (string)."), testOk),
             teste(`Uva e true são equivalentes. ${droga}`                    , () => comparadorBasico(uva  ,   true ), igual("Elemento 1 (Uva) é equivalente ao elemento true (boolean)."           ), testOk),
-
         ];
     });
 
@@ -183,7 +187,7 @@
             "29/10/1848": "29 de Outubro de 1848",
             "30/11/1625": "30 de Novembro de 1625",
             "31/12/1044": "31 de Dezembro de 1044",
-        }
+        };
         const testes = [];
         for (const chave in datas) {
             const valor = datas[chave];
@@ -420,7 +424,7 @@
     };
 
     grupo("Exercício 13", "Construtor da classe AlunoMatricula", true, 0, 0.4, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir instanciar um aluno nome corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".toString()"),
@@ -432,7 +436,7 @@
     );
 
     grupo("Exercício 14 - parte 1 (getter nome)", "Getter nome da classe AlunoMatricula", true, 0, 0.2, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter o nome do(a) aluno(a) de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".nome"),
@@ -443,7 +447,7 @@
     );
 
     grupo("Exercício 14 - parte 2 (getter genero)", "Getter genero da classe AlunoMatricula", true, 0, 0.2, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter o gênero de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".genero"),
@@ -454,7 +458,7 @@
     );
 
     grupo("Exercício 14 - parte 3 (getter disciplina)", "Getter disciplina da classe AlunoMatricula", true, 0, 0.2, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter o nome da disciplina de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".disciplina"),
@@ -465,7 +469,7 @@
     );
 
     grupo("Exercício 15", "Média na classe AlunoMatricula", true, 0, 0.4, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter a média de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".media"),
@@ -476,7 +480,7 @@
     );
 
     grupo("Exercício 16", "Situação na classe AlunoMatricula", true, 0, 0.3, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter a situação de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".situacao"),
@@ -487,7 +491,7 @@
     );
 
     grupo("Exercício 17", "Situação por extenso na classe AlunoMatricula", true, 0, 0.3, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter a situação por extenso de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".situacaoPorExtenso"),
@@ -498,7 +502,7 @@
     );
 
     grupo("Exercício 18", "Status na classe AlunoMatricula", true, 0, 0.3, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir obter o status de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString() + ".status"),
@@ -536,7 +540,7 @@
     }
 
     grupo("Exercício 19 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0, 0.7, () =>
-        alunosMatriculasValidos.map((aluno, i) =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${JSON.parse(aluno.json)._nome}].`,
                 eval(aluno.criar.toString().replace("new AlunoMatricula", "informarDados")),

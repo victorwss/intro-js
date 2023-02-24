@@ -162,6 +162,7 @@ function abreviadorNomes(nomeCompleto) {
  *  - 03/02/2000 -> 03 de Fevereiro de 2000
  *
  * Observação: Note a letra maiúscula do mês.
+ * Observação 2: Não se preocupe com entradas mal-formadas.
  *
  * @param {String} data String com a data no formato brasileiro (dia/mês/ano).
  * @returns {String} Data no formato 'Dia de Nome-do-Mês-por-Extenso de Ano'.
@@ -273,7 +274,7 @@ function verificarTriangulo() {
     // Deixe esta função interna do jeito que está.
     function lerNumero(texto) {
         if (regexNumero().test(texto)) return parseFloat(texto);
-        throw new Error("Informe os números corretamente");
+        throw new Error("Informe os números corretamente.");
     }
 
     // Comece a mexer no código daqui para baixo.

@@ -153,7 +153,9 @@ const TesteFw = (() => {
             if (!deepEqual(resultado, valorEsperado)) {
                 if (typeof valorEsperado === "string") valorEsperado = `"${valorEsperado}"`;
                 if (typeof resultado === "string") resultado = `"${resultado}"`;
-                throw new ErroFormatado(`O esperado era <span class="esperado">${valorEsperado}</span>, mas foi obtido <span class="obtido">${resultado}</span>.`);
+                const v1 = escapeHtml(valorEsperado);
+                const v2 = escapeHtml(resultado);
+                throw new ErroFormatado(`O esperado era <span class="esperado">${v1}</span>, mas foi obtido <span class="obtido">${v2}</span>.`);
             }
         };
     }
@@ -172,5 +174,10 @@ const TesteFw = (() => {
         document.body.prepend(zoado);
     };
 
-    return Object.freeze({ teste: teste, grupo: grupo, igual: igual, naoDeuErro, naoDeuErro });
+    document.body.innerHTML += ""
+            + '<h1 class="nota">Nota: <span id="valor">0</span>/10</h1>'
+            + '<h2 class="nota">Testes com sucesso: <span id="contaTestes">0/0</span></h2>'
+            + '<ul id="resultados"></ul>';
+
+    return Object.freeze({ teste: teste, grupo: grupo, igual: igual, naoDeuErro: naoDeuErro });
 })();

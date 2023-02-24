@@ -17,7 +17,6 @@
         teste("O maior de 5 e 3 é 5.", () => maiorDosDoisSimplificado(5, 3), igual(5)),
     ]);
 
-
     grupo("Exercício 0", "JSON com a identificação do(a)(s) aluno(a)(s)", false, -10, 0, () => {
         function validarJsonAlunos() {
             const alunos = dadosDosAlunos(), nomes = [], ras = [];
@@ -335,16 +334,16 @@
 
     function testeTrianguloMuitoInfeliz() {
         return [
-            teste('Deve devolver "Informe os números corretamente" para entrada com letras no A.', () => informarLados("a",   5,   5), igual("Informe os números corretamente"), testOk),
-            teste('Deve devolver "Informe os números corretamente" para entrada com letras no B.', () => informarLados(  5, "b",   5), igual("Informe os números corretamente"), testOk),
-            teste('Deve devolver "Informe os números corretamente" para entrada com letras no C.', () => informarLados(  5,   5, "c"), igual("Informe os números corretamente"), testOk),
-            teste('Deve devolver "Informe os números corretamente" para entrada vazia no A.'     , () => informarLados( "",   5,   5), igual("Informe os números corretamente"), testOk),
-            teste('Deve devolver "Informe os números corretamente" para entrada vazia no B.'     , () => informarLados(  5,  "",   5), igual("Informe os números corretamente"), testOk),
-            teste('Deve devolver "Informe os números corretamente" para entrada vazia no C.'     , () => informarLados(  5,   5,  ""), igual("Informe os números corretamente"), testOk),
+            teste('Deve devolver "Informe os números corretamente." para entrada com letras no A.', () => informarLados("a",   5,   5), igual("Informe os números corretamente."), testOk),
+            teste('Deve devolver "Informe os números corretamente." para entrada com letras no B.', () => informarLados(  5, "b",   5), igual("Informe os números corretamente."), testOk),
+            teste('Deve devolver "Informe os números corretamente." para entrada com letras no C.', () => informarLados(  5,   5, "c"), igual("Informe os números corretamente."), testOk),
+            teste('Deve devolver "Informe os números corretamente." para entrada vazia no A.'     , () => informarLados( "",   5,   5), igual("Informe os números corretamente."), testOk),
+            teste('Deve devolver "Informe os números corretamente." para entrada vazia no B.'     , () => informarLados(  5,  "",   5), igual("Informe os números corretamente."), testOk),
+            teste('Deve devolver "Informe os números corretamente." para entrada vazia no C.'     , () => informarLados(  5,   5,  ""), igual("Informe os números corretamente."), testOk),
             teste(
-                'Deve devolver "Informe os números corretamente" para entrada com palavras.',
+                'Deve devolver "Informe os números corretamente." para entrada com palavras.',
                 () => informarLados("Willy Wonka - Rachadinha de chocolate com laranja", "Tonho da Lua - Senhor dos exércitos de robôs", "Dudu Bananinha - Sheik chapeiro"),
-                igual("Informe os números corretamente"),
+                igual("Informe os números corretamente."),
                 testOk
             ),
         ];
@@ -356,61 +355,61 @@
 
     const alunosMatriculasValidos = [
         {
-            "criar": () => new AlunoMatricula("Maria Luiza", "F", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84),
+            "criar": () => new AlunoMatricula("Maria Luiza", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84),
             "json": '{"_nome":"Maria Luiza","_genero":"F","_disciplina":"Desenvolvimento Web","_acs":[8,7,9,4.5,8],"_prova":9,"_sub":0,"_presenca":84}',
             "status": "Maria Luiza tem média 8.5 na disciplina de Desenvolvimento Web e foi aprovada com 84% de presença.",
             "funciona": false, media: 8.5, situacao: "AP", situacaoPorExtenso: "aprovada",
         },
         {
-            "criar": () => new AlunoMatricula("Anderson", "M", "LP 2", [3.4, 5.0, 2.0, 4.8, 0], 1.8, 2.9, 80),
+            "criar": () => new AlunoMatricula("Anderson", "M", "LP 2", Object.freeze([3.4, 5.0, 2.0, 4.8, 0]), 1.8, 2.9, 80),
             "json": '{"_nome":"Anderson","_genero":"M","_disciplina":"LP 2","_acs":[3.4,5,2,4.8,0],"_prova":1.8,"_sub":2.9,"_presenca":80}',
             "status": "Anderson tem média 3.5 na disciplina de LP 2 e foi reprovado por média com 80% de presença.",
             "funciona": false, media: 3.5, situacao: "RM", situacaoPorExtenso: "reprovado por média",
         },
         {
-            "criar": () => new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", [9, 8, 7, 6, 5], 4, 3, 21),
+            "criar": () => new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", Object.freeze([9, 8, 7, 6, 5]), 4, 3, 21),
             "json": '{"_nome":"Chiquinha","_genero":"F","_disciplina":"Química Orgânica III","_acs":[9,8,7,6,5],"_prova":4,"_sub":3,"_presenca":21}',
             "status": "Chiquinha tem média 6 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença.",
             "funciona": false, media: 6, situacao: "RF", situacaoPorExtenso: "reprovada por falta",
         },
         {
-            "criar": () => new AlunoMatricula("Bozoliro", "M", "presidência, governo e chefe de estado", [1, 2.5, 0, 1, 1.5], 2.2, 0, 17),
+            "criar": () => new AlunoMatricula("Bozoliro", "M", "presidência, governo e chefe de estado", Object.freeze([1, 2.5, 0, 1, 1.5]), 2.2, 0, 17),
             "json": '{"_nome":"Bozoliro","_genero":"M","_disciplina":"presidência, governo e chefe de estado","_acs":[1,2.5,0,1,1.5],"_prova":2.2,"_sub":0,"_presenca":17}',
             "status": "Bozoliro tem média 2 na disciplina de presidência, governo e chefe de estado e foi reprovado por média e falta com 17% de presença.",
             "funciona": false, media: 2, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
         },
         {
-            "criar": () => new AlunoMatricula("Molusco da Silva", "M", "presidência, governo e chefe de estado", [8.5, 9, 7, 8.5, 10], 10, 0, 88),
+            "criar": () => new AlunoMatricula("Molusco da Silva", "M", "presidência, governo e chefe de estado", Object.freeze([8.5, 9, 7, 8.5, 10]), 10, 0, 88),
             "json": '{"_nome":"Molusco da Silva","_genero":"M","_disciplina":"presidência, governo e chefe de estado","_acs":[8.5,9,7,8.5,10],"_prova":10,"_sub":0,"_presenca":88}',
             "status": "Molusco da Silva tem média 9.5 na disciplina de presidência, governo e chefe de estado e foi aprovado com 88% de presença.",
             "funciona": false, media: 9.5, situacao: "AP", situacaoPorExtenso: "aprovado",
         },
         {
-            "criar": () => new AlunoMatricula("Bruxa do 71", "F", "atriz de novela mexicana", [0.71, 0.71, 0.71, 0.71, 0.71], 0, 0.71, 71),
+            "criar": () => new AlunoMatricula("Bruxa do 71", "F", "atriz de novela mexicana", Object.freeze([0.71, 0.71, 0.71, 0.71, 0.71]), 0, 0.71, 71),
             "json": '{"_nome":"Bruxa do 71","_genero":"F","_disciplina":"atriz de novela mexicana","_acs":[0.71,0.71,0.71,0.71,0.71],"_prova":0,"_sub":0.71,"_presenca":71}',
             "status": "Bruxa do 71 tem média 0.5 na disciplina de atriz de novela mexicana e foi reprovada por média e falta com 71% de presença.",
             "funciona": false, media: 0.5, situacao: "RMF", situacaoPorExtenso: "reprovada por média e falta",
         },
         {
-            "criar": () => new AlunoMatricula("Chuck Norris", "M", "Ator", [10, 10, 10, 10, 10], 10, 10, 100),
+            "criar": () => new AlunoMatricula("Chuck Norris", "M", "Ator", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 100),
             "json": '{"_nome":"Chuck Norris","_genero":"M","_disciplina":"Ator","_acs":[10,10,10,10,10],"_prova":10,"_sub":10,"_presenca":100}',
             "status": "Chuck Norris tem média 10 na disciplina de Ator e foi aprovado com 100% de presença.",
             "funciona": false, media: 10, situacao: "AP", situacaoPorExtenso: "aprovado",
         },
         {
-            "criar": () => new AlunoMatricula("Dollynho", "M", "Seu amiguinho", [10, 10, 10, 10, 10], 10, 10, 0),
+            "criar": () => new AlunoMatricula("Dollynho", "M", "Seu amiguinho", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 0),
             "json": '{"_nome":"Dollynho","_genero":"M","_disciplina":"Seu amiguinho","_acs":[10,10,10,10,10],"_prova":10,"_sub":10,"_presenca":0}',
             "status": "Dollynho tem média 10 na disciplina de Seu amiguinho e foi reprovado por falta com 0% de presença.",
             "funciona": false, media: 10, situacao: "RF", situacaoPorExtenso: "reprovado por falta",
         },
         {
-            "criar": () => new AlunoMatricula("Dollynha", "F", "Sua amiguinha", [0, 0, 0, 0, 0], 0, 0, 100),
+            "criar": () => new AlunoMatricula("Dollynha", "F", "Sua amiguinha", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 100),
             "json": '{"_nome":"Dollynha","_genero":"F","_disciplina":"Sua amiguinha","_acs":[0,0,0,0,0],"_prova":0,"_sub":0,"_presenca":100}',
             "status": "Dollynha tem média 0 na disciplina de Sua amiguinha e foi reprovada por média com 100% de presença.",
             "funciona": false, media: 0, situacao: "RM", situacaoPorExtenso: "reprovada por média",
         },
         {
-            "criar": () => new AlunoMatricula("Zerinho", "M", "fazer algo útil", [0, 0, 0, 0, 0], 0, 0, 0),
+            "criar": () => new AlunoMatricula("Zerinho", "M", "fazer algo útil", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 0),
             "json": '{"_nome":"Zerinho","_genero":"M","_disciplina":"fazer algo útil","_acs":[0,0,0,0,0],"_prova":0,"_sub":0,"_presenca":0}',
             "status": "Zerinho tem média 0 na disciplina de fazer algo útil e foi reprovado por média e falta com 0% de presença.",
             "funciona": false, media: 0, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
@@ -554,52 +553,52 @@
         {
             "criar": '() => informarDados("Teste", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84)',
             "erro": "Escolha o gênero do(a) aluno(a) corretamente.",
-            "causa": `nenhum gênero escolhido`,
+            "causa": "nenhum gênero escolhido",
         }
     ];
 
-    ["", "   "].forEach(e => {
+    ["", "   "].forEach(lixo => {
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("${e}", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84)`,
+            "criar": `() => informarDados("${lixo}", "M", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
             "erro": "Informe o nome do(a) aluno(a) corretamente.",
-            "causa": `o nome inválido "${e}"`,
+            "causa": `o nome inválido "${lixo}"`,
         });
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "${e}", [8, 7, 9, 4.5, 8], 9, 0, 84)`,
+            "criar": `() => informarDados("Teste", "F", "${lixo}", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
             "erro": "Informe o nome da disciplina corretamente.",
-            "causa": `a disciplina inválida "${e}"`,
+            "causa": `a disciplina inválida "${lixo}"`,
         });
     });
-    ["", "   ", "-1", "-", "abc", "5.678", "11", "10.01", "5.", ".4", ".", "3.4.5"].forEach(e => {
+    ["", "   ", "-1", "-", "abc", "5.678", "11", "10.01", "5.", ".4", ".", "3.4.5"].forEach(lixo => {
         [0, 1, 2, 3, 4].forEach(j => {
             const arr = [8, 7, 9, 4.5, 8];
-            arr[j] = e;
+            arr[j] = lixo;
             alunosMatriculasInvalidos.push({
-                "criar": `() => informarDados("Teste", "F", "Teste", ${JSON.stringify(arr)}, 9, 0, 84)`,
+                "criar": `() => informarDados("Teste", "F", "Teste", Object.freeze(${JSON.stringify(arr)}), 9, 0, 84)`,
                 "erro": `Informe a nota do AC ${j + 1} corretamente, entre 0 e 10, com até duas casas decimais.`,
-                "causa": `o valor inválido "${e}" para o AC ${j + 1}`,
+                "causa": `o valor inválido "${lixo}" para o AC ${j + 1}`,
             });
         });
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "Teste", [8, 7, 9, 4.5, 8], "${e}", 0, 84)`,
+            "criar": `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), "${lixo}", 0, 84)`,
             "erro": "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.",
-            "causa": `o valor inválido "${e}" para a prova`,
+            "causa": `o valor inválido "${lixo}" para a prova`,
         });
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "Teste", [8, 7, 9, 4.5, 8], 9, "${e}", 84)`,
+            "criar": `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), 9, "${lixo}", 84)`,
             "erro": "Informe a nota da sub corretamente, entre 0 e 10, com até duas casas decimais.",
-            "causa": `o valor inválido "${e}" para a sub`,
+            "causa": `o valor inválido "${lixo}" para a sub`,
         });
     });
-    ["", "   ", "-1", "-", "abc", "5.6", "101", "5.", ".4", "."].forEach(e => {
+    ["", "   ", "-1", "-", "abc", "5.6", "101", "5.", ".4", "."].forEach(lixo => {
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, "${e}")`,
+            "criar": `() => informarDados("Teste", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, "${lixo}")`,
             "erro": "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.",
-            "causa": `o valor inválido "${e}" para a presença`,
+            "causa": `o valor inválido "${lixo}" para a presença`,
         });
     });
 
-    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0, 0.7, () =>
+    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0, 0.6, () =>
         alunosMatriculasInvalidos.map((aluno, i) =>
             teste(
                 `Não deve conseguir preencher uma instância de AlunoMatricula com ${aluno.causa} [${i + 1}].`,
@@ -612,22 +611,22 @@
 
     let alunosMatriculasValidos2 = [];
 
-    ["10.00", "10.0", "0.0", "0.00"].forEach(e => {
+    ["10.00", "10.0", "0.0", "0.00"].forEach(nota => {
         [0, 1, 2, 3, 4].forEach(j => {
             const arr = ["10", "10", "10", "10", "10"];
-            arr[j] = e;
+            arr[j] = nota;
             alunosMatriculasValidos2.push({
                 "criar": () => informarDados("Teste", "F", "Teste", arr, "10", "10", 84),
-                "campo": "AC " + (j + 1), "valor": e,
+                "campo": "AC " + (j + 1), "valor": nota,
             });
         });
         alunosMatriculasValidos2.push({
-            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], e, "10", 84),
-            "campo": "prova", "valor": e,
+            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], nota, "10", 84),
+            "campo": "prova", "valor": nota,
         });
         alunosMatriculasValidos2.push({
-            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", e, 84),
-            "campo": "sub", "valor": e,
+            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", nota, 84),
+            "campo": "sub", "valor": nota,
         });
     });
 
@@ -638,6 +637,38 @@
                 aluno.criar,
                 igual("Teste tem média 10 na disciplina de Teste e foi aprovada com 84% de presença."),
                 testOk
+            )
+        )
+    );
+
+    function testarEfeitosColaterais(prepararCoisa) {
+        const coisa = eval(prepararCoisa);
+        const campos = ["toString", "nome", "genero", "disciplina", "media", "situacao", "situacaoPorExtenso", "status"];
+        const valores1 = {};
+        for (const c in campos) {
+            valores1[campos[c]] = coisa[campos[c]];
+        }
+        const valores2 = {};
+        for (const c in campos) {
+            valores2[campos[c]] = coisa[campos[c]];
+        }
+        for (const c in campos) {
+            const v1 = escapeHtml(valores1[campos[c]]);
+            const v2 = escapeHtml(valores2[campos[c]]);
+            if (v1 !== v2) {
+                throw new ErroFormatado(`O campo ${c} tinha o valor <span class="esperado">${v1}</span> que subitamente mudou para <span class="obtido">${v2}</span>.`);
+            }
+        }
+        return true;
+    }
+
+    grupo("Exercícios 13 a 19 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0, 0.1, () =>
+        alunosMatriculasValidos.map(aluno =>
+            teste(
+                `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${JSON.parse(aluno.json)._nome}].`,
+                testarEfeitosColaterais(`${aluno.criar.toString()}`),
+                igual(true),
+                () => jsonOk && aluno.funciona
             )
         )
     );

@@ -1,48 +1,58 @@
 "use strict";
 
-(() => {
-    const grupo = TesteFw.grupo;
-    const teste = TesteFw.teste;
-    const igual = TesteFw.igual;
-    const naoDeuErro = TesteFw.naoDeuErro;
+const executarTestes = TesteFw(funcs => {
+    const grupo = funcs.grupo;
+    const teste = funcs.teste;
+    const igual = funcs.igual;
+    const naoDeuErro = funcs.naoDeuErro;
+    const escapeHtml = funcs.escapeHtml;
+    const ErroFormatado = funcs.ErroFormatado;
     const numeroMaximoDeAlunos = 5;
     let jsonOk = false;
 
-    if (document.querySelectorAll(".gravissimo").length > 0) return;
-
-    grupo("Exemplos", "Não bagunçar os exemplos dados", true, -1, 0, () => [
+    grupo("Exemplos", "Não bagunçar os exemplos dados", true, -1, () => [
         teste("O maior de 1 e 3 é 3.", () => maiorDosDois            (1, 3), igual(3)),
         teste("O maior de 5 e 3 é 5.", () => maiorDosDois            (5, 3), igual(5)),
         teste("O maior de 1 e 3 é 3.", () => maiorDosDoisSimplificado(1, 3), igual(3)),
         teste("O maior de 5 e 3 é 5.", () => maiorDosDoisSimplificado(5, 3), igual(5)),
     ]);
 
-    grupo("Exercício 0", "JSON com a identificação do(a)(s) aluno(a)(s)", false, -10, 0, () => {
+    grupo("Exercício 0", "JSON com a identificação do(a)(s) aluno(a)(s)", false, -10, () => {
         function validarJsonAlunos() {
             const alunos = dadosDosAlunos(), nomes = [], ras = [];
             if (!(alunos instanceof Array)) throw new Error("Os dados do(a)(s) aluno(a)(s) deveriam estar em um array.");
             if (alunos.length === 0) throw new Error("Você(s) se esqueceu(ram) de preencher os dados com o JSON do(a)(s) aluno(a)(s).");
  
-            alunos.forEach((a, i) => {
-                const j = i + 1;
-                const k = Object.keys(a);
+            alunos.forEach((aluno, idx) => {
+                const numero = idx + 1;
 
-                if (!a.hasOwnProperty("nome")) throw new Error(`O(a) aluno(a) ${j} está sem nome no JSON.`);
-                if (!a.hasOwnProperty("ra")) throw new Error(`O(a) aluno(a) ${j} está sem RA no JSON.`);
-                if (k.length !== 2) throw new Error(`O(a) aluno(a) ${j} coisas a mais além de nome e RA no JSON.`);
+                if (!aluno.hasOwnProperty("nome")) throw new Error(`O(a) aluno(a) ${numero} está sem nome no JSON.`);
 
-                if (typeof a.nome !== "string") throw new Error(`O nome do(a) aluno(a) ${j} deveria ser uma string.`);
-                if (["João da Silva", "Maria da Silva", ""].indexOf(a.nome.trim()) >= 0) throw new Error(`O nome do(a) aluno(a) ${j} não está correto.`);
-                if (a.nome !== a.nome.trim()) throw new Error(`Não deixe espaços em branco sobrando no começo ou no final do nome do(a) aluno(a) ${j} no JSON.`);
-                if (nomes.indexOf(a.nome) >= 0) throw new Error("Há nomes repetidos no JSON.");
-                nomes.push(a.nome);
+                if (typeof aluno.nome !== "string") throw new Error(`O nome do(a) aluno(a) ${numero} deveria ser uma string.`);
+                if (["João da Silva", "Maria da Silva", ""].indexOf(aluno.nome.trim()) >= 0) {
+                    throw new Error(`O nome do(a) aluno(a) ${numero} não está correto.`);
+                }
+                if (aluno.nome !== aluno.nome.trim()) {
+                    throw new Error(`Não deixe espaços em branco sobrando no começo ou no final do nome de ${aluno.nome} no JSON.`);
+                }
+                if (nomes.indexOf(aluno.nome) >= 0) throw new Error("Há nomes de alunos(as) repetidos no JSON.");
+                nomes.push(aluno.nome);
 
-                if (typeof a.ra !== "number") throw new Error(`O RA do(a) aluno(a) ${j} deveria ser um número.`);
-                if (Number.isNaN(a.ra) || a.ra !== Math.floor(a.ra) || a.ra <= 0 || a.ra === 123456 || a.ra === 654321) throw new Error(`O RA do(a) aluno(a) ${j} não está correto.`);
-                if (ras.indexOf(a.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
-                ras.push(a.ra);
+                if (!aluno.hasOwnProperty("ra")) throw new Error(`O RA de ${aluno.nome} está faltando no JSON.`);
+                if (typeof aluno.ra !== "number") throw new Error(`O RA de ${aluno.nome} deveria ser um número.`);
+                if (Number.isNaN(aluno.ra) || aluno.ra !== Math.floor(aluno.ra) || aluno.ra <= 0 || aluno.ra === 123456 || aluno.ra === 654321) {
+                    throw new Error(`O RA de ${aluno.nome} não está correto.`);
+                }
+                if (ras.indexOf(aluno.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
+                ras.push(aluno.ra);
+
+                if (Object.keys(aluno).length !== 2) {
+                    throw new Error(`O JSON de ${aluno.nome} tem coisas a mais além do nome e do RA.`);
+                }
             });
-            if (alunos.length > 5) throw new Error(`Vocês só podem fazer grupo de até ${numeroMaximoDeAlunos} alunos(as).`);
+            if (alunos.length > numeroMaximoDeAlunos) {
+                throw new Error(`Vocês só podem fazer grupo de até ${numeroMaximoDeAlunos} alunos(as).`);
+            }
             return alunos;
         }
 
@@ -52,19 +62,19 @@
                 alunos.forEach(a => {
                     const li = document.createElement("li");
                     li.append(a.nome);
-                    document.querySelector("#alunos").append(li);
+                    document.querySelector("#testefw-alunos").append(li);
                 });
-                document.querySelector("#alunosAc").classList.remove("oculto");
             } catch (e) {
                 const zoado = document.createElement("div");
-                zoado.classList.add("gravissimo");
+                zoado.classList.add("testefw-gravissimo");
                 zoado.innerHTML = ""
                         + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE VOCÊ NÃO DEFINIU CORRETAMENTE O JSON COM OS INTEGRANTES DO SEU GRUPO.</h1>"
                         + "<p>Arrumar isto é a primeira coisa que você tem que fazer neste AC, e assim que o fizer esta mensagem vai desaparecer.</p>"
                         + "<p>Procure a função dadosDosAlunos() no arquivo ac3.js.</p>"
                         + "<p>Quem entregar para o professor um JavaScript que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
                 document.body.prepend(zoado);
-                document.querySelector(".nota").style.display = "none";
+                const nota = document.querySelector("#testefw-nota")
+                if (nota) nota.style.display = "none";
                 throw e;
             }
         }
@@ -76,7 +86,7 @@
 
     function testOk() { return jsonOk; }
 
-    grupo("Exercício 1", "Maior dos quatro", true, 0, 0.3, () => [
+    grupo("Exercício 1", "Maior dos quatro", true, 0.3, () => [
         teste("O maior de 1, 3, 5, 7 é 7."     , () => maiorDosQuatro( 1,  3,  5,  7), igual( 7), testOk),
         teste("O maior de 1, 3, 5, 9 é 9."     , () => maiorDosQuatro( 1,  3,  5,  9), igual( 9), testOk),
         teste("O maior de 1, 3, 5, 0 é 5."     , () => maiorDosQuatro( 1,  3,  5,  0), igual( 5), testOk),
@@ -86,7 +96,7 @@
         teste("O maior de -4, -2, -9, -3 é -2.", () => maiorDosQuatro(-4, -2, -9, -3), igual(-2), testOk),
     ]);
 
-    grupo("Exercício 2", "Operações", true, 0, 0.5, () => [
+    grupo("Exercício 2", "Operações", true, 0.5, () => [
         teste("3.5 + 4 deve voltar 7.5."                      , () => operacoesBasicas("A",  3.5, 4   ), igual(  7.5    ), testOk),
         teste("9 - 1.75 deve voltar 7.25."                    , () => operacoesBasicas("S",  9  , 1.75), igual(  7.25   ), testOk),
         teste("1.8 * 7 deve voltar 12.6."                     , () => operacoesBasicas("M",  1.8, 7   ), igual( 12.6    ), testOk),
@@ -97,7 +107,7 @@
         teste("Operação que não existe deve voltar undefined.", () => operacoesBasicas("d",  1  , 2   ), igual(undefined), testOk),
     ]);
 
-    grupo("Exercício 3", "Comparador básico", true, 0, 0.5, () => {
+    grupo("Exercício 3", "Comparador básico", true, 0.5, () => {
 
         // Algumas classes bobas apenas para testarmos algo além dos tipos mais simples.
         class Abacaxi    {} // Sem toString aqui.
@@ -122,7 +132,7 @@
             teste("undefined e undefined são estritamente iguais."  , () => comparadorBasico(            ), igual("Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)."), testOk),
             teste('"ABC" e "ABC" são estritamente iguais.'          , () => comparadorBasico("ABC", "ABC"), igual("Elemento ABC (string) é estritamente igual ao elemento ABC (string)."                  ), testOk),
             teste('3 e "3" são equivalentes.'                       , () => comparadorBasico(3    , "3"  ), igual("Elemento 3 (number) é equivalente ao elemento 3 (string)."                             ), testOk),
-            teste("null e undefined são equivalentes."              , () => comparadorBasico(null        ), igual("Elemento null (object) é equivalente ao elemento undefined (undefined)."               ), testOk),
+            teste("null e undefined são equivalentes."              , () => comparadorBasico(null        ), igual("Elemento null (null) é equivalente ao elemento undefined (undefined)."                 ), testOk),
             teste("1 e 2 são diferentes."                           , () => comparadorBasico(1    , 2    ), igual("Elemento 1 (number) é diferente do elemento 2 (number)."                               ), testOk),
             teste('"1" e 2 são diferentes.'                         , () => comparadorBasico(  "1", 2    ), igual("Elemento 1 (string) é diferente do elemento 2 (number)."                               ), testOk),
             teste("Array e objeto são diferentes."                  , () => comparadorBasico([]   , {}   ), igual("Elemento  (Array) é diferente do elemento [object Object] (Object)."                   ), testOk),
@@ -144,7 +154,7 @@
         ];
     });
 
-    grupo("Exercício 4", "Primeiro nome", true, 0, 0.4, () => [
+    grupo("Exercício 4", "Primeiro nome", true, 0.4, () => [
         teste("Yuri Dirickson deve retornar Yuri.", () => primeiroNome("Yuri Dirickson"), igual("Yuri"  ), testOk),
         teste("Marina Silva deve retornar Marina.", () => primeiroNome("Marina Silva"  ), igual("Marina"), testOk),
         teste("Tatá Wernerck deve retornar Tatá." , () => primeiroNome("Tatá"          ), igual("Tatá"  ), testOk),
@@ -152,7 +162,7 @@
         teste("Victor deve retornar Victor."      , () => primeiroNome("Victor"        ), igual("Victor"), testOk),
     ]);
 
-    grupo("Exercício 5", "Nome abreviado", true, 0, 0.3, () => [
+    grupo("Exercício 5", "Nome abreviado", true, 0.3, () => [
         teste("Yuri Dirickson deve retornar Yuri D.", () => abreviadorNomes("Yuri Dirickson"), igual("Yuri D."  ), testOk),
         teste("Marina Silva deve retornar Marina S.", () => abreviadorNomes("Marina Silva"  ), igual("Marina S."), testOk),
         teste("Tatá Wernerck deve retornar Tatá W." , () => abreviadorNomes("Tatá Wernerck" ), igual("Tatá W."  ), testOk),
@@ -160,7 +170,7 @@
         teste("Victor deve retornar Victor."        , () => abreviadorNomes("Victor"        ), igual("Victor"   ), testOk),
     ]);
 
-    grupo("Exercício 6", "Datas", true, 0, 0.6, () => {
+    grupo("Exercício 6", "Datas", true, 0.6, () => {
         const datas = {
             "31/01/1975": "31 de Janeiro de 1975",
             "10/02/2219": "10 de Fevereiro de 2219",
@@ -195,7 +205,7 @@
         return testes;
     });
 
-    grupo("Exercício 7", "Somar pares", true, 0, 0.5, () => [
+    grupo("Exercício 7", "Somar pares", true, 0.5, () => [
         teste("1 e 4 deve devolver 6."  , () => somadorPares(1,  4), igual( 6), testOk),
         teste("2 e 9 deve devolver 20." , () => somadorPares(2,  9), igual(20), testOk),
         teste("2 e 10 deve devolver 30.", () => somadorPares(2, 10), igual(30), testOk),
@@ -208,7 +218,7 @@
         teste("3 e 3 deve devolver 0."  , () => somadorPares(3,  3), igual( 0), testOk),
     ]);
 
-    grupo("Exercício 8", "Achar o menor", true, 0, 0.3, () => [
+    grupo("Exercício 8", "Achar o menor", true, 0.3, () => [
         teste("Se o vetor estiver vazio, devolve undefined."  , () => acharMenor([                            ]), igual(undefined), testOk),
         teste("Para [42] retorna 42."                         , () => acharMenor([                          42]), igual(       42), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna 1."               , () => acharMenor([         1,   2,  3,   4,  5]), igual(        1), testOk),
@@ -218,7 +228,7 @@
         teste("Para [42, 12, 21, -27, 8, -22, 9] retorna -27.", () => acharMenor([42, 12, 21, -27,  8, -22,  9]), igual(      -27), testOk),
     ]);
 
-    grupo("Exercício 9", "Achar os pares", true, 0, 0.5, () => [
+    grupo("Exercício 9", "Achar os pares", true, 0.5, () => [
         teste("Se o vetor estiver vazio, devolve um vetor vazio.", () => acharPares([               ]), igual([           ]), testOk),
         teste("Para [1, 3, 5, 7, 9] retorna vazio."              , () => acharPares([1, 3,  5,  7, 9]), igual([           ]), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna [2, 4]."             , () => acharPares([1, 2,  3,  4, 5]), igual([   2,  4   ]), testOk),
@@ -227,52 +237,52 @@
         teste("Para [6, 2, -3, -4, 0] retorna [6, 2, -4, 0]."    , () => acharPares([6, 2, -3, -4, 0]), igual([6, 2, -4, 0]), testOk),
     ]);
 
-    grupo("Exercício 10", "IMC", true, 0, 0.6, () => [
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso":  50    , "altura": 1.7  }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso":  60    , "altura": 1.7  }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso":  72.25 , "altura": 1.7  }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso":  86.7  , "altura": 1.7  }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso": 101.15 , "altura": 1.7  }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso": 160    , "altura": 1.7  }), igual("Obesidade mórbida (Grau III)"), testOk),
+    grupo("Exercício 10", "IMC", true, 0.6, () => [
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:  50    , altura: 1.7  }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:  60    , altura: 1.7  }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso:  72.25 , altura: 1.7  }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso:  86.7  , altura: 1.7  }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 101.15 , altura: 1.7  }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 160    , altura: 1.7  }), igual("Obesidade mórbida (Grau III)"), testOk),
 
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso":   0    , "altura": 2.0  }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso":  73.999, "altura": 2.0  }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso":  74    , "altura": 2.0  }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso":  99.999, "altura": 2.0  }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso": 100    , "altura": 2.0  }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso": 119.999, "altura": 2.0  }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso": 120    , "altura": 2.0  }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso": 139.999, "altura": 2.0  }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso": 140    , "altura": 2.0  }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso": 159.999, "altura": 2.0  }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso": 160    , "altura": 2.0  }), igual("Obesidade mórbida (Grau III)"), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso": 9999999, "altura": 2.0  }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:   0    , altura: 2.0  }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:  73.999, altura: 2.0  }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:  74    , altura: 2.0  }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:  99.999, altura: 2.0  }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso: 100    , altura: 2.0  }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso: 119.999, altura: 2.0  }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso: 120    , altura: 2.0  }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso: 139.999, altura: 2.0  }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 140    , altura: 2.0  }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 159.999, altura: 2.0  }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 160    , altura: 2.0  }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 9999999, altura: 2.0  }), igual("Obesidade mórbida (Grau III)"), testOk),
 
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso":   0    , "altura": 0.5  }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso":   4.624, "altura": 0.5  }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso":   4.625, "altura": 0.5  }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso":   6.249, "altura": 0.5  }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso":   6.25 , "altura": 0.5  }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso":   7.499, "altura": 0.5  }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso":   7.5  , "altura": 0.5  }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso":   8.749, "altura": 0.5  }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso":   8.75 , "altura": 0.5  }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso":   9.999, "altura": 0.5  }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso":  10    , "altura": 0.5  }), igual("Obesidade mórbida (Grau III)"), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso": 9999999, "altura": 0.5  }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:   0    , altura: 0.5  }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:   4.624, altura: 0.5  }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:   4.625, altura: 0.5  }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:   6.249, altura: 0.5  }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso:   6.25 , altura: 0.5  }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso:   7.499, altura: 0.5  }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso:   7.5  , altura: 0.5  }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso:   8.749, altura: 0.5  }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso:   8.75 , altura: 0.5  }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso:   9.999, altura: 0.5  }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso:  10    , altura: 0.5  }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 9999999, altura: 0.5  }), igual("Obesidade mórbida (Grau III)"), testOk),
 
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso": 100    , "altura": 9999 }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ "peso": 100    , "altura": 2.33 }), igual("Abaixo do peso"              ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso": 100    , "altura": 2.32 }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ "peso": 100    , "altura": 2.01 }), igual("Normal"                      ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso": 100    , "altura": 2.0  }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ "peso": 100    , "altura": 1.83 }), igual("Excesso de peso"             ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso": 100    , "altura": 1.82 }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ "peso": 100    , "altura": 1.7  }), igual("Obesidade leve (Grau I)"     ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso": 100    , "altura": 1.69 }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ "peso": 100    , "altura": 1.59 }), igual("Obesidade severa (Grau II)"  ), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso": 100    , "altura": 1.58 }), igual("Obesidade mórbida (Grau III)"), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ "peso": 100    , "altura": 0.01 }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso: 100    , altura: 9999 }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso: 100    , altura: 2.33 }), igual("Abaixo do peso"              ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso: 100    , altura: 2.32 }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso: 100    , altura: 2.01 }), igual("Normal"                      ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso: 100    , altura: 2.0  }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso: 100    , altura: 1.83 }), igual("Excesso de peso"             ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso: 100    , altura: 1.82 }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade leve (Grau I)" para IMC a partir de 30 e abaixo de 35.'   , () => calcularImc({ peso: 100    , altura: 1.7  }), igual("Obesidade leve (Grau I)"     ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 100    , altura: 1.69 }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 100    , altura: 1.59 }), igual("Obesidade severa (Grau II)"  ), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 100    , altura: 1.58 }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 100    , altura: 0.01 }), igual("Obesidade mórbida (Grau III)"), testOk),
     ]);
 
     function teste11e12Feliz(func) {
@@ -308,8 +318,8 @@
         ];
     }
 
-    grupo("Exercício 11 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo", true, 0, 0.4, () => teste11e12Feliz  ("tipoTriangulo"));
-    grupo("Exercício 11 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo", true, 0, 0.4, () => teste11e12Infeliz("tipoTriangulo"));
+    grupo("Exercício 11 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo", true, 0.4, () => teste11e12Feliz  ("tipoTriangulo"));
+    grupo("Exercício 11 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo", true, 0.4, () => teste11e12Infeliz("tipoTriangulo"));
 
     function informarLados(a, b, c) {
         document.querySelector("#ladoA").value = "" + a;
@@ -334,187 +344,202 @@
 
     function testeTrianguloMuitoInfeliz() {
         return [
-            teste('Deve devolver "Informe os números corretamente." para entrada com letras no A.', () => informarLados("a",   5,   5), igual("Informe os números corretamente."), testOk),
-            teste('Deve devolver "Informe os números corretamente." para entrada com letras no B.', () => informarLados(  5, "b",   5), igual("Informe os números corretamente."), testOk),
-            teste('Deve devolver "Informe os números corretamente." para entrada com letras no C.', () => informarLados(  5,   5, "c"), igual("Informe os números corretamente."), testOk),
-            teste('Deve devolver "Informe os números corretamente." para entrada vazia no A.'     , () => informarLados( "",   5,   5), igual("Informe os números corretamente."), testOk),
-            teste('Deve devolver "Informe os números corretamente." para entrada vazia no B.'     , () => informarLados(  5,  "",   5), igual("Informe os números corretamente."), testOk),
-            teste('Deve devolver "Informe os números corretamente." para entrada vazia no C.'     , () => informarLados(  5,   5,  ""), igual("Informe os números corretamente."), testOk),
+            teste('Deve devolver "Informe o número A corretamente." para entrada com letras no A.', () => informarLados("a",   5,   5), igual("Informe o número A corretamente."), testOk),
+            teste('Deve devolver "Informe o número B corretamente." para entrada com letras no B.', () => informarLados(  5, "b",   5), igual("Informe o número B corretamente."), testOk),
+            teste('Deve devolver "Informe o número C corretamente." para entrada com letras no C.', () => informarLados(  5,   5, "c"), igual("Informe o número C corretamente."), testOk),
+            teste('Deve devolver "Informe o número A corretamente." para entrada vazia no A.'     , () => informarLados( "",   5,   5), igual("Informe o número A corretamente."), testOk),
+            teste('Deve devolver "Informe o número B corretamente." para entrada vazia no B.'     , () => informarLados(  5,  "",   5), igual("Informe o número B corretamente."), testOk),
+            teste('Deve devolver "Informe o número C corretamente." para entrada vazia no C.'     , () => informarLados(  5,   5,  ""), igual("Informe o número C corretamente."), testOk),
             teste(
-                'Deve devolver "Informe os números corretamente." para entrada com palavras.',
+                'Deve devolver "Informe o número A corretamente." para entrada com palavras.',
                 () => informarLados("Willy Wonka - Rachadinha de chocolate com laranja", "Tonho da Lua - Senhor dos exércitos de robôs", "Dudu Bananinha - Sheik chapeiro"),
-                igual("Informe os números corretamente."),
+                igual("Informe o número A corretamente."),
                 testOk
             ),
         ];
     }
 
-    grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário", true, 0, 0.3, () => teste11e12Feliz  ("informarLados"));
-    grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário", true, 0, 0.3, () => teste11e12Infeliz("informarLados"));
-    grupo("Exercício 12 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário", true, 0, 0.3, testeTrianguloMuitoInfeliz              );
+    grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário", true, 0.3, () => teste11e12Feliz  ("informarLados"));
+    grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário", true, 0.3, () => teste11e12Infeliz("informarLados"));
+    grupo("Exercício 12 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário", true, 0.3, testeTrianguloMuitoInfeliz              );
+
+    function listGetters(instance) {
+        return Object.entries(Object.getOwnPropertyDescriptors(Reflect.getPrototypeOf(instance)))
+                .filter(e => typeof e[1].get === 'function' && e[0] !== '__proto__')
+                .map(e => e[0]);
+    }
+
+    function extractGetters(instance) {
+        const getters = listGetters(instance);
+        const result = {};
+        getters.forEach(prop => {
+            try {
+                result[prop] = instance[prop];
+            } catch (e) {
+                result[prop] = e;
+            }
+        });
+        return result;
+    }
 
     const alunosMatriculasValidos = [
         {
-            "criar": () => new AlunoMatricula("Maria Luiza", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84),
-            "json": '{"_nome":"Maria Luiza","_genero":"F","_disciplina":"Desenvolvimento Web","_acs":[8,7,9,4.5,8],"_prova":9,"_sub":0,"_presenca":84}',
-            "status": "Maria Luiza tem média 8.5 na disciplina de Desenvolvimento Web e foi aprovada com 84% de presença.",
-            "funciona": false, media: 8.5, situacao: "AP", situacaoPorExtenso: "aprovada",
+            criar: () => new AlunoMatricula("Maria Luiza", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84),
+            json: {
+                nome: "Maria Luiza", genero: "F", disciplina: "Desenvolvimento Web", acs: [8, 7, 9, 4.5, 8], prova: 9, sub: 0, presenca: 84,
+                media: 8.5, situacao: "AP", situacaoPorExtenso: "aprovada",
+                status: "Maria Luiza tem média 8.5 na disciplina de Desenvolvimento Web e foi aprovada com 84% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Anderson", "M", "LP 2", Object.freeze([3.4, 5.0, 2.0, 4.8, 0]), 1.8, 2.9, 80),
-            "json": '{"_nome":"Anderson","_genero":"M","_disciplina":"LP 2","_acs":[3.4,5,2,4.8,0],"_prova":1.8,"_sub":2.9,"_presenca":80}',
-            "status": "Anderson tem média 3.5 na disciplina de LP 2 e foi reprovado por média com 80% de presença.",
-            "funciona": false, media: 3.5, situacao: "RM", situacaoPorExtenso: "reprovado por média",
+            criar: () => new AlunoMatricula("Anderson", "M", "LP 2", Object.freeze([3.4, 5.0, 2.0, 4.8, 0]), 1.8, 2.9, 80),
+            json: {
+                nome: "Anderson", genero: "M", disciplina: "LP 2", acs: [3.4, 5, 2, 4.8, 0], prova: 1.8, sub: 2.9, presenca: 80,
+                media: 3.5, situacao: "RM", situacaoPorExtenso: "reprovado por média",
+                status: "Anderson tem média 3.5 na disciplina de LP 2 e foi reprovado por média com 80% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", Object.freeze([9, 8, 7, 6, 5]), 4, 3, 21),
-            "json": '{"_nome":"Chiquinha","_genero":"F","_disciplina":"Química Orgânica III","_acs":[9,8,7,6,5],"_prova":4,"_sub":3,"_presenca":21}',
-            "status": "Chiquinha tem média 6 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença.",
-            "funciona": false, media: 6, situacao: "RF", situacaoPorExtenso: "reprovada por falta",
+            criar: () => new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", Object.freeze([9, 8, 7, 6, 5]), 4, 3, 21),
+            json: {
+                nome: "Chiquinha", genero: "F", disciplina: "Química Orgânica III", acs: [9, 8, 7, 6, 5], prova: 4, sub: 3, presenca: 21,
+                media: 6, situacao: "RF", situacaoPorExtenso: "reprovada por falta",
+                status: "Chiquinha tem média 6 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Bozoliro", "M", "presidência, governo e chefe de estado", Object.freeze([1, 2.5, 0, 1, 1.5]), 2.2, 0, 17),
-            "json": '{"_nome":"Bozoliro","_genero":"M","_disciplina":"presidência, governo e chefe de estado","_acs":[1,2.5,0,1,1.5],"_prova":2.2,"_sub":0,"_presenca":17}',
-            "status": "Bozoliro tem média 2 na disciplina de presidência, governo e chefe de estado e foi reprovado por média e falta com 17% de presença.",
-            "funciona": false, media: 2, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
+            criar: () => new AlunoMatricula("Bozoliro", "M", "presidência, governo e chefe de estado", Object.freeze([1, 2.5, 0, 1, 1.5]), 2.2, 0, 17),
+            json: {
+                nome: "Bozoliro", genero: "M", disciplina: "presidência, governo e chefe de estado", acs: [1, 2.5, 0, 1, 1.5], prova: 2.2, sub: 0, presenca: 17,
+                media: 2, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
+                status: "Bozoliro tem média 2 na disciplina de presidência, governo e chefe de estado e foi reprovado por média e falta com 17% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Molusco da Silva", "M", "presidência, governo e chefe de estado", Object.freeze([8.5, 9, 7, 8.5, 10]), 10, 0, 88),
-            "json": '{"_nome":"Molusco da Silva","_genero":"M","_disciplina":"presidência, governo e chefe de estado","_acs":[8.5,9,7,8.5,10],"_prova":10,"_sub":0,"_presenca":88}',
-            "status": "Molusco da Silva tem média 9.5 na disciplina de presidência, governo e chefe de estado e foi aprovado com 88% de presença.",
-            "funciona": false, media: 9.5, situacao: "AP", situacaoPorExtenso: "aprovado",
+            criar: () => new AlunoMatricula("Molusco da Silva", "M", "presidência, governo e chefe de estado", Object.freeze([8.5, 9, 7, 8.5, 10]), 10, 0, 88),
+            json: {
+                nome: "Molusco da Silva", genero: "M", disciplina: "presidência, governo e chefe de estado", acs: [8.5, 9, 7, 8.5, 10], prova: 10, sub: 0, presenca: 88,
+                media: 9.5, situacao: "AP", situacaoPorExtenso: "aprovado",
+                status: "Molusco da Silva tem média 9.5 na disciplina de presidência, governo e chefe de estado e foi aprovado com 88% de presença."
+            },
+            funciona: false,
         },
         {
-            "criar": () => new AlunoMatricula("Bruxa do 71", "F", "atriz de novela mexicana", Object.freeze([0.71, 0.71, 0.71, 0.71, 0.71]), 0, 0.71, 71),
-            "json": '{"_nome":"Bruxa do 71","_genero":"F","_disciplina":"atriz de novela mexicana","_acs":[0.71,0.71,0.71,0.71,0.71],"_prova":0,"_sub":0.71,"_presenca":71}',
-            "status": "Bruxa do 71 tem média 0.5 na disciplina de atriz de novela mexicana e foi reprovada por média e falta com 71% de presença.",
-            "funciona": false, media: 0.5, situacao: "RMF", situacaoPorExtenso: "reprovada por média e falta",
+            criar: () => new AlunoMatricula("Bruxa do 71", "F", "atriz de novela mexicana", Object.freeze([0.71, 0.71, 0.71, 0.71, 0.71]), 0, 0.71, 71),
+            json: {
+                nome: "Bruxa do 71", genero: "F", disciplina: "atriz de novela mexicana", acs: [0.71, 0.71, 0.71, 0.71, 0.71], prova: 0, sub: 0.71, presenca: 71,
+                media: 0.5, situacao: "RMF", situacaoPorExtenso: "reprovada por média e falta",
+                status: "Bruxa do 71 tem média 0.5 na disciplina de atriz de novela mexicana e foi reprovada por média e falta com 71% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Chuck Norris", "M", "Ator", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 100),
-            "json": '{"_nome":"Chuck Norris","_genero":"M","_disciplina":"Ator","_acs":[10,10,10,10,10],"_prova":10,"_sub":10,"_presenca":100}',
-            "status": "Chuck Norris tem média 10 na disciplina de Ator e foi aprovado com 100% de presença.",
-            "funciona": false, media: 10, situacao: "AP", situacaoPorExtenso: "aprovado",
+            criar: () => new AlunoMatricula("Chuck Norris", "M", "Ator", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 100),
+            json: {
+                nome: "Chuck Norris", genero: "M", disciplina: "Ator", acs: [10, 10, 10, 10, 10], prova: 10, sub: 10, presenca: 100,
+                media: 10, situacao: "AP", situacaoPorExtenso: "aprovado",
+                status: "Chuck Norris tem média 10 na disciplina de Ator e foi aprovado com 100% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Dollynho", "M", "Seu amiguinho", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 0),
-            "json": '{"_nome":"Dollynho","_genero":"M","_disciplina":"Seu amiguinho","_acs":[10,10,10,10,10],"_prova":10,"_sub":10,"_presenca":0}',
-            "status": "Dollynho tem média 10 na disciplina de Seu amiguinho e foi reprovado por falta com 0% de presença.",
-            "funciona": false, media: 10, situacao: "RF", situacaoPorExtenso: "reprovado por falta",
+            criar: () => new AlunoMatricula("Dollynho", "M", "Seu amiguinho", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 0),
+            json: {
+                nome: "Dollynho", genero: "M", disciplina: "Seu amiguinho", acs: [10, 10, 10, 10, 10], prova: 10, sub: 10, presenca: 0,
+                media: 10, situacao: "RF", situacaoPorExtenso: "reprovado por falta",
+                status: "Dollynho tem média 10 na disciplina de Seu amiguinho e foi reprovado por falta com 0% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Dollynha", "F", "Sua amiguinha", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 100),
-            "json": '{"_nome":"Dollynha","_genero":"F","_disciplina":"Sua amiguinha","_acs":[0,0,0,0,0],"_prova":0,"_sub":0,"_presenca":100}',
-            "status": "Dollynha tem média 0 na disciplina de Sua amiguinha e foi reprovada por média com 100% de presença.",
-            "funciona": false, media: 0, situacao: "RM", situacaoPorExtenso: "reprovada por média",
+            criar: () => new AlunoMatricula("Dollynha", "F", "Sua amiguinha", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 100),
+            json: {
+                nome: "Dollynha", genero: "F", disciplina: "Sua amiguinha", acs: [0, 0, 0, 0, 0], prova: 0, sub: 0, presenca: 100,
+                media: 0, situacao: "RM", situacaoPorExtenso: "reprovada por média",
+                status: "Dollynha tem média 0 na disciplina de Sua amiguinha e foi reprovada por média com 100% de presença."
+            },
+            funciona: false
         },
         {
-            "criar": () => new AlunoMatricula("Zerinho", "M", "fazer algo útil", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 0),
-            "json": '{"_nome":"Zerinho","_genero":"M","_disciplina":"fazer algo útil","_acs":[0,0,0,0,0],"_prova":0,"_sub":0,"_presenca":0}',
-            "status": "Zerinho tem média 0 na disciplina de fazer algo útil e foi reprovado por média e falta com 0% de presença.",
-            "funciona": false, media: 0, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
+            criar: () => new AlunoMatricula("Zerinho", "M", "fazer algo útil", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 0),
+            json: {
+                nome: "Zerinho", genero: "M", disciplina: "fazer algo útil", acs: [0, 0, 0, 0, 0], prova: 0, sub: 0, presenca: 0,
+                media: 0, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
+                status: "Zerinho tem média 0 na disciplina de fazer algo útil e foi reprovado por média e falta com 0% de presença."
+            },
+            funciona: false
         },
     ];
 
-    Array.prototype.map = function(inner) {
+    function map(array, inner) {
         const mapped = [];
-        this.forEach((e, i) => mapped.push(inner(e, i)));
+        array.forEach((e, i) => mapped.push(inner(e, i)));
         return mapped;
     };
 
-    grupo("Exercício 13", "Construtor da classe AlunoMatricula", true, 0, 0.4, () =>
-        alunosMatriculasValidos.map(aluno =>
+    // Seria melhor e mais limpo, mas não vamos mudar o prototype de Array aqui.
+    /*Array.prototype.map = function(inner) {
+        const mapped = [];
+        this.forEach((e, i) => mapped.push(inner(e, i)));
+        return mapped;
+    };*/
+
+    grupo("Exercício 13", "Construtor da classe AlunoMatricula", true, 0.4, () =>
+        map(alunosMatriculasValidos, aluno =>
             teste(
-                `Deve conseguir instanciar um aluno nome corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".toString()"),
-                igual(aluno.json),
+                `Deve conseguir instanciar um aluno corretamente [${aluno.json.nome}].`,
+                eval(aluno.criar.toString()),
+                naoDeuErro(),
                 testOk,
                 ok => aluno.funciona = ok
             )
         )
     );
 
-    grupo("Exercício 14 - parte 1 (getter nome)", "Getter nome da classe AlunoMatricula", true, 0, 0.2, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter o nome do(a) aluno(a) de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".nome"),
-                igual(JSON.parse(aluno.json)._nome),
-                () => jsonOk && aluno.funciona
+    grupo("Exercício 14", "Getters da classe AlunoMatricula", true, 0.3, () => {
+        const testes = [];
+        const artigos = {nome: "o", genero: "o", disciplina: "a", acs: "as", prova: "a", sub: "a", presenca: "a"};
+        ["nome", "genero", "disciplina", "acs", "prova", "sub", "presenca"].forEach(getter => {
+            alunosMatriculasValidos.forEach(aluno =>
+                testes.push(
+                    teste(
+                        `Deve conseguir obter ${artigos[getter]} ${getter} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
+                        eval(aluno.criar.toString() + "." + getter),
+                        igual(aluno.json[getter]),
+                        () => jsonOk && aluno.funciona
+                    )
+                )
             )
-        )
-    );
+        });
+        return testes;
+    });
 
-    grupo("Exercício 14 - parte 2 (getter genero)", "Getter genero da classe AlunoMatricula", true, 0, 0.2, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter o gênero de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".genero"),
-                igual(JSON.parse(aluno.json)._genero),
-                () => jsonOk && aluno.funciona
-            )
-        )
-    );
-
-    grupo("Exercício 14 - parte 3 (getter disciplina)", "Getter disciplina da classe AlunoMatricula", true, 0, 0.2, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter o nome da disciplina de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".disciplina"),
-                igual(JSON.parse(aluno.json)._disciplina),
-                () => jsonOk && aluno.funciona
-            )
-        )
-    );
-
-    grupo("Exercício 15", "Média na classe AlunoMatricula", true, 0, 0.4, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter a média de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".media"),
-                igual(aluno.media),
-                () => jsonOk && aluno.funciona
-            )
-        )
-    );
-
-    grupo("Exercício 16", "Situação na classe AlunoMatricula", true, 0, 0.3, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter a situação de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".situacao"),
-                igual(aluno.situacao),
-                () => jsonOk && aluno.funciona
-            )
-        )
-    );
-
-    grupo("Exercício 17", "Situação por extenso na classe AlunoMatricula", true, 0, 0.3, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter a situação por extenso de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".situacaoPorExtenso"),
-                igual(aluno.situacaoPorExtenso),
-                () => jsonOk && aluno.funciona
-            )
-        )
-    );
-
-    grupo("Exercício 18", "Status na classe AlunoMatricula", true, 0, 0.3, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir obter o status de uma instância de AlunoMatricula corretamente [${JSON.parse(aluno.json)._nome}].`,
-                eval(aluno.criar.toString() + ".status"),
-                igual(aluno.status),
-                () => jsonOk && aluno.funciona
-            )
-        )
-    );
+    [["media", 15, "Média", "a"], ["situacao", 16, "Situação", "a"], ["situacaoPorExtenso", 17, "Situação por extenso", "a"], ["status", 18, "Status", "o"]].forEach(exercicio => {
+        const getter = exercicio[0];
+        grupo(`Exercício ${exercicio[1]}`, `${exercicio[2]} na classe AlunoMatricula`, true, 0.3, () => {
+            const testes = [];
+            alunosMatriculasValidos.forEach(aluno =>
+                testes.push(
+                    teste(
+                        `Deve conseguir obter ${exercicio[3]} ${exercicio[2]} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
+                        eval(aluno.criar.toString() + "." + getter),
+                        igual(aluno.json[getter]),
+                        () => jsonOk && aluno.funciona
+                    )
+                )
+            );
+            return testes;
+        });
+    });
 
     function informarDados(nome, genero, disciplina, acs, prova, sub, presenca) {
         document.querySelector("#nome").value = nome;
-        if (genero === "M") document.querySelector("#ele").checked = true;
-        if (genero === "F") document.querySelector("#ela").checked = true;
+        document.querySelector("#ele").checked = genero === "M";
+        document.querySelector("#ela").checked = genero === "F";
         document.querySelector("#disciplina").value = disciplina;
         acs.forEach((e, i) => document.querySelector("#ac" + (i + 1)).value = "" + e);
         document.querySelector("#prova").value = "" + prova;
@@ -538,12 +563,12 @@
         return resultado;
     }
 
-    grupo("Exercício 19 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0, 0.7, () =>
-        alunosMatriculasValidos.map(aluno =>
+    grupo("Exercício 19 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0.7, () =>
+        map(alunosMatriculasValidos, aluno =>
             teste(
-                `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${JSON.parse(aluno.json)._nome}].`,
+                `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${aluno.json.nome}].`,
                 eval(aluno.criar.toString().replace("new AlunoMatricula", "informarDados")),
-                igual(aluno.status),
+                igual(aluno.json.status),
                 () => jsonOk && aluno.funciona
             )
         )
@@ -551,22 +576,22 @@
 
     const alunosMatriculasInvalidos = [
         {
-            "criar": '() => informarDados("Teste", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84)',
-            "erro": "Escolha o gênero do(a) aluno(a) corretamente.",
-            "causa": "nenhum gênero escolhido",
+            criar: '() => informarDados("Teste", "X", "Desenvolvimento Web", [8, 7, 9, 4.5, 8], 9, 0, 84)',
+            erro: "Escolha o gênero do(a) aluno(a) corretamente.",
+            causa: "nenhum gênero escolhido",
         }
     ];
 
     ["", "   "].forEach(lixo => {
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("${lixo}", "M", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
-            "erro": "Informe o nome do(a) aluno(a) corretamente.",
-            "causa": `o nome inválido "${lixo}"`,
+            criar: `() => informarDados("${lixo}", "M", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
+            erro: "Informe o nome do(a) aluno(a) corretamente.",
+            causa: `o nome inválido "${lixo}"`,
         });
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "${lixo}", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
-            "erro": "Informe o nome da disciplina corretamente.",
-            "causa": `a disciplina inválida "${lixo}"`,
+            criar: `() => informarDados("Teste", "F", "${lixo}", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
+            erro: "Informe o nome da disciplina corretamente.",
+            causa: `a disciplina inválida "${lixo}"`,
         });
     });
     ["", "   ", "-1", "-", "abc", "5.678", "11", "10.01", "5.", ".4", ".", "3.4.5"].forEach(lixo => {
@@ -574,32 +599,32 @@
             const arr = [8, 7, 9, 4.5, 8];
             arr[j] = lixo;
             alunosMatriculasInvalidos.push({
-                "criar": `() => informarDados("Teste", "F", "Teste", Object.freeze(${JSON.stringify(arr)}), 9, 0, 84)`,
-                "erro": `Informe a nota do AC ${j + 1} corretamente, entre 0 e 10, com até duas casas decimais.`,
-                "causa": `o valor inválido "${lixo}" para o AC ${j + 1}`,
+                criar: `() => informarDados("Teste", "F", "Teste", Object.freeze(${JSON.stringify(arr)}), 9, 0, 84)`,
+                erro: `Informe a nota do AC ${j + 1} corretamente, entre 0 e 10, com até duas casas decimais.`,
+                causa: `o valor inválido "${lixo}" para o AC ${j + 1}`,
             });
         });
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), "${lixo}", 0, 84)`,
-            "erro": "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.",
-            "causa": `o valor inválido "${lixo}" para a prova`,
+            criar: `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), "${lixo}", 0, 84)`,
+            erro: "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.",
+            causa: `o valor inválido "${lixo}" para a prova`,
         });
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), 9, "${lixo}", 84)`,
-            "erro": "Informe a nota da sub corretamente, entre 0 e 10, com até duas casas decimais.",
-            "causa": `o valor inválido "${lixo}" para a sub`,
+            criar: `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), 9, "${lixo}", 84)`,
+            erro: "Informe a nota da sub corretamente, entre 0 e 10, com até duas casas decimais.",
+            causa: `o valor inválido "${lixo}" para a sub`,
         });
     });
     ["", "   ", "-1", "-", "abc", "5.6", "101", "5.", ".4", "."].forEach(lixo => {
         alunosMatriculasInvalidos.push({
-            "criar": `() => informarDados("Teste", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, "${lixo}")`,
-            "erro": "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.",
-            "causa": `o valor inválido "${lixo}" para a presença`,
+            criar: `() => informarDados("Teste", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, "${lixo}")`,
+            erro: "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.",
+            causa: `o valor inválido "${lixo}" para a presença`,
         });
     });
 
-    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0, 0.6, () =>
-        alunosMatriculasInvalidos.map((aluno, i) =>
+    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0.6, () =>
+        map(alunosMatriculasInvalidos, (aluno, i) =>
             teste(
                 `Não deve conseguir preencher uma instância de AlunoMatricula com ${aluno.causa} [${i + 1}].`,
                 eval(aluno.criar),
@@ -616,22 +641,25 @@
             const arr = ["10", "10", "10", "10", "10"];
             arr[j] = nota;
             alunosMatriculasValidos2.push({
-                "criar": () => informarDados("Teste", "F", "Teste", arr, "10", "10", 84),
-                "campo": "AC " + (j + 1), "valor": nota,
+                criar: () => informarDados("Teste", "F", "Teste", arr, "10", "10", 84),
+                campo: "AC " + (j + 1),
+                valor: nota,
             });
         });
         alunosMatriculasValidos2.push({
-            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], nota, "10", 84),
-            "campo": "prova", "valor": nota,
+            criar: () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], nota, "10", 84),
+            campo: "prova",
+            valor: nota,
         });
         alunosMatriculasValidos2.push({
-            "criar": () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", nota, 84),
-            "campo": "sub", "valor": nota,
+            criar: () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", nota, 84),
+            campo: "sub",
+            valor: nota,
         });
     });
 
-    grupo("Exercício 19 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0, 0.1, () =>
-        alunosMatriculasValidos2.map((aluno, i) =>
+    grupo("Exercício 19 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0.1, () =>
+        map(alunosMatriculasValidos2, (aluno, i) =>
             teste(
                 `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
                 aluno.criar,
@@ -641,9 +669,9 @@
         )
     );
 
-    function testarEfeitosColaterais(prepararCoisa) {
+    function testarEfeitosColaterais(prepararCoisa, json) {
         const coisa = eval(prepararCoisa);
-        const campos = ["toString", "nome", "genero", "disciplina", "media", "situacao", "situacaoPorExtenso", "status"];
+        const campos = extractGetters(coisa);
         const valores1 = {};
         for (const c in campos) {
             valores1[campos[c]] = coisa[campos[c]];
@@ -653,27 +681,32 @@
             valores2[campos[c]] = coisa[campos[c]];
         }
         for (const c in campos) {
-            const v1 = escapeHtml(valores1[campos[c]]);
-            const v2 = escapeHtml(valores2[campos[c]]);
-            if (v1 !== v2) {
-                throw new ErroFormatado(`O campo ${c} tinha o valor <span class="esperado">${v1}</span> que subitamente mudou para <span class="obtido">${v2}</span>.`);
+            if (valores1[campos[c]] !== json[campos[c]]) {
+                const v1 = escapeHtml("" + valores1[campos[c]]);
+                const v2 = escapeHtml("" + json[campos[c]]);
+                throw new ErroFormatado(v1, v2);
+            }
+            if (valores2[campos[c]] !== json[campos[c]]) {
+                const v1 = escapeHtml("" + valores2[campos[c]]);
+                const v2 = escapeHtml("" + json[campos[c]]);
+                throw new ErroFormatado(v1, v2);
             }
         }
         return true;
     }
 
-    grupo("Exercícios 13 a 19 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0, 0.1, () =>
-        alunosMatriculasValidos.map(aluno =>
+    grupo("Exercícios 13 a 19 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0.1, () =>
+        map(alunosMatriculasValidos, aluno =>
             teste(
-                `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${JSON.parse(aluno.json)._nome}].`,
-                testarEfeitosColaterais(`${aluno.criar.toString()}`),
+                `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${aluno.json.nome}].`,
+                () => testarEfeitosColaterais(`${aluno.criar.toString()}`, aluno.json),
                 igual(true),
                 () => jsonOk && aluno.funciona
             )
         )
     );
 
-    grupo("Exercício 20", "Entrega", false, -1, 0, () => {
+    grupo("Exercício 20", "Entrega", false, -1, () => {
         function embaralhar(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -737,4 +770,4 @@
         }
         return testes;
     });
-})();
+});

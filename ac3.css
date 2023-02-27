@@ -16,7 +16,7 @@ ul, ol, h1, h2, h3 {
     margin: 0;
 }
 
-h1, h2 {
+h1 {
     font-size: 2em;
 }
 
@@ -28,150 +28,31 @@ h3 {
     font-size: 1.2em;
 }
 
-/* Resultados de testes. */
-
-.teste {
-    display: block;
+input[type="radio"] {
+    margin: 0;
 }
 
-.exercicio.ok {
-    background: #C0FFC0;
+label, input[type="text"], input[type="radio"], button {
+    height: 25px;
 }
 
-.exercicio.niy, .exercicio.skip {
-    background: #A0A0A0;
-}
-
-.exercicio.parcial {
-    background: #FFFFC0;
-}
-
-.exercicio.erro {
-    background: #FFC0C0;
-}
-
-.exercicio, .teste {
-    border: 1px black solid;
-    border-radius: 5px;
-    padding: 5px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.teste.ok {
-    background: #80FF80;
-}
-
-.teste.niy {
-    background: #E0E0E0;
-}
-
-.teste.erro {
-    background: #FF8080;
-}
-
-.teste.skip {
-    background: #C0C0C0;
-}
-
-.codigo span {
-    font-family: monospace;
-}
-
-.regra span {
-    font-weight: bold;
-}
-
-.resultado .esperado, .resultado .obtido, .resultado .inesperado {
-    font-weight: bold;
-    background: yellow;
-}
-
-.botao {
+button {
     border: 1px black solid;
     background: blue;
     color: white;
     text-align: center;
-    float: right;
-    width: 2em;
-    font-size: 1.6em;
-    padding: 10px;
-    border-radius: 1em;
-    font-family: sans-serif;
-}
-
-.oculto {
-    display: none;
-}
-
-.perigo {
-    color: red;
-}
-
-/* Erros gravíssimos. */
-
-.gravissimo {
-    background: yellow;
-    border: 1px black solid;
-    position: sticky;
-    margin: 0;
-    padding: 10px;
-    top: 0;
     font-weight: bold;
-    z-index: 1;
+    height: 25px;
+    font-size: 1.05em;
+    border-radius: 10px;
 }
 
-.gravissimo h1 {
-    animation: pisca-pisca-vermelho 0.3s linear infinite;
-    color: red;
-    margin: 20px;
-    text-align: center;
-}
-
-.gravissimo p {
-    font-size: 1.2em;
-    margin-top: 0;
-}
-
-.gravissimo p:not(:last-child) {
-    margin-bottom: 0;
-}
-
-@keyframes pisca-pisca-vermelho {
-  20% {
-    opacity: 1;
-  }
-  30% {
-    opacity: 0;
-  }
-  70% {
-    opacity: 0;
-  }
-  80% {
-    opacity: 1;
-  }
-}
-
-/* Lista dos alunos. */
-
-#alunos li {
-    font-weight: bold;
-    font-size: 1.2em;
-    background: #FFE0C0;
+input {
     border: 1px black solid;
+    background: #0FF;
     border-radius: 5px;
-    padding: 5px;
-    margin: 2px;
-    text-align: center;
-    display: inline-block;
-}
-
-#alunos li:first-child {
-    margin-left: 0;
-}
-
-#alunos li:last-child {
-    margin-right: 0;
+    padding: 2px;
+    font-size: 1.25em;
 }
 
 /* Formulários. */
@@ -197,45 +78,18 @@ h3 {
     font-size: 1.2em;
 }
 
-button {
-    border: 1px black solid;
-    background: blue;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    height: 25px;
-    font-size: 1.05em;
-    border-radius: 10px;
-}
-
-input {
-    border: 1px black solid;
-    background: #0FF;
-    border-radius: 5px;
-    padding: 2px;
-    font-size: 1.25em;
-}
-
 input.grande {
     width: 391px;
 }
 
-.tem-botao {
+.ex12e19-botao {
     position: relative;
 }
 
-input:not(.grande), .tem-radio {
+input:not(.grande), .ex12e19-radio {
     width: 75px;
 }
 
-.tem-radio  {
+.ex12e19-radio  {
     text-align: center;
-}
-
-input[type="radio"] {
-    margin: 0;
-}
-
-label, input[type="text"], input[type="radio"], button {
-    height: 25px;
 }

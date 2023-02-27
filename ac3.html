@@ -3,16 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>Introdução ao JavaScript</title>
+        <link rel="stylesheet" href="ac3-fw.css">
         <link rel="stylesheet" href="ac3.css">
-        <script type="text/javascript">
+        <script>
             "use strict";
-
-            // Cuidado: Expressões regulares são uma linguagem que parece ser alienígena.
-            // E se você bagunçar com ela, bem... boa sorte para descobrir como arrumar depois!
-            const regexNumero      = () => /^(?:\-?[0-9]+(?:\.[0-9]+)?)$/g; // Formato de número genérico.
-            const regexNota        = () => /^(?:10(?:\.00?)?|[0-9](?:\.[0-9][0-9]?)?)$/g; // Número de 0 a 10 com até duas casas decimais.
-            const regexPorcentagem = () => /^(?:0|[1-9][0-9]?|100)$/g; // Número inteiro de 0 a 100.
-
             function limparForm12() {
                 document.querySelectorAll(".ex12 input[type='text']").forEach(e => e.value = "");
             }
@@ -23,15 +17,54 @@
             function limparListasForm19() {
                 document.querySelector("#notas").innerHTML = "";
             }
+            function lerNumero(texto, erro) {
+                const regexNumero = /^\-?[0-9]+(?:\.[0-9]+)?$/g; // Formato de número genérico.
+                if (regexNumero.test(texto)) return parseFloat(texto);
+                throw new Error(erro);
+            }
+            function lerNota(texto, erro) {
+                const regexNota = /^(?:10(?:\.00?)?|[0-9](?:\.[0-9][0-9]?)?)$/g; // Número de 0 a 10 com até duas casas decimais.
+                if (regexNota.test(texto)) return parseFloat(texto);
+                throw new Error(erro);
+            }
+            function lerPresenca(texto) {
+                const regexPorcentagem = /^(?:0|[1-9][0-9]?|100)$/g; // Número inteiro de 0 a 100.
+                if (regexPorcentagem.test(texto)) return parseInt(texto);
+                throw new Error("Informe a presença corretamente, deve ser um inteiro entre 0 e 100.");
+            }
+            function lerTexto(texto, erro) {
+                if (texto.trim() === "") throw new Error(erro);
+                return texto.trim();
+            }
+            function clickBotaoExecutar() {
+                let numero;
+                try {
+                    numero = lerNumero(document.querySelector("#delay").value);
+                } catch (e) {
+                    alert(e);
+                    return;
+                }
+                executarTestes(numero);
+            }
         </script>
-        <script type="text/javascript" src="ac3-testefw.js" defer></script>
-        <script type="text/javascript" src="ac3.js" defer></script>
-        <script type="text/javascript" src="ac3-teste.js" defer></script>
+        <script src="ac3-testefw.js" defer></script>
+        <script src="ac3-resolvido.js" defer></script>
+        <script src="ac3-teste.js" defer></script>
     </head>
     <body>
-        <div id="alunosAc" class="oculto">
-            <h1>Alunos</h1>
-            <ul id="alunos"></ul>
+        <div class="formzinho">
+            <p>
+                <label for="delay">Delay dos testes:</label>
+                <input type="text" id="delay" value="500">
+            </p>
+            <p>
+                <label for="botaoExecutar">&nbsp;</label>
+                <button type="button" id="botaoExecutar" onclick="clickBotaoExecutar();">EXECUTAR OS TESTES!</button>
+            </p>
+            <p>
+                <label>Delay em milisegundos entre um teste e outro.</label>
+                <label>Coloque -1 para testar tudo de uma vez sem delay.</label>
+            </p>
         </div>
         <div class="formzinho ex12">
             <h1>Formulário para o exercício 12</h1>
@@ -47,17 +80,17 @@
                 <label for="ladoC">Lado C:</label>
                 <input type="text" id="ladoC">
             </p>
-            <p class="tem-botao">
+            <p class="ex12e19-botao">
                 <label for="botaoTriangulo">&nbsp;</label>
-                <button type="button" id="botaoTriangulo" onclick="javascript:verificarTriangulo();">Verificar</button>
+                <button type="button" id="botaoTriangulo" onclick="verificarTriangulo();">Verificar</button>
             </p>
             <p>
                 <label for="tipoTriangulo">Resultado:</label>
                 <input type="text" id="tipoTriangulo" class="grande" readonly>
             </p>
-            <p class="tem-botao">
+            <p class="ex12e19-botao">
                 <label for="btLimpar1">&nbsp;</label>
-                <button type="button" id="btLimpar1" onclick="javascript:limparForm12();">Limpar</button>
+                <button type="button" id="btLimpar1" onclick="limparForm12();">Limpar</button>
             </p>
         </div>
         <div class="formzinho ex19">
@@ -66,11 +99,11 @@
                 <label for="nome">Nome:</label>
                 <input type="text" id="nome" class="grande">
             </p>
-            <p class="tem-radio">
+            <p class="ex12e19-radio">
                 <label for="ele">Ele</label>
                 <input type="radio" id="ele" value="M" class="genero" name="genero">
             </p>
-            <p class="tem-radio">
+            <p class="ex12e19-radio">
                 <label for="ela">Ela</label>
                 <input type="radio" id="ela" value="F" class="genero" name="genero">
             </p>
@@ -98,17 +131,17 @@
                 <label for="presenca">Presença:</label>
                 <input type="text" id="presenca">
             </p>
-            <p class="tem-botao">
+            <p class="ex12e19-botao">
                 <label for="botaoCadastrar">&nbsp;</label>
-                <button type="button" id="botaoCadastrar" onclick="javascript:verificarAlunoMatriculado();">Verificar</button>
+                <button type="button" id="botaoCadastrar" onclick="verificarAlunoMatriculado();">Verificar</button>
             </p>
-            <p class="tem-botao">
+            <p class="ex12e19-botao">
                 <label for="btLimpar2">&nbsp;</label>
-                <button type="button" id="btLimpar2" onclick="javascript:limparForm19();">Limpar campos</button>
+                <button type="button" id="btLimpar2" onclick="limparForm19();">Limpar campos</button>
             </p>
-            <p class="tem-botao">
+            <p class="ex12e19-botao">
                 <label for="btLimpar3">&nbsp;</label>
-                <button type="button" id="btLimpar3" onclick="javascript:limparListasForm19();">Limpar lista</button>
+                <button type="button" id="btLimpar3" onclick="limparListasForm19();">Limpar lista</button>
             </p>
             <div>
                 <label>Matrículas registradas:</label>

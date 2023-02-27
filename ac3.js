@@ -100,7 +100,7 @@ function operacoesBasicas(operacao, numero1, numero2) {
  *   - comparadorBasico(new Cliente(), new Fornecedor()): "Elemento [object Object] (Cliente) é diferente do elemento [object Object] (Fornecedor)."
  *
  * Dica: Use a função auxiliar determinarTipo que já foi deixada de antemão dentro da função.
- * E sim, olocar uma função dentro de outra função é normal em JavaScript.
+ * E sim, colocar uma função dentro de outra função é normal em JavaScript.
  *
  * @param {*} elemento1 O primeiro operando.
  * @param {*} elemento2 O segundo operando.
@@ -109,7 +109,8 @@ function operacoesBasicas(operacao, numero1, numero2) {
 function comparadorBasico(elemento1, elemento2) {
     // Deixe esta função interna do jeito que está.
     function determinarTipo(elemento) {
-        if (elemento === null || typeof elemento !== "object") return typeof elemento;
+        if (elemento === null) return "null";
+        if (typeof elemento !== "object") return typeof elemento;
         return elemento.constructor.name;
     }
 
@@ -261,7 +262,7 @@ function tipoTriangulo(a, b, c) {
  * Dentro desta <div> há três <input>s à esquerda de um <button> e um quarto <input> à direita.
  * Ao clicar neste <button>:
  * 1. Leia os valores dos primeiros três <input>s.
- * 2. Converta os valores lidos para valores numéricos (use a função interna lerNumero que já está aí).
+ * 2. Converta os valores lidos para valores numéricos (use a função lerNumero que já está aí, ela veio do ac3.html).
  * 3. Utilize a função tipoTriangulo do exercício 11 para saber qual tipo de triângulo é o resultado disso.
  * 4. Coloque o nome do tipo de triângulo resultante na <input> à direita do <button>.
  *
@@ -271,18 +272,12 @@ function tipoTriangulo(a, b, c) {
  * Dica: Procure ver funções de manipulação de DOM nas partes que faltam (o que está como naoFizIssoAinda()).
  */
 function verificarTriangulo() {
-    // Deixe esta função interna do jeito que está.
-    function lerNumero(texto) {
-        if (regexNumero().test(texto)) return parseFloat(texto);
-        throw new Error("Informe os números corretamente.");
-    }
-
     // Comece a mexer no código daqui para baixo.
     let texto;
     try {
-        const a = lerNumero(naoFizIssoAinda());
-        const b = lerNumero(naoFizIssoAinda());
-        const c = lerNumero(naoFizIssoAinda());
+        const a = lerNumero(naoFizIssoAinda(), naoFizIssoAinda());
+        const b = lerNumero(naoFizIssoAinda(), "Informe o número B corretamente.");
+        const c = lerNumero(naoFizIssoAinda(), naoFizIssoAinda());
         texto = naoFizIssoAinda(a, b, c);
     } catch (e) {
         texto = e.message;
@@ -310,7 +305,8 @@ class AlunoMatricula {
     /**
      * Considerando a descrição da classe como dada acima, implemente o construtor dela.
      * Basta salvar todos os valores recebidos dentro do "this". O nome dos campos
-     * deve ser igual ao nome dos parâmetros com um "_" antes.
+     * deve ser igual ao nome dos parâmetros com um "#" antes. Declare os campos antes do construtor
+     * com #campo1; #campo2; #campo3; ...
      *
      * Observação: O certo seria validar todos os parâmetros no construtor, mas isso é algo
      * razoavelmente complicado de se fazer e vocês só estão começando com LP II, POO e JavaScript,
@@ -328,14 +324,8 @@ class AlunoMatricula {
         naoFizIssoAinda();
     }
 
-    // Não mexa neste método. Deixá-lo assim vai te ajudar bastante na hora de buscar solucionar os demais exercícios.
-    // Além disso, os testes vão inspeionar se a estrutura das instâncias desta classe estão corretas por meio deste método aqui.
-    toString() {
-        return JSON.stringify(this);
-    }
-
     // EXERCÍCIO 14.
-    // Crie os métodos getters para obter o nome do(a) aluno(a), o gênero e o nome da disciplina e acrescente-os aqui.
+    // Crie os métodos getters necessários de todos os parâmetros recebidos no construtor aqui.
 
     // EXERCÍCIO 15.
     /**
@@ -403,7 +393,7 @@ class AlunoMatricula {
     // EXERCÍCIO 18.
     /**
      * Este método deve retornar uma string contendo uma frase de status do(a) aluno(a) no seguinte formato:
-     * <nome> tem média <média> na disciplina de <disciplina> e foi <situação>, com <presença>% de presença.
+     * <nome> tem média <média> na disciplina de <disciplina> e foi <situação> com <presença>% de presença.
      *
      * É importante que a média tenha sempre uma casa decimal após a vírgula e que a presença seja uma
      * porcentagem inteira, sem casas decimais.
@@ -436,25 +426,12 @@ class AlunoMatricula {
  * e colocar o status dessa instância no elemento #notas. Se ocorrer algum erro que impossibilite este processo,
  * a mensagem de erro será colocada em #notas.
  *
+ * Use as funções lerTexto, lerPresenca e lerNota que são disponibilizadas no ac3.html.
+ *
  * Um esqueleto da implementação final já foi deixado pelo professor para ajudar.
  * Dica: Procure ver funções de manipulação de DOM nas partes que faltam (o que está como naoFizIssoAinda()).
  */
 function verificarAlunoMatriculado() {
-
-    // Deixe estas funções internas do jeito que estão.
-    function lerNota(texto, oQue) {
-        if (regexNota().test(texto)) return parseFloat(texto);
-        throw new Error(`Informe a nota d${oQue} corretamente, entre 0 e 10, com até duas casas decimais.`);
-    }
-    function lerPresenca(texto) {
-        if (regexPorcentagem().test(texto)) return parseInt(texto);
-        throw new Error("Informe a presença corretamente, deve ser um inteiro entre 0 e 100.");
-    }
-    function lerTexto(texto, erro) {
-        if (texto.trim() === "") throw new Error(erro);
-        return texto.trim();
-    }
-
     // Comece a mexer no código daqui para baixo.
     let texto;
     try {
@@ -464,15 +441,13 @@ function verificarAlunoMatriculado() {
         if (!escolheuEle && !escolheuEla) throw new Error("Escolha o gênero do(a) aluno(a) corretamente.");
         const genero = escolheuEle ? "M" : "F";
         const disciplina  = lerTexto(naoFizIssoAinda(), "Informe o nome da disciplina corretamente.");
-        const sac1 = naoFizIssoAinda(); // Lê a nota do AC 1, mas vai vir como string ao invés de número.
-        const ac1 = lerNota(sac1, "o AC 1");
-        const sac2 = naoFizIssoAinda(); // Lê a nota do AC 2, mas vai vir como string ao invés de número.
-        const ac2 = lerNota(sac2, "o AC 2");
-        const ac3 = lerNota(naoFizIssoAinda(), "o AC 3");
-        const ac4 = lerNota(naoFizIssoAinda(), "o AC 4");
-        const ac5 = lerNota(naoFizIssoAinda(), "o AC 5");
-        const prova = lerNota(naoFizIssoAinda(), "a prova");
-        const sub = lerNota(naoFizIssoAinda(), "a sub");
+        const ac1 = lerNota(naoFizIssoAinda(), "Informe a nota do AC 1 corretamente, entre 0 e 10, com até duas casas decimais.");
+        const ac2 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
+        const ac3 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
+        const ac4 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
+        const ac5 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
+        const prova = lerNota(naoFizIssoAinda(), "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.");
+        const sub = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
         const presenca = lerPresenca(naoFizIssoAinda());
         texto = new AlunoMatricula(naoFizIssoAinda()).status;
     } catch (e) {

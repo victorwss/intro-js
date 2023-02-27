@@ -45,7 +45,7 @@ function dadosDosAlunos() {
              "ra": 6654321
         }
     ];
-};
+}
 
 // EXERCÍCIO 1.
 /**
@@ -73,7 +73,11 @@ function maiorDosQuatro(a, b, c, d) {
  *  - P: Potência - Eleva o numero1 pelo numero2
  *
  * Verifique onde é possível fazer a operação.
- * Nos casos em que não for definido - divisão por zero ou 0 elevado a 0, por exemplo - retornar NaN (not-a-number).
+ * Nos casos em que não for definido, retornar NaN (not-a-number). São esses os casos:
+ *  - Divisão por zero
+ *  - Zero elevado a zero
+ *  - Zero elevado a número negativo
+ *  - Número negativo elevado a potência não-inteira
  *
  * Se a operação passada não for uma das letras acima, retornar undefined.
  * Ah, as letras sempre devem ser maiúsculas. Em caso de minúsculas (ou símbolos, ou palavras com várias letras,
@@ -99,22 +103,13 @@ function operacoesBasicas(operacao, numero1, numero2) {
  *   - comparadorBasico("2", 2): "Elemento 2 (string) é equivalente ao elemento 2 (number)."
  *   - comparadorBasico(new Cliente(), new Fornecedor()): "Elemento [object Object] (Cliente) é diferente do elemento [object Object] (Fornecedor)."
  *
- * Dica: Use a função auxiliar determinarTipo que já foi deixada de antemão dentro da função.
- * E sim, colocar uma função dentro de outra função é normal em JavaScript.
+ * Dica: Use a função auxiliar determinarTipo que está no arquivo utils.js.
  *
  * @param {*} elemento1 O primeiro operando.
  * @param {*} elemento2 O segundo operando.
  * @returns {String} A mensagem com o resultado da comparação.
  */
 function comparadorBasico(elemento1, elemento2) {
-    // Deixe esta função interna do jeito que está.
-    function determinarTipo(elemento) {
-        if (elemento === null) return "null";
-        if (typeof elemento !== "object") return typeof elemento;
-        return elemento.constructor.name;
-    }
-
-    // Comece a mexer no código daqui para baixo.
     naoFizIssoAinda();
 }
 
@@ -155,24 +150,51 @@ function abreviadorNomes(nomeCompleto) {
 
 // EXERCÍCIO 6.
 /**
- * Escreva uma função que recebe uma string com a data no formato brasileiro (dia/mês/ano) e
- * converta para o formato: 'Dia de Nome-do-Mês-por-Extenso de Ano'.
+ * Escreva uma função que recebe uma string com uma data do calendário gregoriano no
+ * formato brasileiro (dia/mês/ano) e determine se ela é válida.
+ *
+ * Para a data ser válida, ela tem que ter 4 dígitos no ano e 2 dígitos tanto no dia quanto no mês,
+ * preenchidos com zeros à esquerda se for necessário.
+ *
+ * Lembre-se que alguns meses têm 30 dias e outros têm 31.
+ * Fevereiro tem 28 dias em anos não bissextos e 29 em não-bissextos.
+ * Quase todos os anos divisíveis por 4 são bissextos, mas existem 3 exceções a cada 400 anos, que são aqueles
+ * divisíveis por 100, mas não por 400. Por exemplo, 1700, 1800, 1900, 2100 e 2200 não são anos bissextos.
+ *
+ * Embora o calendário gregoriano tenha sido instituído em 1582, considere como se fosse válido retroativamente
+ * desde o ano 0001.
+ *
+ * @param {String} data String com a data no formato brasileiro (dia/mês/ano).
+ * @returns {boolean} Verdadeiro se a data for válida, falso em caso contrário.
+ */
+function dataValida(data) {
+    naoFizIssoAinda();
+}
+
+// EXERCÍCIO 7.
+/**
+ * Escreva uma função que recebe uma string com uma data do calendário gregoriano no
+ * formato brasileiro (dia/mês/ano) e converta para o formato: "Dia de Nome-do-Mês-por-Extenso de Ano".
+ * Em caso de datas mal-formadas, devolva "Data inválida".
+ *
+ * Use a função desenvolvida no exercício anterior para decobrir se a data é ou não válida.
  *
  * Exemplos:
  *  - 10/11/2019 -> 10 de Novembro de 2019
  *  - 03/02/2000 -> 03 de Fevereiro de 2000
+ *  - 31/02/2000 -> Data inválida
+ *  - blablabla  -> Data inválida
  *
  * Observação: Note a letra maiúscula do mês.
- * Observação 2: Não se preocupe com entradas mal-formadas.
  *
  * @param {String} data String com a data no formato brasileiro (dia/mês/ano).
- * @returns {String} Data no formato 'Dia de Nome-do-Mês-por-Extenso de Ano'.
+ * @returns {String} Data no formato "Dia de Nome-do-Mês-por-Extenso de Ano" ou "Data inválida".
  */
 function converteDataParaFormaCompleta(data) {
     naoFizIssoAinda();
 }
 
-// EXERCÍCIO 7.
+// EXERCÍCIO 8.
 /**
  * Escreva uma função que receba dois números inteiros positivos e devolva a soma de todos
  * os números pares entre os dois números (eles inclusive).
@@ -190,7 +212,7 @@ function somadorPares(inicio, fim) {
     naoFizIssoAinda();
 }
 
-// EXERCÍCIO 8.
+// EXERCÍCIO 9.
 /**
  * Recebe um vetor de números e retorna o menor elemento do vetor.
  * Se o vetor estiver vazio, retorna undefined.
@@ -201,7 +223,7 @@ function acharMenor(vetor) {
     naoFizIssoAinda();
 }
 
-// EXERCÍCIO 9.
+// EXERCÍCIO 10.
 /**
  * Recebe um vetor de números e devolve um outro vetor apenas com os números pares deste vetor.
  * Se o vetor estiver vazio, devolve um vetor vazio.
@@ -212,7 +234,7 @@ function acharPares(vetor) {
     naoFizIssoAinda();
 }
 
-// EXERCÍCIO 10.
+// EXERCÍCIO 11.
 /**
  * Escreva uma função que recebe um dicionário com os dados da pessoa, calule o IMC dela colocando o valor obtido
  * na propriedade IMC deste objeto e retorne uma string contendo o o estado do peso dessa pessoa.
@@ -238,7 +260,7 @@ function calcularImc(pessoa) {
     naoFizIssoAinda();
 }
 
-// EXERCÍCIO 11.
+// EXERCÍCIO 12.
 /**
  * Escreva uma função que recebe os três lados de um triângulo e retorne qual tipo de triângulo é.
  *
@@ -256,13 +278,13 @@ function tipoTriangulo(a, b, c) {
     naoFizIssoAinda();
 }
 
-// EXERCÍCIO 12.
+// EXERCÍCIO 13.
 /**
  * No HTML, existe uma <div id="triangulo">.
  * Dentro desta <div> há três <input>s à esquerda de um <button> e um quarto <input> à direita.
  * Ao clicar neste <button>:
  * 1. Leia os valores dos primeiros três <input>s.
- * 2. Converta os valores lidos para valores numéricos (use a função lerNumero que já está aí, ela veio do ac3.html).
+ * 2. Converta os valores lidos para valores numéricos (use a função lerNumero que já está aí, ela veio do utils.js).
  * 3. Utilize a função tipoTriangulo do exercício 11 para saber qual tipo de triângulo é o resultado disso.
  * 4. Coloque o nome do tipo de triângulo resultante na <input> à direita do <button>.
  *
@@ -285,7 +307,7 @@ function verificarTriangulo() {
     naoFizIssoAinda();
 }
 
-// Classe para os exercícios 13 a 19.
+// Classe para os exercícios 14 a 20.
 /**
  * A classe AlunoMatricula representa os dados de um(a) aluno(a) matriculado(a) em alguma disciplina.
  * Nesta classe temos o nome do(a) aluno(a), o gênero dele(a) e o nome da disciplina, bem como as notas
@@ -301,7 +323,7 @@ function verificarTriangulo() {
  */
 class AlunoMatricula {
 
-    // EXERCÍCIO 13.
+    // EXERCÍCIO 14.
     /**
      * Considerando a descrição da classe como dada acima, implemente o construtor dela.
      * Basta salvar todos os valores recebidos dentro do "this". O nome dos campos
@@ -324,10 +346,10 @@ class AlunoMatricula {
         naoFizIssoAinda();
     }
 
-    // EXERCÍCIO 14.
+    // EXERCÍCIO 15.
     // Crie os métodos getters necessários de todos os parâmetros recebidos no construtor aqui.
 
-    // EXERCÍCIO 15.
+    // EXERCÍCIO 16.
     /**
      * Este método calcula a nota final do(a) aluno(a) na disciplina. Ela é calculada da seguinte forma:
      *
@@ -344,7 +366,7 @@ class AlunoMatricula {
      *
      * Dica: Use o método Math.round. No entanto, para obter múltiplos de 0.5 ao invés de
      * apenas números inteiros, você vai precisar de um pouquinho de "criatividade com matemática".
-     * Dica 2: Lembra da função acharMenor do exercício 8? Ela pode ser útil aqui.
+     * Dica 2: Lembra da função acharMenor do exercício 9? Ela pode ser útil aqui.
      *
      * @returns {number} A média final do(a) aluno(a) na disciplina.
      */
@@ -352,7 +374,7 @@ class AlunoMatricula {
         naoFizIssoAinda();
     }
 
-    // EXERCÍCIO 16.
+    // EXERCÍCIO 17.
     /**
      * Este método deve retornar a situação do(a) aluno(a), que é uma dessas 4:
      * - "AP" se o(a) aluno(a) foi aprovado(a).
@@ -365,7 +387,7 @@ class AlunoMatricula {
      *
      * - Lembrando também que é necessário pelo menos 75% de presença.
      *
-     * Dica: Use o método media() do exercício 15.
+     * Dica: Use o método media() do exercício 16.
      *
      * @returns {String} A situação final do(a) aluno(a) na disciplina.
      */
@@ -373,7 +395,7 @@ class AlunoMatricula {
         naoFizIssoAinda();
     }
 
-    // EXERCÍCIO 17.
+    // EXERCÍCIO 18.
     /**
      * Este método é muito parecido com o do exercício anterior. No entanto, ele deve retornar a situação por exetenso.
      * Ou seja:
@@ -382,7 +404,7 @@ class AlunoMatricula {
      * - Deve retornar "reprovado por falta" ou "reprovada por falta" ao invés de "RF".
      * - Deve retornar "reprovado por média e falta" ou "reprovada por média e falta" ao invés de "RMF".
      *
-     * Dica: Use o método situacao definido no exercício 16 e use também o gênero do(a) aluno(a) para decidir o que retornar.
+     * Dica: Use o método situacao definido no exercício 17 e use também o gênero do(a) aluno(a) para decidir o que retornar.
      *
      * @returns {String} A situação final do(a) aluno(a) na disciplina, escrito por extenso.
      */
@@ -390,7 +412,7 @@ class AlunoMatricula {
         naoFizIssoAinda();
     }
 
-    // EXERCÍCIO 18.
+    // EXERCÍCIO 19.
     /**
      * Este método deve retornar uma string contendo uma frase de status do(a) aluno(a) no seguinte formato:
      * <nome> tem média <média> na disciplina de <disciplina> e foi <situação> com <presença>% de presença.
@@ -398,7 +420,7 @@ class AlunoMatricula {
      * É importante que a média tenha sempre uma casa decimal após a vírgula e que a presença seja uma
      * porcentagem inteira, sem casas decimais.
      *
-     * Dica: Use os métodos media e situacaoPorExtenso definidos nos exercícios 15 e 17.
+     * Dica: Use os métodos media e situacaoPorExtenso definidos nos exercícios 16 e 18.
      *
      * Exemplos:
      *
@@ -418,7 +440,7 @@ class AlunoMatricula {
     }
 }
 
-// EXERCÍCIO 19.
+// EXERCÍCIO 20.
 /**
  * Esta função já está quase pronta.
  *
@@ -426,29 +448,37 @@ class AlunoMatricula {
  * e colocar o status dessa instância no elemento #notas. Se ocorrer algum erro que impossibilite este processo,
  * a mensagem de erro será colocada em #notas.
  *
- * Use as funções lerTexto, lerPresenca e lerNota que são disponibilizadas no ac3.html.
+ * Use as funções auxiliares disponibilizadas dentro da função. A função lerNumero vem do utils.js.
  *
  * Um esqueleto da implementação final já foi deixado pelo professor para ajudar.
  * Dica: Procure ver funções de manipulação de DOM nas partes que faltam (o que está como naoFizIssoAinda()).
  */
 function verificarAlunoMatriculado() {
+    function lerNota(texto) {
+        return lerNumero(texto, {min: 0, max: 10, casas: 2, erro: "Informe a nota corretamente."});
+    }
+
+    function lerPresenca(texto) {
+        return lerNumero(texto, {min: 0, max: 100, casas: 0, erro: "Informe o valor corretamente."});
+    }
+
+    function lerTexto(texto) {
+        if (texto.trim() === "") throw new Error("Informe os dados corretamente.");
+        return texto.trim();
+    }
+
     // Comece a mexer no código daqui para baixo.
     let texto;
     try {
-        const nome        = lerTexto(document.querySelector("#nome").value, "Informe o nome do(a) aluno(a) corretamente.");
+        const nome = lerTexto(document.querySelector("#nome").value,);
         const escolheuEle = naoFizIssoAinda();
         const escolheuEla = naoFizIssoAinda();
         if (!escolheuEle && !escolheuEla) throw new Error("Escolha o gênero do(a) aluno(a) corretamente.");
         const genero = escolheuEle ? "M" : "F";
-        const disciplina  = lerTexto(naoFizIssoAinda(), "Informe o nome da disciplina corretamente.");
-        const ac1 = lerNota(naoFizIssoAinda(), "Informe a nota do AC 1 corretamente, entre 0 e 10, com até duas casas decimais.");
-        const ac2 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
-        const ac3 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
-        const ac4 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
-        const ac5 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
-        const prova = lerNota(naoFizIssoAinda(), "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.");
-        const sub = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
-        const presenca = lerPresenca(naoFizIssoAinda(), "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.");
+        const disciplina = naoFizIssoAinda();
+        const ac1 = lerNota(naoFizIssoAinda());
+        const prova = lerNota(naoFizIssoAinda());
+        const presenca = lerPresenca(naoFizIssoAinda());
         texto = new AlunoMatricula(naoFizIssoAinda()).status;
     } catch (e) {
         texto = naoFizIssoAinda();
@@ -459,7 +489,7 @@ function verificarAlunoMatriculado() {
     document.querySelector("#notas").append(li);
 }
 
-// EXERCÍCIO 20.
+// EXERCÍCIO 21.
 /**
  * Esta função recebe um array com várias opções acerca de como você deve fazer a entrega deste AC.
  *

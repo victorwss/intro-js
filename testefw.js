@@ -12,14 +12,164 @@ function naoFizIssoAinda() {
 
 const TesteFw = (() => {
 
-    function escapeHtml(unsafe) {
-        return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+    // Funções utilitárias.
+
+    class Utilitarios {
+
+        constructor() {
+            throw new Error("Não é para instanciar isto!");
+        }
+
+        static escapeHtml(unsafe) {
+            return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+        }
+
+        static deepEqual(x, y) {
+            if (x === y) return true;
+            if (x !== x && y !== y) return true; // NaN === NaN
+            if (x === null || y === null || typeof x !== "object" || typeof y !== "object") return false;
+            if (Object.keys(x).length !== Object.keys(y).length) return false;
+
+            for (let prop in x) {
+                if (!y.hasOwnProperty(prop) || !Utilitarios.deepEqual(x[prop], y[prop])) return false;
+            }
+
+            return true;
+        }
+
+        static deepDiff(x, y) {
+            const xStack = [];
+            const yStack = [];
+
+            function diffFindInner(x, y) {
+                if (x === y) return null;
+                if (x !== x && y !== y) return null; // NaN === NaN
+
+                // Testes rasos lembrando que o === já falhou.
+                if (x === null || x === undefined || y === null || y === undefined) {
+                    return [
+                            x === undefined ? "(undefined)" : x === null ? "(null)" : "(value)",
+                            y === undefined ? "(undefined)" : y === null ? "(null)" : "(value)"
+                    ];
+                };
+                if (typeof x !== typeof y) return [`(typeof === ${typeof x})`, `(typeof === ${typeof y})`];
+                if (typeof x !== "object") return [`(value === ${x})`, `(value === ${y})`];
+
+                const xc = x.constructor.name;
+                const yc = y.constructor.name;
+                if (xc !== yc) return [`(class === ${xc})`, `(class === ${yc})`];
+
+                const xs = Object.keys(x).length;
+                const ys = Object.keys(y).length;
+                if (xs !== ys) return [`(length == ${xs})`, `(length == ${ys})`];
+
+                for (let prop in x) {
+                    if (!y.hasOwnProperty(prop)) return [prop, `(undefined ${prop})`];
+                    let p, q;
+                    for (let v = 0; v < xStack.length - 1; v++) {
+                        if (xStack[v] === x) {
+                            p = v;
+                            break;
+                        }
+                    }
+                    for (let v = 0; v < yStack.length - 1; v++) {
+                        if (yStack[v] === y) {
+                            q = v;
+                            break;
+                        }
+                    }
+                    if (p === q && p !== undefined) continue; // Evita recursão infinita.
+                    if (p !== undefined || q !== undefined) return [`${p} (${prop})`, `${q} (${prop})`];
+                    const dif = diffFind(x[prop], y[prop]);
+                    if (dif !== null) return [`${prop}->${dif[0]}`, `${prop}->${dif[1]}`];
+                }
+
+                return null;
+            }
+
+            function diffFind(x, y) {
+                try {
+                    xStack.push(x);
+                    yStack.push(y);
+                    return diffFindInner(x, y);
+                } finally {
+                    xStack.pop();
+                    yStack.pop();
+                }
+            }
+
+            return diffFind(x, y);
+        }
+
+        static listGetters(instance) {
+            return Object.entries(Object.getOwnPropertyDescriptors(Reflect.getPrototypeOf(instance)))
+                    .filter(e => typeof e[1].get === 'function' && e[0] !== '__proto__')
+                    .map(e => e[0]);
+        }
+
+        static extractGetters(instance, ordenar) {
+            let getters = Utilitarios.listGetters(instance);
+            if (ordenar) getters = ordenar(getters);
+            const result = {};
+            getters.forEach(prop => {
+                try {
+                    result[prop] = instance[prop];
+                } catch (e) {
+                    result[prop] = e;
+                }
+            });
+            return result;
+        }
     }
+
+    // https://stackoverflow.com/a/47593316/540552 - xoshiro128ss
+    class Xoshiro128ssSeedRandom {
+        #a; #b; #c; #d;
+
+        constructor(a, b, c, d) {
+            this.#a = a >>> 0;
+            this.#b = b >>> 0;
+            this.#c = c >>> 0;
+            this.#d = d >>> 0;
+        }
+
+        next() {
+            let a = this.#a, b = this.#b, c = this.#c, d = this.#d;
+            const t = b << 9;
+            let r = a * 5;
+            r = (r << 7 | r >>> 25) * 9;
+            c ^= a;
+            d ^= b;
+            b ^= c;
+            a ^= d;
+            c ^= t;
+            d = d << 11 | d >>> 21;
+            this.#a = a;
+            this.#b = b;
+            this.#c = c;
+            this.#d = d;
+            return (r >>> 0) / 4294967296;
+        }
+
+        nextInt(min, max) {
+            return min + Math.floor(this.next() * (max - min + 1));
+        }
+
+        embaralhar(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = this.nextInt(0, i);
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    }
+
+    // Classes do framework de teste.
 
     class Grupo {
         #sucessos = 0;
@@ -144,8 +294,8 @@ const TesteFw = (() => {
         constructor(regra, execucao, testeDoResultado, preCondicao, posOperacao) {
             const tamanhoPrefixo = "() => ".length;
             const codigo = execucao.toString().substring(tamanhoPrefixo);
-            const escapeRegra = escapeHtml(regra);
-            const escapeCodigo = escapeHtml(codigo);
+            const escapeRegra = Utilitarios.escapeHtml(regra);
+            const escapeCodigo = Utilitarios.escapeHtml(codigo);
             const elemento = document.createElement("li");
             elemento.classList.add("testefw-exercicio", "testefw-futuro");
             elemento.innerHTML = ""
@@ -177,10 +327,15 @@ const TesteFw = (() => {
                     ok = true;
                     return atualizarHtml("ok", undefined, `Resultado obtido: <span class="testefw-funcionou">Funcionou como esperado.</span>`);
                 } catch (e) {
-                    if (e instanceof NaoImplementadoAinda) return atualizarHtml("niy", undefined, `Resultado obtido: <span class="testefw-naoimplementado">Não implementado ainda.</span>`);
+                    if (e instanceof NaoImplementadoAinda) {
+                        return atualizarHtml("niy", undefined, `Resultado obtido: <span class="testefw-naoimplementado">Não implementado ainda.</span>`);
+                    }
                     if (e instanceof ErroFormatado) return atualizarHtml("erro", e.esperado, e.obtido);
                     console.log(e);
-                    return atualizarHtml("erro", undefined, `Resultado obtido: Um erro inesperado - <span class="testefw-inesperado">[${e.constructor.name}] ${escapeHtml(e.message)}</span>`);
+                    const msg = ``
+                            + `Resultado obtido: Um erro inesperado - `
+                            + `<span class="testefw-inesperado">[${e.constructor.name}] ${Utilitarios.escapeHtml(e.message)}</span>`;
+                    return atualizarHtml("erro", undefined, msg);
                 } finally {
                     if (posOperacao) posOperacao(ok);
                 }
@@ -205,94 +360,11 @@ const TesteFw = (() => {
         }
     }
 
-    function deepEqual(x, y) {
-        if (x === y) return true;
-        if (x !== x && y !== y) return true; // NaN === NaN
-        if (x === null || y === null || typeof x !== "object" || typeof y !== "object") return false;
-        if (Object.keys(x).length !== Object.keys(y).length) return false;
-
-        for (let prop in x) {
-            if (!y.hasOwnProperty(prop) || !deepEqual(x[prop], y[prop])) return false;
-        }
-
-        return true;
-    }
-
-    function deepDiff(x, y) {
-        const xStack = [];
-        const yStack = [];
-
-        function diffFindInner(x, y) {
-            if (x === y) return null;
-            if (x !== x && y !== y) return null; // NaN === NaN
-
-            // Testes rasos lembrando que o === já falhou.
-            if (x === null || x === undefined || y === null || y === undefined) {
-                return [
-                        x === undefined ? "(undefined)" : x === null ? "(null)" : "(value)",
-                        y === undefined ? "(undefined)" : y === null ? "(null)" : "(value)"
-                ];
-            };
-            if (typeof x !== typeof y) return [`(typeof === ${typeof x})`, `(typeof === ${typeof y})`];
-            if (typeof x !== "object") return [`(value === ${x})`, `(value === ${y})`];
-
-            const xc = x.constructor.name;
-            const yc = y.constructor.name;
-            if (xc !== yc) return [`(class === ${xc})`, `(class === ${yc})`];
-
-            const xs = Object.keys(x).length;
-            const ys = Object.keys(y).length;
-            if (xs !== ys) return [`(length == ${xs})`, `(length == ${ys})`];
-
-            for (let prop in x) {
-                if (!y.hasOwnProperty(prop)) return [prop, `(undefined ${prop})`];
-                let p, q;
-                for (let v = 0; v < xStack.length - 1; v++) {
-                    if (xStack[v] === x) {
-                        p = v;
-                        break;
-                    }
-                }
-                for (let v = 0; v < yStack.length - 1; v++) {
-                    if (yStack[v] === y) {
-                        q = v;
-                        break;
-                    }
-                }
-                if (p === q && p !== undefined) continue; // Evita recursão infinita.
-                if (p !== undefined || q !== undefined) return [`${p} (${prop})`, `${q} (${prop})`];
-                const dif = diffFind(x[prop], y[prop]);
-                if (dif !== null) return [`${prop}->${dif[0]}`, `${prop}->${dif[1]}`];
-            }
-
-            return null;
-        }
-
-        function diffFind(x, y) {
-            try {
-                xStack.push(x);
-                yStack.push(y);
-                return diffFindInner(x, y);
-            } finally {
-                xStack.pop();
-                yStack.pop();
-            }
-        }
-
-        return diffFind(x, y);
-    }
-
-    function determinarTipo(elemento) {
-        if (elemento === null) return "null";
-        if (typeof elemento !== "object") return typeof elemento;
-        return elemento.constructor.name;
-    }
-
     function igual(valorEsperado) {
-        const v1 = typeof valorEsperado === "string" ? `"${valorEsperado}"` : escapeHtml("" + valorEsperado);
+        const v1 = typeof valorEsperado === "string" ? `"${valorEsperado}"` : Utilitarios.escapeHtml("" + valorEsperado);
         return {
             testar: valorObtido => {
-                const diff = deepDiff(valorEsperado, valorObtido);
+                const diff = Utilitarios.deepDiff(valorEsperado, valorObtido);
                 if (diff === null) return;
                 throw new ErroFormatado(valorEsperado, valorObtido, diff);
             },
@@ -315,40 +387,6 @@ const TesteFw = (() => {
                 + "<p>Este é um erro gravíssimo. Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
                 + "<p>Quem entregar para o professor algo que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
         document.body.prepend(zoado);
-    }
-
-    // https://stackoverflow.com/a/47593316/540552 - xoshiro128ss
-    class RepeatableRandom {
-        #a; #b; #c; #d;
-
-        constructor(a, b, c, d) {
-            this.#a = a >>> 0;
-            this.#b = b >>> 0;
-            this.#c = c >>> 0;
-            this.#d = d >>> 0;
-        }
-
-        next() {
-            let a = this.#a, b = this.#b, c = this.#c, d = this.#d;
-            const t = b << 9;
-            let r = a * 5;
-            r = (r << 7 | r >>> 25) * 9;
-            c ^= a;
-            d ^= b;
-            b ^= c;
-            a ^= d;
-            c ^= t;
-            d = d << 11 | d >>> 21;
-            this.#a = a;
-            this.#b = b;
-            this.#c = c;
-            this.#d = d;
-            return (r >>> 0) / 4294967296;
-        }
-
-        nextInt(min, max) {
-            return min + Math.floor(this.next() * (max - min + 1));
-        }
     }
 
     class Suite {
@@ -477,12 +515,12 @@ const TesteFw = (() => {
             return naoDeuErro;
         }
 
-        get escapeHtml() {
-            return escapeHtml;
+        get Utilitarios() {
+            return Utilitarios;
         }
 
-        get RepeatableRandom() {
-            return RepeatableRandom;
+        get Xoshiro128ssSeedRandom() {
+            return Xoshiro128ssSeedRandom;
         }
     }
 
@@ -491,9 +529,9 @@ const TesteFw = (() => {
         #obtido;
 
         constructor(valorEsperado, valorObtido, diff) {
-            const v1 = typeof valorEsperado === "string" ? `"${valorEsperado}"` : escapeHtml("" + valorEsperado);
+            const v1 = typeof valorEsperado === "string" ? `"${valorEsperado}"` : Utilitarios.escapeHtml("" + valorEsperado);
             const t1 = determinarTipo(valorEsperado);
-            const v2 = typeof valorObtido === "string" ? `"${valorObtido}"` : escapeHtml("" + valorObtido);
+            const v2 = typeof valorObtido === "string" ? `"${valorObtido}"` : Utilitarios.escapeHtml("" + valorObtido);
             const t2 = determinarTipo(valorObtido);
             let esperado, obtido;
             if (t1 === t2 && v1 === v2) {

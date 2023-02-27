@@ -5,10 +5,10 @@ const executarTestes = TesteFw(funcs => {
     const teste = funcs.teste;
     const igual = funcs.igual;
     const naoDeuErro = funcs.naoDeuErro;
-    const escapeHtml = funcs.escapeHtml;
-    const RepeatableRandom = funcs.RepeatableRandom;
+    const Utilitarios = funcs.Utilitarios;
+    const Xoshiro128ssSeedRandom = funcs.Xoshiro128ssSeedRandom;
     const numeroMaximoDeAlunos = 5;
-    const random = new RepeatableRandom(
+    const random = new Xoshiro128ssSeedRandom(
             Math.sqrt(2) * 2 ** 32,
             Math.sqrt(3) * 2 ** 32,
             Math.sqrt(5) * 2 ** 32,
@@ -92,7 +92,7 @@ const executarTestes = TesteFw(funcs => {
 
     function testOk() { return jsonOk; }
 
-    grupo("Exercício 1", "Maior dos quatro", true, 0.3, () => [
+    grupo("Exercício 1", "Maior dos quatro", true, 0.2, () => [
         teste("O maior de 1, 3, 5, 7 é 7."     , () => maiorDosQuatro( 1,  3,  5,  7), igual( 7), testOk),
         teste("O maior de 1, 3, 5, 9 é 9."     , () => maiorDosQuatro( 1,  3,  5,  9), igual( 9), testOk),
         teste("O maior de 1, 3, 5, 0 é 5."     , () => maiorDosQuatro( 1,  3,  5,  0), igual( 5), testOk),
@@ -102,15 +102,43 @@ const executarTestes = TesteFw(funcs => {
         teste("O maior de -4, -2, -9, -3 é -2.", () => maiorDosQuatro(-4, -2, -9, -3), igual(-2), testOk),
     ]);
 
-    grupo("Exercício 2", "Operações", true, 0.5, () => [
-        teste("3.5 + 4 deve voltar 7.5."                      , () => operacoesBasicas("A",  3.5, 4   ), igual(  7.5    ), testOk),
-        teste("9 - 1.75 deve voltar 7.25."                    , () => operacoesBasicas("S",  9  , 1.75), igual(  7.25   ), testOk),
-        teste("1.8 * 7 deve voltar 12.6."                     , () => operacoesBasicas("M",  1.8, 7   ), igual( 12.6    ), testOk),
-        teste("7 / 2 deve voltar 3.5."                        , () => operacoesBasicas("D",  7  , 2   ), igual(  3.5    ), testOk),
-        teste("8 elevado a 3 deve voltar 512."                , () => operacoesBasicas("P",  8  , 3   ), igual(512      ), testOk),
-        teste("Divisão por zero não deve ser possível."       , () => operacoesBasicas("D", 32  , 0   ), igual(NaN      ), testOk),
-        teste("Operação que não existe deve voltar undefined.", () => operacoesBasicas("Z",  1  , 2   ), igual(undefined), testOk),
-        teste("Operação que não existe deve voltar undefined.", () => operacoesBasicas("d",  1  , 2   ), igual(undefined), testOk),
+    grupo("Exercício 2 - parte 1 (caminho feliz)", "Operações", true, 0.3, () => [
+        teste("0 + 0 deve voltar 0."              , () => operacoesBasicas("A",  0  ,  0   ), igual(  0    ), testOk),
+        teste("3.5 + 4 deve voltar 7.5."          , () => operacoesBasicas("A",  3.5,  4   ), igual(  7.5  ), testOk),
+        teste("8 + -4 deve voltar 4."             , () => operacoesBasicas("A",  8  , -4   ), igual(  4    ), testOk),
+        teste("-3.5 + 4 deve voltar 0.5."         , () => operacoesBasicas("A", -3.5,  4   ), igual(  0.5  ), testOk),
+        teste("9 - 1.75 deve voltar 7.25."        , () => operacoesBasicas("S",  9  ,  1.75), igual(  7.25 ), testOk),
+        teste("9.1 - -1.1 deve voltar 10.2."      , () => operacoesBasicas("S",  9.1, -1.1 ), igual( 10.2  ), testOk),
+        teste("4 - 4 deve voltar 0."              , () => operacoesBasicas("S",  4  ,  4   ), igual(  0    ), testOk),
+        teste("1.8 * 7 deve voltar 12.6."         , () => operacoesBasicas("M",  1.8,  7   ), igual( 12.6  ), testOk),
+        teste("4 * -4 deve voltar -16."           , () => operacoesBasicas("M",  4  , -4   ), igual(-16    ), testOk),
+        teste("0 * 999 deve voltar 0."            , () => operacoesBasicas("M",  0  ,999   ), igual(  0    ), testOk),
+        teste("7 / 2 deve voltar 3.5."            , () => operacoesBasicas("D",  7  ,  2   ), igual(  3.5  ), testOk),
+        teste("7 / 0.5 deve voltar 14."           , () => operacoesBasicas("D",  7  ,  0.5 ), igual( 14    ), testOk),
+        teste("0 / 5 deve voltar 0."              , () => operacoesBasicas("D",  0  ,  5   ), igual(  0    ), testOk),
+        teste("0.2 / 0.1 deve voltar 2."          , () => operacoesBasicas("D",  0.2,  0.1 ), igual(  2    ), testOk),
+        teste("8 elevado a 3 deve voltar 512."    , () => operacoesBasicas("P",  8  ,  3   ), igual(512    ), testOk),
+        teste("-3 elevado a 4 deve voltar 81."    , () => operacoesBasicas("P", -3  ,  4   ), igual( 81    ), testOk),
+        teste("0.5 elevado a 3 deve voltar 0.125.", () => operacoesBasicas("P",  0.5,  3   ), igual(  0.125), testOk),
+        teste("-2 elevado a 5 deve voltar -32."   , () => operacoesBasicas("P", -2  ,  5   ), igual(-32    ), testOk),
+        teste("50 elevado a 0 deve voltar 1."     , () => operacoesBasicas("P", 50  ,  0   ), igual(  1    ), testOk),
+        teste("0 elevado a 33 deve voltar 0."     , () => operacoesBasicas("P",  0  , 33   ), igual(  0    ), testOk)
+    ]);
+
+    grupo("Exercício 2 - parte 2 (caminho infeliz)", "Operações", true, 0.2, () => [
+        teste("0 elevado a 0 não deve ser possível."   , () => operacoesBasicas("P",  0,  0  ), igual(NaN), testOk),
+        teste("0 elevado a -1 não deve ser possível."  , () => operacoesBasicas("P",  0, -1  ), igual(NaN), testOk),
+        teste("-1 elevado a 0.5 não deve ser possível.", () => operacoesBasicas("P", -1,  0.5), igual(NaN), testOk),
+        teste("-3 elevado a 7.6 não deve ser possível.", () => operacoesBasicas("P", -3,  7.6), igual(NaN), testOk),
+        teste("Divisão por zero não deve ser possível.", () => operacoesBasicas("D", 32,  0  ), igual(NaN), testOk),
+        teste("0 / 0 não deve ser possível."           , () => operacoesBasicas("D",  0,  0  ), igual(NaN), testOk),
+        teste("Operação Z que não existe deve voltar undefined."       , () => operacoesBasicas("Z"      , 1, 2), igual(undefined), testOk),
+        teste("Operação d que não existe deve voltar undefined."       , () => operacoesBasicas("d"      , 3, 4), igual(undefined), testOk),
+        teste("Operação s que não existe deve voltar undefined."       , () => operacoesBasicas("s"      , 5, 6), igual(undefined), testOk),
+        teste("Operação Abacaxi que não existe deve voltar undefined." , () => operacoesBasicas("Abacaxi", 0, 8), igual(undefined), testOk),
+        teste("Operação [branco] que não existe deve voltar undefined.", () => operacoesBasicas(""       , 7, 9), igual(undefined), testOk),
+        teste("Operação @ que não existe deve voltar undefined."       , () => operacoesBasicas("@"      , 6, 1), igual(undefined), testOk),
+        teste("Operação !#& que não existe deve voltar undefined."     , () => operacoesBasicas("!#&"    , 3, 0), igual(undefined), testOk),
     ]);
 
     grupo("Exercício 3", "Comparador básico", true, 0.5, () => {
@@ -154,7 +182,7 @@ const executarTestes = TesteFw(funcs => {
             teste("false e 0 são equivalentes."                     , () => comparadorBasico(false, 0    ), igual("Elemento false (boolean) é equivalente ao elemento 0 (number)."                        ), testOk),
             teste("true e 2 são diferentes."                        , () => comparadorBasico(true , 2    ), igual("Elemento true (boolean) é diferente do elemento 2 (number)."                           ), testOk),
 
-            // E eis aqui está o motivo mais forte para nunca se usar == e sempre usar ===.
+            // E eis aqui um forte motivo para nunca se usar == e != e sempre usar === e !==.
             teste(`Fornecedora Paula e nome Paula são equivalentes. ${droga}`, () => comparadorBasico(paula, "Paula"), igual("Elemento Paula (Fornecedor) é equivalente ao elemento Paula (string)."), testOk),
             teste(`Uva e true são equivalentes. ${droga}`                    , () => comparadorBasico(uva  ,   true ), igual("Elemento 1 (Uva) é equivalente ao elemento true (boolean)."           ), testOk),
         ];
@@ -166,6 +194,7 @@ const executarTestes = TesteFw(funcs => {
         teste("Tatá Wernerck deve retornar Tatá." , () => primeiroNome("Tatá"          ), igual("Tatá"  ), testOk),
         teste("Robson deve retornar Robson."      , () => primeiroNome("Robson"        ), igual("Robson"), testOk),
         teste("Victor deve retornar Victor."      , () => primeiroNome("Victor"        ), igual("Victor"), testOk),
+        teste("Ana Júlia deve retornar Ana."      , () => primeiroNome("Ana Júlia"     ), igual("Ana"   ), testOk),
     ]);
 
     grupo("Exercício 5", "Nome abreviado", true, 0.3, () => [
@@ -174,57 +203,128 @@ const executarTestes = TesteFw(funcs => {
         teste("Tatá Wernerck deve retornar Tatá W." , () => abreviadorNomes("Tatá Wernerck" ), igual("Tatá W."  ), testOk),
         teste("Robson deve retornar Robson."        , () => abreviadorNomes("Robson"        ), igual("Robson"   ), testOk),
         teste("Victor deve retornar Victor."        , () => abreviadorNomes("Victor"        ), igual("Victor"   ), testOk),
+        teste("Ana Júlia deve retornar Ana J."      , () => abreviadorNomes("Ana Júlia"     ), igual("Ana J."   ), testOk),
     ]);
 
-    grupo("Exercício 6", "Datas", true, 0.6, () => {
-        const datas = {
-            "31/01/1975": "31 de Janeiro de 1975",
-            "10/02/2219": "10 de Fevereiro de 2219",
-            "28/03/1677": "28 de Março de 1677",
-            "07/04/1944": "07 de Abril de 1944",
-            "14/05/2001": "14 de Maio de 2001",
-            "22/06/1789": "22 de Junho de 1789",
-            "31/07/1821": "31 de Julho de 1821",
-            "25/08/1982": "25 de Agosto de 1982",
-            "12/09/2044": "12 de Setembro de 2044",
-            "01/10/3566": "01 de Outubro de 3566",
-            "04/11/1210": "04 de Novembro de 1210",
-            "03/12/1777": "03 de Dezembro de 1777",
-            "09/01/1500": "09 de Janeiro de 1500",
-            "12/02/1989": "12 de Fevereiro de 1989",
-            "24/03/2022": "24 de Março de 2022",
-            "20/04/2020": "20 de Abril de 2020",
-            "16/05/2090": "16 de Maio de 2090",
-            "19/06/2051": "19 de Junho de 2051",
-            "13/07/2030": "13 de Julho de 2030",
-            "13/08/1967": "13 de Agosto de 1967",
-            "13/09/1923": "13 de Setembro de 1923",
-            "29/10/1848": "29 de Outubro de 1848",
-            "30/11/1625": "30 de Novembro de 1625",
-            "31/12/1044": "31 de Dezembro de 1044",
-        };
+    const datasBoas = {
+        "31/01/1975": "31 de Janeiro de 1975",
+        "10/02/2219": "10 de Fevereiro de 2219",
+        "28/03/1677": "28 de Março de 1677",
+        "07/04/1944": "07 de Abril de 1944",
+        "14/05/2001": "14 de Maio de 2001",
+        "22/06/1789": "22 de Junho de 1789",
+        "31/07/1821": "31 de Julho de 1821",
+        "25/08/1982": "25 de Agosto de 1982",
+        "12/09/2044": "12 de Setembro de 2044",
+        "01/10/3566": "01 de Outubro de 3566",
+        "04/11/1210": "04 de Novembro de 1210",
+        "03/12/1777": "03 de Dezembro de 1777",
+        "09/01/1500": "09 de Janeiro de 1500",
+        "12/02/1989": "12 de Fevereiro de 1989",
+        "24/03/2022": "24 de Março de 2022",
+        "30/04/2020": "30 de Abril de 2020",
+        "16/05/2090": "16 de Maio de 2090",
+        "19/06/2051": "19 de Junho de 2051",
+        "13/07/2030": "13 de Julho de 2030",
+        "13/08/1967": "13 de Agosto de 1967",
+        "13/09/1923": "13 de Setembro de 1923",
+        "29/10/1848": "29 de Outubro de 1848",
+        "30/11/1625": "30 de Novembro de 1625",
+        "31/12/9999": "31 de Dezembro de 9999",
+        "01/01/0001": "01 de Janeiro de 0001",
+        "31/01/0001": "31 de Janeiro de 0001",
+        "29/02/2024": "29 de Fevereiro de 2024",
+        "29/02/1600": "29 de Fevereiro de 1600",
+        "31/03/0001": "31 de Março de 0001",
+        "31/05/2029": "31 de Maio de 2029",
+        "31/07/2023": "31 de Julho de 2023",
+        "31/08/1997": "31 de Agosto de 1997",
+        "31/10/1453": "31 de Outubro de 1453",
+    };
+
+    const datasRuins = [
+        "30/00/1756",
+        "32/01/2023",
+        "10/-1/1984",
+        "10/13/1984",
+        "00/04/1984",
+        "99/99/9999",
+        "-5/04/1928",
+        "29/02/2023",
+        "29/02/1900",
+        "29/02/2100",
+        "30/02/2023",
+        "30/02/2024",
+        "31/04/2023",
+        "31/06/2023",
+        "31/09/2023",
+        "31/11/2023",
+        "14-10-2023",
+        "14.10.2023",
+        "3/7/2023",
+        "12/08/0000",
+        "31/04/-001",
+        "  /  /    ",
+        " 1/ 1/  24",
+        "10/10/2010 xxx",
+        "abacaxi e pêra",
+        "zoado",
+        "WT/Fw/tfWTF",
+        ""
+    ];
+
+    grupo("Exercício 6 - parte 1 (caminho feliz)", "Datas", true, 0.3, () => {
         const testes = [];
-        for (const chave in datas) {
-            const valor = datas[chave];
+        for (const chave in datasBoas) {
+            const valor = datasBoas[chave];
+            testes.push(teste(`Data ${chave} é válida.`, () => dataValida(chave), igual(true), testOk));
+        }
+        return testes;
+    });
+
+    grupo("Exercício 6 - parte 2 (caminho infeliz)", "Datas", true, 0.2, () => {
+        const testes = [];
+        for (const chave in datasRuins) {
+            const valor = datasRuins[chave];
+            testes.push(teste(`Data ${chave} é inválida.`, () => dataValida(chave), igual(false), testOk));
+        }
+        return testes;
+    });
+
+    grupo("Exercício 7 - parte 1 (caminho feliz)", "Datas", true, 0.3, () => {
+        const testes = [];
+        for (const chave in datasBoas) {
+            const valor = datasBoas[chave];
             testes.push(teste(`Data ${chave} deve devolver ${valor}.`, () => converteDataParaFormaCompleta(chave), igual(valor), testOk));
         }
         return testes;
     });
 
-    grupo("Exercício 7", "Somar pares", true, 0.5, () => [
-        teste("1 e 4 deve devolver 6."  , () => somadorPares(1,  4), igual( 6), testOk),
-        teste("2 e 9 deve devolver 20." , () => somadorPares(2,  9), igual(20), testOk),
-        teste("2 e 10 deve devolver 30.", () => somadorPares(2, 10), igual(30), testOk),
-        teste("1 e 10 deve devolver 30.", () => somadorPares(1, 10), igual(30), testOk),
-        teste("2 e 11 deve devolver 30.", () => somadorPares(2, 11), igual(30), testOk),
-        teste("1 e 11 deve devolver 30.", () => somadorPares(1, 11), igual(30), testOk),
-        teste("2 e 12 deve devolver 42.", () => somadorPares(2, 12), igual(42), testOk),
-        teste("1 e 3 deve devolver 2."  , () => somadorPares(1,  3), igual( 2), testOk),
-        teste("8 e 8 deve devolver 8."  , () => somadorPares(8,  8), igual( 8), testOk),
-        teste("3 e 3 deve devolver 0."  , () => somadorPares(3,  3), igual( 0), testOk),
+    grupo("Exercício 7 - parte 2 (caminho infeliz)", "Datas", true, 0.2, () => {
+        const testes = [];
+        for (const chave in datasRuins) {
+            const valor = datasRuins[chave];
+            testes.push(teste(`Data ${chave} é inválida.`, () => converteDataParaFormaCompleta(chave), igual("Data inválida"), testOk));
+        }
+        return testes;
+    });
+
+    grupo("Exercício 8", "Somar pares", true, 0.4, () => [
+        teste("1 e 4 deve devolver 6."    , () => somadorPares(  1,  4), igual(  6), testOk),
+        teste("2 e 9 deve devolver 20."   , () => somadorPares(  2,  9), igual( 20), testOk),
+        teste("2 e 10 deve devolver 30."  , () => somadorPares(  2, 10), igual( 30), testOk),
+        teste("1 e 10 deve devolver 30."  , () => somadorPares(  1, 10), igual( 30), testOk),
+        teste("2 e 11 deve devolver 30."  , () => somadorPares(  2, 11), igual( 30), testOk),
+        teste("1 e 11 deve devolver 30."  , () => somadorPares(  1, 11), igual( 30), testOk),
+        teste("2 e 12 deve devolver 42."  , () => somadorPares(  2, 12), igual( 42), testOk),
+        teste("1 e 3 deve devolver 2."    , () => somadorPares(  1,  3), igual(  2), testOk),
+        teste("8 e 8 deve devolver 8."    , () => somadorPares(  8,  8), igual(  8), testOk),
+        teste("3 e 3 deve devolver 0."    , () => somadorPares(  3,  3), igual(  0), testOk),
+        teste("-20 e 20 deve devolver 0." , () => somadorPares(-20, 20), igual(  0), testOk),
+        teste("-20 e 10 deve devolver 80.", () => somadorPares(-20, 10), igual(-80), testOk),
     ]);
 
-    grupo("Exercício 8", "Achar o menor", true, 0.3, () => [
+    grupo("Exercício 9", "Achar o menor", true, 0.3, () => [
         teste("Se o vetor estiver vazio, devolve undefined."  , () => acharMenor([                            ]), igual(undefined), testOk),
         teste("Para [42] retorna 42."                         , () => acharMenor([                          42]), igual(       42), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna 1."               , () => acharMenor([         1,   2,  3,   4,  5]), igual(        1), testOk),
@@ -234,16 +334,17 @@ const executarTestes = TesteFw(funcs => {
         teste("Para [42, 12, 21, -27, 8, -22, 9] retorna -27.", () => acharMenor([42, 12, 21, -27,  8, -22,  9]), igual(      -27), testOk),
     ]);
 
-    grupo("Exercício 9", "Achar os pares", true, 0.4, () => [
+    grupo("Exercício 10", "Achar os pares", true, 0.4, () => [
         teste("Se o vetor estiver vazio, devolve um vetor vazio.", () => acharPares([               ]), igual([           ]), testOk),
         teste("Para [1, 3, 5, 7, 9] retorna vazio."              , () => acharPares([1, 3,  5,  7, 9]), igual([           ]), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna [2, 4]."             , () => acharPares([1, 2,  3,  4, 5]), igual([   2,  4   ]), testOk),
         teste("Para [1, 2, 3, 4, 0] retorna [2, 4, 0]."          , () => acharPares([1, 2,  3,  4, 0]), igual([   2,  4, 0]), testOk),
         teste("Para [1, 2, 3, -4, 0] retorna [2, -4, 0]."        , () => acharPares([1, 2,  3, -4, 0]), igual([   2, -4, 0]), testOk),
         teste("Para [6, 2, -3, -4, 0] retorna [6, 2, -4, 0]."    , () => acharPares([6, 2, -3, -4, 0]), igual([6, 2, -4, 0]), testOk),
+        teste("Para [6, 2, 6, 2, 3] retorna [6, 2, 6, 2]."       , () => acharPares([6, 2,  6,  2, 3]), igual([6, 2,  6, 2]), testOk),
     ]);
 
-    grupo("Exercício 10", "IMC", true, 0.6, () => [
+    grupo("Exercício 11", "IMC", true, 0.6, () => [
         teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:  50    , altura: 1.7  }), igual("Abaixo do peso"              ), testOk),
         teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:  60    , altura: 1.7  }), igual("Normal"                      ), testOk),
         teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso:  72.25 , altura: 1.7  }), igual("Excesso de peso"             ), testOk),
@@ -291,7 +392,7 @@ const executarTestes = TesteFw(funcs => {
         teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 100    , altura: 0.01 }), igual("Obesidade mórbida (Grau III)"), testOk),
     ]);
 
-    function teste11e12Feliz(func) {
+    function testeTrianguloFeliz(func) {
         return [
             teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , eval(`() => ${func}( 5  ,   5,  5  )`), igual("Equilátero"        ), testOk),
             teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , eval(`() => ${func}( 8  ,   8,  8  )`), igual("Equilátero"        ), testOk),
@@ -305,7 +406,7 @@ const executarTestes = TesteFw(funcs => {
         ];
     }
 
-    function teste11e12Infeliz(func) {
+    function testeTrianguloInfeliz(func) {
         return [
             teste('Deve devolver "Não é um triângulo" para 7.2, 1.5 e 3.', eval(`() => ${func}( 7.2, 2.5,  3  )`), igual("Não é um triângulo"), testOk),
             teste('Deve devolver "Não é um triângulo" para 1, 2 e 3.'    , eval(`() => ${func}( 1  , 2  ,  3  )`), igual("Não é um triângulo"), testOk),
@@ -315,6 +416,7 @@ const executarTestes = TesteFw(funcs => {
             teste('Deve devolver "Não é um triângulo" para 0, 2 e 1.'    , eval(`() => ${func}( 0  , 2  ,  1  )`), igual("Não é um triângulo"), testOk),
             teste('Deve devolver "Não é um triângulo" para 0, 2 e 0.'    , eval(`() => ${func}( 0  , 2  ,  0  )`), igual("Não é um triângulo"), testOk),
             teste('Deve devolver "Não é um triângulo" para 0, 0 e 0.'    , eval(`() => ${func}( 0  , 0  ,  0  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -1, -1 e -1.' , eval(`() => ${func}(-1  ,-1  , -1  )`), igual("Não é um triângulo"), testOk),
             teste('Deve devolver "Não é um triângulo" para 2, 2 e -1.'   , eval(`() => ${func}( 2  , 2  , -1  )`), igual("Não é um triângulo"), testOk),
             teste('Deve devolver "Não é um triângulo" para 2, -2 e 5.'   , eval(`() => ${func}( 2  ,-2  ,  5  )`), igual("Não é um triângulo"), testOk),
             teste('Deve devolver "Não é um triângulo" para -7, 8 e 2.'   , eval(`() => ${func}(-7  , 8  ,  2  )`), igual("Não é um triângulo"), testOk),
@@ -324,8 +426,8 @@ const executarTestes = TesteFw(funcs => {
         ];
     }
 
-    grupo("Exercício 11 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo", true, 0.4, () => teste11e12Feliz  ("tipoTriangulo"));
-    grupo("Exercício 11 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo", true, 0.4, () => teste11e12Infeliz("tipoTriangulo"));
+    grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo", true, 0.4, () => testeTrianguloFeliz  ("tipoTriangulo"));
+    grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo", true, 0.4, () => testeTrianguloInfeliz("tipoTriangulo"));
 
     function informarLados(a, b, c) {
         document.querySelector("#ladoA").value = "" + a;
@@ -365,29 +467,9 @@ const executarTestes = TesteFw(funcs => {
         ];
     }
 
-    grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário", true, 0.3, () => teste11e12Feliz  ("informarLados"));
-    grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário", true, 0.3, () => teste11e12Infeliz("informarLados"));
-    grupo("Exercício 12 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário", true, 0.3, testeTrianguloMuitoInfeliz              );
-
-    function listGetters(instance) {
-        return Object.entries(Object.getOwnPropertyDescriptors(Reflect.getPrototypeOf(instance)))
-                .filter(e => typeof e[1].get === 'function' && e[0] !== '__proto__')
-                .map(e => e[0]);
-    }
-
-    function extractGetters(instance, ordenar) {
-        let getters = listGetters(instance);
-        if (ordenar) getters = ordenar(getters);
-        const result = {};
-        getters.forEach(prop => {
-            try {
-                result[prop] = instance[prop];
-            } catch (e) {
-                result[prop] = e;
-            }
-        });
-        return result;
-    }
+    grupo("Exercício 13 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário", true, 0.3, () => testeTrianguloFeliz  ("informarLados"));
+    grupo("Exercício 13 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário", true, 0.3, () => testeTrianguloInfeliz("informarLados"));
+    grupo("Exercício 13 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário", true, 0.3, testeTrianguloMuitoInfeliz                  );
 
     const alunosMatriculasValidos = [
         {
@@ -482,21 +564,8 @@ const executarTestes = TesteFw(funcs => {
         },
     ];
 
-    function map(array, inner) {
-        const mapped = [];
-        array.forEach((e, i) => mapped.push(inner(e, i)));
-        return mapped;
-    };
-
-    // Seria melhor e mais limpo do que o que está acima, mas não vamos mudar o prototype de Array aqui.
-    /*Array.prototype.map = function(inner) {
-        const mapped = [];
-        this.forEach((e, i) => mapped.push(inner(e, i)));
-        return mapped;
-    };*/
-
-    grupo("Exercício 13", "Construtor da classe AlunoMatricula", true, 0.4, () =>
-        map(alunosMatriculasValidos, aluno =>
+    grupo("Exercício 14", "Construtor da classe AlunoMatricula", true, 0.3, () =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir instanciar um aluno corretamente [${aluno.json.nome}].`,
                 eval(aluno.criar.toString()),
@@ -507,7 +576,7 @@ const executarTestes = TesteFw(funcs => {
         )
     );
 
-    grupo("Exercício 14", "Getters da classe AlunoMatricula", true, 0.3, () => {
+    grupo("Exercício 15", "Getters da classe AlunoMatricula", true, 0.3, () => {
         const testes = [];
         const artigos = {nome: "o", genero: "o", disciplina: "a", acs: "as", prova: "a", sub: "a", presenca: "a"};
         ["nome", "genero", "disciplina", "acs", "prova", "sub", "presenca"].forEach(getter => {
@@ -526,7 +595,13 @@ const executarTestes = TesteFw(funcs => {
         return testes;
     });
 
-    [["media", 15, "Média", "a"], ["situacao", 16, "Situação", "a"], ["situacaoPorExtenso", 17, "Situação por extenso", "a"], ["status", 18, "Status", "o"]].forEach(exercicio => {
+    const ex15_18 = [
+        ["media", 16, "Média", "a"],
+        ["situacao", 17, "Situação", "a"],
+        ["situacaoPorExtenso", 18, "Situação por extenso", "a"],
+        ["status", 19, "Status", "o"]
+    ];
+    ex15_18.forEach(exercicio => {
         const getter = exercicio[0];
         grupo(`Exercício ${exercicio[1]}`, `${exercicio[2]} na classe AlunoMatricula`, true, 0.4, () => {
             const testes = [];
@@ -572,8 +647,8 @@ const executarTestes = TesteFw(funcs => {
         return resultado;
     }
 
-    grupo("Exercício 19 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0.7, () =>
-        map(alunosMatriculasValidos, aluno =>
+    grupo("Exercício 20 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0.6, () =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${aluno.json.nome}].`,
                 eval(aluno.criar.toString().replace("new AlunoMatricula", "informarDados")),
@@ -594,12 +669,12 @@ const executarTestes = TesteFw(funcs => {
     ["", "   "].forEach(lixo => {
         alunosMatriculasInvalidos.push({
             criar: `() => informarDados("${lixo}", "M", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
-            erro: "Informe o nome do(a) aluno(a) corretamente.",
+            erro: "Informe os dados corretamente.",
             causa: `o nome inválido "${lixo}"`,
         });
         alunosMatriculasInvalidos.push({
             criar: `() => informarDados("Teste", "F", "${lixo}", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84)`,
-            erro: "Informe o nome da disciplina corretamente.",
+            erro: "Informe os dados corretamente.",
             causa: `a disciplina inválida "${lixo}"`,
         });
     });
@@ -609,31 +684,31 @@ const executarTestes = TesteFw(funcs => {
             arr[j] = lixo;
             alunosMatriculasInvalidos.push({
                 criar: `() => informarDados("Teste", "F", "Teste", Object.freeze(${JSON.stringify(arr)}), 9, 0, 84)`,
-                erro: `Informe a nota do AC ${j + 1} corretamente, entre 0 e 10, com até duas casas decimais.`,
+                erro: "Informe a nota corretamente.",
                 causa: `o valor inválido "${lixo}" para o AC ${j + 1}`,
             });
         });
         alunosMatriculasInvalidos.push({
             criar: `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), "${lixo}", 0, 84)`,
-            erro: "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.",
+            erro: "Informe a nota corretamente.",
             causa: `o valor inválido "${lixo}" para a prova`,
         });
         alunosMatriculasInvalidos.push({
             criar: `() => informarDados("Teste", "F", "Teste", Object.freeze([8, 7, 9, 4.5, 8]), 9, "${lixo}", 84)`,
-            erro: "Informe a nota da sub corretamente, entre 0 e 10, com até duas casas decimais.",
+            erro: "Informe a nota corretamente.",
             causa: `o valor inválido "${lixo}" para a sub`,
         });
     });
     ["", "   ", "-1", "-", "abc", "5.6", "101", "5.", ".4", "."].forEach(lixo => {
         alunosMatriculasInvalidos.push({
             criar: `() => informarDados("Teste", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, "${lixo}")`,
-            erro: "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.",
+            erro: "Informe o valor corretamente.",
             causa: `o valor inválido "${lixo}" para a presença`,
         });
     });
 
-    grupo("Exercício 19 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0.6, () =>
-        map(alunosMatriculasInvalidos, (aluno, i) =>
+    grupo("Exercício 20 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0.6, () =>
+        alunosMatriculasInvalidos.map((aluno, i) =>
             teste(
                 `Não deve conseguir preencher uma instância de AlunoMatricula com ${aluno.causa} [${i + 1}].`,
                 eval(aluno.criar),
@@ -667,8 +742,8 @@ const executarTestes = TesteFw(funcs => {
         });
     });
 
-    grupo("Exercício 19 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0.2, () =>
-        map(alunosMatriculasValidos2, (aluno, i) =>
+    grupo("Exercício 20 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0.2, () =>
+        alunosMatriculasValidos2.map((aluno, i) =>
             teste(
                 `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
                 aluno.criar,
@@ -678,23 +753,16 @@ const executarTestes = TesteFw(funcs => {
         )
     );
 
-    function embaralhar(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = random.nextInt(0, i);
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
     function testarEfeitosColaterais(coisa, jsonBase) {
+        const doido = a => random.embaralhar(a);
         const keys = Object.keys(jsonBase).sort();
         const json1 = JSON.stringify(jsonBase, keys);
-        const json2 = JSON.stringify(extractGetters(coisa), keys);
-        const json3 = JSON.stringify(extractGetters(coisa, a => a.sort()), keys);
-        const json4 = JSON.stringify(extractGetters(coisa, a => a.sort().reverse()), keys);
-        const json5 = JSON.stringify(extractGetters(coisa, embaralhar), keys);
-        const json6 = JSON.stringify(extractGetters(coisa, embaralhar), keys);
-        const json7 = JSON.stringify(extractGetters(coisa, embaralhar), keys);
+        const json2 = JSON.stringify(Utilitarios.extractGetters(coisa), keys);
+        const json3 = JSON.stringify(Utilitarios.extractGetters(coisa, a => a.sort()), keys);
+        const json4 = JSON.stringify(Utilitarios.extractGetters(coisa, a => a.sort().reverse()), keys);
+        const json5 = JSON.stringify(Utilitarios.extractGetters(coisa, doido), keys);
+        const json6 = JSON.stringify(Utilitarios.extractGetters(coisa, doido), keys);
+        const json7 = JSON.stringify(Utilitarios.extractGetters(coisa, doido), keys);
 
         igual(json1).testar(json2);
         igual(json1).testar(json3);
@@ -707,8 +775,8 @@ const executarTestes = TesteFw(funcs => {
         igual(json1).testar(json7);
     }
 
-    grupo("Exercícios 13 a 19 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0.2, () =>
-        map(alunosMatriculasValidos, aluno =>
+    grupo("Exercícios 14 a 20 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0.2, () =>
+        alunosMatriculasValidos.map(aluno =>
             teste(
                 `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${aluno.json.nome}].`,
                 () => testarEfeitosColaterais(aluno.criar(), aluno.json),
@@ -718,7 +786,7 @@ const executarTestes = TesteFw(funcs => {
         )
     );
 
-    grupo("Exercício 20", "Entrega", false, -0.5, () => {
+    grupo("Exercício 21", "Entrega", false, -0.5, () => {
         const formas = [
             "Eu vou entregar por meio do Google Forms.",
             "Eu vou entregar por meio do One Drive.",
@@ -770,7 +838,7 @@ const executarTestes = TesteFw(funcs => {
         const testes = [];
         for (let i = 1; i <= 10; i++) {
             const copia = [...formas];
-            const bagunca = embaralhar(copia);
+            const bagunca = random.embaralhar(copia);
             const resposta = [];
             for (let i = 0; i < bagunca.length; i++) {
                 if (bagunca[i] === correto[0] || bagunca[i] === correto[1]) resposta.push(i);

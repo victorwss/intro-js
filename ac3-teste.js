@@ -6,8 +6,14 @@ const executarTestes = TesteFw(funcs => {
     const igual = funcs.igual;
     const naoDeuErro = funcs.naoDeuErro;
     const escapeHtml = funcs.escapeHtml;
-    const ErroFormatado = funcs.ErroFormatado;
+    const RepeatableRandom = funcs.RepeatableRandom;
     const numeroMaximoDeAlunos = 5;
+    const random = new RepeatableRandom(
+            Math.sqrt(2) * 2 ** 32,
+            Math.sqrt(3) * 2 ** 32,
+            Math.sqrt(5) * 2 ** 32,
+            Math.sqrt(7) * 2 ** 32
+    );
     let jsonOk = false;
 
     grupo("Exemplos", "Não bagunçar os exemplos dados", true, -1, () => [
@@ -154,7 +160,7 @@ const executarTestes = TesteFw(funcs => {
         ];
     });
 
-    grupo("Exercício 4", "Primeiro nome", true, 0.4, () => [
+    grupo("Exercício 4", "Primeiro nome", true, 0.3, () => [
         teste("Yuri Dirickson deve retornar Yuri.", () => primeiroNome("Yuri Dirickson"), igual("Yuri"  ), testOk),
         teste("Marina Silva deve retornar Marina.", () => primeiroNome("Marina Silva"  ), igual("Marina"), testOk),
         teste("Tatá Wernerck deve retornar Tatá." , () => primeiroNome("Tatá"          ), igual("Tatá"  ), testOk),
@@ -228,7 +234,7 @@ const executarTestes = TesteFw(funcs => {
         teste("Para [42, 12, 21, -27, 8, -22, 9] retorna -27.", () => acharMenor([42, 12, 21, -27,  8, -22,  9]), igual(      -27), testOk),
     ]);
 
-    grupo("Exercício 9", "Achar os pares", true, 0.5, () => [
+    grupo("Exercício 9", "Achar os pares", true, 0.4, () => [
         teste("Se o vetor estiver vazio, devolve um vetor vazio.", () => acharPares([               ]), igual([           ]), testOk),
         teste("Para [1, 3, 5, 7, 9] retorna vazio."              , () => acharPares([1, 3,  5,  7, 9]), igual([           ]), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna [2, 4]."             , () => acharPares([1, 2,  3,  4, 5]), igual([   2,  4   ]), testOk),
@@ -369,8 +375,9 @@ const executarTestes = TesteFw(funcs => {
                 .map(e => e[0]);
     }
 
-    function extractGetters(instance) {
-        const getters = listGetters(instance);
+    function extractGetters(instance, ordenar) {
+        let getters = listGetters(instance);
+        if (ordenar) getters = ordenar(getters);
         const result = {};
         getters.forEach(prop => {
             try {
@@ -390,7 +397,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 8.5, situacao: "AP", situacaoPorExtenso: "aprovada",
                 status: "Maria Luiza tem média 8.5 na disciplina de Desenvolvimento Web e foi aprovada com 84% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Anderson", "M", "LP 2", Object.freeze([3.4, 5.0, 2.0, 4.8, 0]), 1.8, 2.9, 80),
@@ -399,7 +406,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 3.5, situacao: "RM", situacaoPorExtenso: "reprovado por média",
                 status: "Anderson tem média 3.5 na disciplina de LP 2 e foi reprovado por média com 80% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", Object.freeze([9, 8, 7, 6, 5]), 4, 3, 21),
@@ -408,7 +415,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 6, situacao: "RF", situacaoPorExtenso: "reprovada por falta",
                 status: "Chiquinha tem média 6 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Bozoliro", "M", "presidência, governo e chefe de estado", Object.freeze([1, 2.5, 0, 1, 1.5]), 2.2, 0, 17),
@@ -417,7 +424,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 2, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
                 status: "Bozoliro tem média 2 na disciplina de presidência, governo e chefe de estado e foi reprovado por média e falta com 17% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Molusco da Silva", "M", "presidência, governo e chefe de estado", Object.freeze([8.5, 9, 7, 8.5, 10]), 10, 0, 88),
@@ -426,7 +433,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 9.5, situacao: "AP", situacaoPorExtenso: "aprovado",
                 status: "Molusco da Silva tem média 9.5 na disciplina de presidência, governo e chefe de estado e foi aprovado com 88% de presença."
             },
-            funciona: false,
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Bruxa do 71", "F", "atriz de novela mexicana", Object.freeze([0.71, 0.71, 0.71, 0.71, 0.71]), 0, 0.71, 71),
@@ -435,7 +442,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 0.5, situacao: "RMF", situacaoPorExtenso: "reprovada por média e falta",
                 status: "Bruxa do 71 tem média 0.5 na disciplina de atriz de novela mexicana e foi reprovada por média e falta com 71% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Chuck Norris", "M", "Ator", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 100),
@@ -444,7 +451,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 10, situacao: "AP", situacaoPorExtenso: "aprovado",
                 status: "Chuck Norris tem média 10 na disciplina de Ator e foi aprovado com 100% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Dollynho", "M", "Seu amiguinho", Object.freeze([10, 10, 10, 10, 10]), 10, 10, 0),
@@ -453,7 +460,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 10, situacao: "RF", situacaoPorExtenso: "reprovado por falta",
                 status: "Dollynho tem média 10 na disciplina de Seu amiguinho e foi reprovado por falta com 0% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Dollynha", "F", "Sua amiguinha", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 100),
@@ -462,7 +469,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 0, situacao: "RM", situacaoPorExtenso: "reprovada por média",
                 status: "Dollynha tem média 0 na disciplina de Sua amiguinha e foi reprovada por média com 100% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
         {
             criar: () => new AlunoMatricula("Zerinho", "M", "fazer algo útil", Object.freeze([0, 0, 0, 0, 0]), 0, 0, 0),
@@ -471,7 +478,7 @@ const executarTestes = TesteFw(funcs => {
                 media: 0, situacao: "RMF", situacaoPorExtenso: "reprovado por média e falta",
                 status: "Zerinho tem média 0 na disciplina de fazer algo útil e foi reprovado por média e falta com 0% de presença."
             },
-            funciona: false
+            instanciavel: false
         },
     ];
 
@@ -481,7 +488,7 @@ const executarTestes = TesteFw(funcs => {
         return mapped;
     };
 
-    // Seria melhor e mais limpo, mas não vamos mudar o prototype de Array aqui.
+    // Seria melhor e mais limpo do que o que está acima, mas não vamos mudar o prototype de Array aqui.
     /*Array.prototype.map = function(inner) {
         const mapped = [];
         this.forEach((e, i) => mapped.push(inner(e, i)));
@@ -495,7 +502,7 @@ const executarTestes = TesteFw(funcs => {
                 eval(aluno.criar.toString()),
                 naoDeuErro(),
                 testOk,
-                ok => aluno.funciona = ok
+                ok => aluno.instanciavel = ok
             )
         )
     );
@@ -510,17 +517,18 @@ const executarTestes = TesteFw(funcs => {
                         `Deve conseguir obter ${artigos[getter]} ${getter} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
                         eval(aluno.criar.toString() + "." + getter),
                         igual(aluno.json[getter]),
-                        () => jsonOk && aluno.funciona
+                        () => jsonOk && aluno.instanciavel,
+                        ok => aluno["funciona" + getter] = ok
                     )
                 )
-            )
+            );
         });
         return testes;
     });
 
     [["media", 15, "Média", "a"], ["situacao", 16, "Situação", "a"], ["situacaoPorExtenso", 17, "Situação por extenso", "a"], ["status", 18, "Status", "o"]].forEach(exercicio => {
         const getter = exercicio[0];
-        grupo(`Exercício ${exercicio[1]}`, `${exercicio[2]} na classe AlunoMatricula`, true, 0.3, () => {
+        grupo(`Exercício ${exercicio[1]}`, `${exercicio[2]} na classe AlunoMatricula`, true, 0.4, () => {
             const testes = [];
             alunosMatriculasValidos.forEach(aluno =>
                 testes.push(
@@ -528,7 +536,8 @@ const executarTestes = TesteFw(funcs => {
                         `Deve conseguir obter ${exercicio[3]} ${exercicio[2]} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
                         eval(aluno.criar.toString() + "." + getter),
                         igual(aluno.json[getter]),
-                        () => jsonOk && aluno.funciona
+                        () => jsonOk && aluno.instanciavel,
+                        ok => aluno["funciona" + getter] = ok
                     )
                 )
             );
@@ -569,7 +578,7 @@ const executarTestes = TesteFw(funcs => {
                 `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${aluno.json.nome}].`,
                 eval(aluno.criar.toString().replace("new AlunoMatricula", "informarDados")),
                 igual(aluno.json.status),
-                () => jsonOk && aluno.funciona
+                () => jsonOk && aluno.funcionastatus
             )
         )
     );
@@ -634,7 +643,7 @@ const executarTestes = TesteFw(funcs => {
         )
     );
 
-    let alunosMatriculasValidos2 = [];
+    const alunosMatriculasValidos2 = [];
 
     ["10.00", "10.0", "0.0", "0.00"].forEach(nota => {
         [0, 1, 2, 3, 4].forEach(j => {
@@ -658,63 +667,58 @@ const executarTestes = TesteFw(funcs => {
         });
     });
 
-    grupo("Exercício 19 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0.1, () =>
+    grupo("Exercício 19 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0.2, () =>
         map(alunosMatriculasValidos2, (aluno, i) =>
             teste(
                 `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
                 aluno.criar,
                 igual("Teste tem média 10 na disciplina de Teste e foi aprovada com 84% de presença."),
-                testOk
+                () => jsonOk
             )
         )
     );
 
-    function testarEfeitosColaterais(prepararCoisa, json) {
-        const coisa = eval(prepararCoisa);
-        const campos = extractGetters(coisa);
-        const valores1 = {};
-        for (const c in campos) {
-            valores1[campos[c]] = coisa[campos[c]];
+    function embaralhar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = random.nextInt(0, i);
+            [array[i], array[j]] = [array[j], array[i]];
         }
-        const valores2 = {};
-        for (const c in campos) {
-            valores2[campos[c]] = coisa[campos[c]];
-        }
-        for (const c in campos) {
-            if (valores1[campos[c]] !== json[campos[c]]) {
-                const v1 = escapeHtml("" + valores1[campos[c]]);
-                const v2 = escapeHtml("" + json[campos[c]]);
-                throw new ErroFormatado(v1, v2);
-            }
-            if (valores2[campos[c]] !== json[campos[c]]) {
-                const v1 = escapeHtml("" + valores2[campos[c]]);
-                const v2 = escapeHtml("" + json[campos[c]]);
-                throw new ErroFormatado(v1, v2);
-            }
-        }
-        return true;
+        return array;
     }
 
-    grupo("Exercícios 13 a 19 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0.1, () =>
+    function testarEfeitosColaterais(coisa, jsonBase) {
+        const keys = Object.keys(jsonBase).sort();
+        const json1 = JSON.stringify(jsonBase, keys);
+        const json2 = JSON.stringify(extractGetters(coisa), keys);
+        const json3 = JSON.stringify(extractGetters(coisa, a => a.sort()), keys);
+        const json4 = JSON.stringify(extractGetters(coisa, a => a.sort().reverse()), keys);
+        const json5 = JSON.stringify(extractGetters(coisa, embaralhar), keys);
+        const json6 = JSON.stringify(extractGetters(coisa, embaralhar), keys);
+        const json7 = JSON.stringify(extractGetters(coisa, embaralhar), keys);
+
+        igual(json1).testar(json2);
+        igual(json1).testar(json3);
+        igual(json1).testar(json4);
+        igual(json2).testar(json3);
+        igual(json2).testar(json4);
+        igual(json3).testar(json4);
+        igual(json1).testar(json5);
+        igual(json1).testar(json6);
+        igual(json1).testar(json7);
+    }
+
+    grupo("Exercícios 13 a 19 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0.2, () =>
         map(alunosMatriculasValidos, aluno =>
             teste(
                 `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${aluno.json.nome}].`,
-                () => testarEfeitosColaterais(`${aluno.criar.toString()}`, aluno.json),
-                igual(true),
-                () => jsonOk && aluno.funciona
+                () => testarEfeitosColaterais(aluno.criar(), aluno.json),
+                naoDeuErro(),
+                () => jsonOk && aluno.funcionastatus
             )
         )
     );
 
-    grupo("Exercício 20", "Entrega", false, -1, () => {
-        function embaralhar(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
+    grupo("Exercício 20", "Entrega", false, -0.5, () => {
         const formas = [
             "Eu vou entregar por meio do Google Forms.",
             "Eu vou entregar por meio do One Drive.",
@@ -764,9 +768,14 @@ const executarTestes = TesteFw(funcs => {
         ];
 
         const testes = [];
-        for (let i = 1; i <= 5; i++) {
-            const bagunca = embaralhar([...formas]);
-            testes.push(teste(`Deve achar a melhor forma de entregar [${i}].`, () => comoFazerEntrega(bagunca).sort(), igual(correto)));
+        for (let i = 1; i <= 10; i++) {
+            const copia = [...formas];
+            const bagunca = embaralhar(copia);
+            const resposta = [];
+            for (let i = 0; i < bagunca.length; i++) {
+                if (bagunca[i] === correto[0] || bagunca[i] === correto[1]) resposta.push(i);
+            }
+            testes.push(teste(`Deve achar a melhor forma de entregar [${i}].`, () => comoFazerEntrega(bagunca), igual(resposta), testOk));
         }
         return testes;
     });

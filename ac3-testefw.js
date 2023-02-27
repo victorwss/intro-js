@@ -254,13 +254,13 @@ const TesteFw = (() => {
                     }
                 }
                 for (let v = 0; v < yStack.length - 1; v++) {
-                    if (yStack[v] === x) {
+                    if (yStack[v] === y) {
                         q = v;
                         break;
                     }
                 }
                 if (p === q && p !== undefined) continue; // Evita recursão infinita.
-                if (p !== undefined || q !== undefined) return [prop, prop];
+                if (p !== undefined || q !== undefined) return [`${p} (${prop})`, `${q} (${prop})`];
                 const dif = diffFind(x[prop], y[prop]);
                 if (dif !== null) return [`${prop}->${dif[0]}`, `${prop}->${dif[1]}`];
             }
@@ -292,8 +292,9 @@ const TesteFw = (() => {
         const v1 = typeof valorEsperado === "string" ? `"${valorEsperado}"` : escapeHtml("" + valorEsperado);
         return {
             testar: valorObtido => {
-                if (deepEqual(valorEsperado, valorObtido)) return;
-                throw new ErroFormatado(valorEsperado, valorObtido);
+                const diff = deepDiff(valorEsperado, valorObtido);
+                if (diff === null) return;
+                throw new ErroFormatado(valorEsperado, valorObtido, diff);
             },
             esperado: `Resultado esperado: ${v1}.`
         };
@@ -314,7 +315,41 @@ const TesteFw = (() => {
                 + "<p>Este é um erro gravíssimo. Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
                 + "<p>Quem entregar para o professor algo que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
         document.body.prepend(zoado);
-    };
+    }
+
+    // https://stackoverflow.com/a/47593316/540552 - xoshiro128ss
+    class RepeatableRandom {
+        #a; #b; #c; #d;
+
+        constructor(a, b, c, d) {
+            this.#a = a >>> 0;
+            this.#b = b >>> 0;
+            this.#c = c >>> 0;
+            this.#d = d >>> 0;
+        }
+
+        next() {
+            let a = this.#a, b = this.#b, c = this.#c, d = this.#d;
+            const t = b << 9;
+            let r = a * 5;
+            r = (r << 7 | r >>> 25) * 9;
+            c ^= a;
+            d ^= b;
+            b ^= c;
+            a ^= d;
+            c ^= t;
+            d = d << 11 | d >>> 21;
+            this.#a = a;
+            this.#b = b;
+            this.#c = c;
+            this.#d = d;
+            return (r >>> 0) / 4294967296;
+        }
+
+        nextInt(min, max) {
+            return min + Math.floor(this.next() * (max - min + 1));
+        }
+    }
 
     class Suite {
         #grupos;
@@ -361,16 +396,16 @@ const TesteFw = (() => {
                 passos.forEach(proximoTeste => proximoTeste.testar());
                 return;
             }
-            let i = 0;
-            let f = function() {
+            let i = 0, interval;
+            function proximo() {
+                if (i >= passos.length) {
+                    clearInterval(interval);
+                    return;
+                }
                 passos[i].testar();
                 i++;
-                if (i < passos.length) {
-                    passos[i].preTeste();
-                    setTimeout(f, intervalo);
-                }
             }
-            setTimeout(f, intervalo);
+            interval = setInterval(proximo, intervalo);
         }
 
         #atualizar() {
@@ -446,8 +481,8 @@ const TesteFw = (() => {
             return escapeHtml;
         }
 
-        get ErroFormatado() {
-            return ErroFormatado;
+        get RepeatableRandom() {
+            return RepeatableRandom;
         }
     }
 
@@ -455,7 +490,7 @@ const TesteFw = (() => {
         #esperado;
         #obtido;
 
-        constructor(valorEsperado, valorObtido) {
+        constructor(valorEsperado, valorObtido, diff) {
             const v1 = typeof valorEsperado === "string" ? `"${valorEsperado}"` : escapeHtml("" + valorEsperado);
             const t1 = determinarTipo(valorEsperado);
             const v2 = typeof valorObtido === "string" ? `"${valorObtido}"` : escapeHtml("" + valorObtido);
@@ -464,8 +499,8 @@ const TesteFw = (() => {
             if (t1 === t2 && v1 === v2) {
                 esperado = `Resultado esperado: [${t1}] ${v1}.`;
                 obtido = `Resultado obtido: [${t2}] ${v2}. `
-                        + `Entretanto, ainda assim a comparação de igualdade entre o obtido e o esperado resultadou em false. `
-                        + `Provavelmente algum valor ou propriedade interna está errada e diferiu do esperado.`
+                        + `Entretanto, ainda assim a comparação de igualdade entre o obtido e o esperado resultou em false. `
+                        + `As diferenças são <span class="testefw-destaque">${diff[0]}</span> e <span class="testefw-destaque">${diff[1]}</span>.`
             } else if (t1 === t2) {
                 esperado = `Resultado esperado: <span class="testefw-destaque">${v1}</span>.`;
                 obtido = `Resultado obtido: <span class="testefw-destaque">${v2}</span>.`;

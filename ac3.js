@@ -448,7 +448,7 @@ function verificarAlunoMatriculado() {
         const ac5 = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
         const prova = lerNota(naoFizIssoAinda(), "Informe a nota da prova corretamente, entre 0 e 10, com até duas casas decimais.");
         const sub = lerNota(naoFizIssoAinda(), naoFizIssoAinda());
-        const presenca = lerPresenca(naoFizIssoAinda());
+        const presenca = lerPresenca(naoFizIssoAinda(), "Informe a presença corretamente, deve ser um inteiro entre 0 e 100.");
         texto = new AlunoMatricula(naoFizIssoAinda()).status;
     } catch (e) {
         texto = naoFizIssoAinda();

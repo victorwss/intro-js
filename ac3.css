@@ -43,7 +43,7 @@ button {
     text-align: center;
     font-weight: bold;
     height: 25px;
-    font-size: 1.05em;
+    font-size: 1em;
     border-radius: 10px;
 }
 
@@ -90,6 +90,6 @@ input:not(.grande), .ex12e19-radio {
     width: 75px;
 }
 
-.ex12e19-radio  {
+.ex12e19-radio {
     text-align: center;
 }

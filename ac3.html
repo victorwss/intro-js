@@ -18,17 +18,17 @@
                 document.querySelector("#notas").innerHTML = "";
             }
             function lerNumero(texto, erro) {
-                const regexNumero = /^\-?[0-9]+(?:\.[0-9]+)?$/g; // Formato de número genérico.
+                const regexNumero = /^\-?[0-9]+(?:\.[0-9]+)?$/; // Formato de número genérico.
                 if (regexNumero.test(texto)) return parseFloat(texto);
                 throw new Error(erro);
             }
             function lerNota(texto, erro) {
-                const regexNota = /^(?:10(?:\.00?)?|[0-9](?:\.[0-9][0-9]?)?)$/g; // Número de 0 a 10 com até duas casas decimais.
+                const regexNota = /^(?:10(?:\.00?)?|[0-9](?:\.[0-9][0-9]?)?)$/; // Número de 0 a 10 com até duas casas decimais.
                 if (regexNota.test(texto)) return parseFloat(texto);
                 throw new Error(erro);
             }
             function lerPresenca(texto, erro) {
-                const regexPorcentagem = /^(?:0|[1-9][0-9]?|100)$/g; // Número inteiro de 0 a 100.
+                const regexPorcentagem = /^(?:0|[1-9][0-9]?|100)$/; // Número inteiro de 0 a 100.
                 if (regexPorcentagem.test(texto)) return parseInt(texto);
                 throw new Error(erro);
             }
@@ -49,7 +49,7 @@
             }
         </script>
         <script src="ac3-testefw.js" defer></script>
-        <script src="ac3-resolvido.js" defer></script>
+        <script src="ac3.js" defer></script>
         <script src="ac3-teste.js" defer></script>
     </head>
     <body>
@@ -63,7 +63,7 @@
                 <button type="button" id="botaoExecutar" onclick="clickBotaoExecutar();">EXECUTAR OS TESTES!</button>
             </p>
             <p>
-                <label>Delay em milisegundos entre um teste e outro.</label>
+                <label>Delay em milissegundos entre um teste e outro.</label>
                 <label>Coloque -1 para testar tudo de uma vez sem delay.</label>
             </p>
         </div>

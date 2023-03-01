@@ -1,12 +1,27 @@
 "use strict";
 
-const executarTestes = TesteFw(funcs => {
+prepararTestes(funcs => {
+    const erroGravissimo = funcs.erroGravissimo;
+    window.onerror = (ev, arquivo, linha, coluna, erro) => {
+        erroGravissimo(""
+                + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE O SEU JAVASCRIPT CONTÉM ERROS SINTÁTICOS.</h1>"
+                + "<p>Este é um erro gravíssimo. Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
+                + "<p>Quem entregar para o professor algo que faça esta mensagem aparecer, vai ficar com nota zero!</p>"
+        );
+        document.querySelector("#botaoExecutar").disabled = true;
+    };
+    const divNota = document.querySelector("#testefw-nota");
+    if (divNota) divNota.style.display = "none";
+})(-1);
+
+const executarTestes = prepararTestes(funcs => {
     const grupo = funcs.grupo;
     const teste = funcs.teste;
     const igual = funcs.igual;
     const naoDeuErro = funcs.naoDeuErro;
     const Utilitarios = funcs.Utilitarios;
     const Xoshiro128ssSeedRandom = funcs.Xoshiro128ssSeedRandom;
+    const erroGravissimo = funcs.erroGravissimo;
     const numeroMaximoDeAlunos = 5;
     const random = new Xoshiro128ssSeedRandom(
             Math.sqrt(2) * 2 ** 32,
@@ -15,94 +30,96 @@ const executarTestes = TesteFw(funcs => {
             Math.sqrt(7) * 2 ** 32
     );
     let jsonOk = false;
+    function testOk() { return jsonOk; }
+    function setTestOk(ok) { jsonOk = ok; }
 
-    grupo("Exemplos", "Não bagunçar os exemplos dados", true, -1, () => [
-        teste("O maior de 1 e 3 é 3.", () => maiorDosDois            (1, 3), igual(3)),
-        teste("O maior de 5 e 3 é 5.", () => maiorDosDois            (5, 3), igual(5)),
-        teste("O maior de 1 e 3 é 3.", () => maiorDosDoisSimplificado(1, 3), igual(3)),
-        teste("O maior de 5 e 3 é 5.", () => maiorDosDoisSimplificado(5, 3), igual(5)),
+    // JSON DOS ALUNOS.
+
+    function validarJsonAlunos() {
+        const alunos = dadosDosAlunos(), nomes = [], ras = [];
+        if (!(alunos instanceof Array)) throw new Error("Os dados do(a)(s) aluno(a)(s) deveriam estar em um array.");
+        if (alunos.length === 0) throw new Error("Você(s) se esqueceu(ram) de preencher os dados com o JSON do(a)(s) aluno(a)(s).");
+
+        alunos.forEach((aluno, idx) => {
+            const numero = idx + 1;
+
+            if (!aluno.hasOwnProperty("nome")) throw new Error(`O(a) aluno(a) ${numero} está sem nome no JSON.`);
+
+            if (typeof aluno.nome !== "string") throw new Error(`O nome do(a) aluno(a) ${numero} deveria ser uma string.`);
+            if (["João da Silva", "Maria da Silva", ""].indexOf(aluno.nome.trim()) >= 0) {
+                throw new Error(`O nome do(a) aluno(a) ${numero} não está correto.`);
+            }
+            if (aluno.nome !== aluno.nome.trim()) {
+                throw new Error(`Não deixe espaços em branco sobrando no começo ou no final do nome de ${aluno.nome} no JSON.`);
+            }
+            if (nomes.indexOf(aluno.nome) >= 0) throw new Error("Há nomes de alunos(as) repetidos no JSON.");
+            nomes.push(aluno.nome);
+
+            if (!aluno.hasOwnProperty("ra")) throw new Error(`O RA de ${aluno.nome} está faltando no JSON.`);
+            if (typeof aluno.ra !== "number") throw new Error(`O RA de ${aluno.nome} deveria ser um número.`);
+            if (Number.isNaN(aluno.ra) || aluno.ra !== Math.floor(aluno.ra) || aluno.ra <= 0 || aluno.ra === 123456 || aluno.ra === 654321) {
+                throw new Error(`O RA de ${aluno.nome} não está correto.`);
+            }
+            if (ras.indexOf(aluno.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
+            ras.push(aluno.ra);
+
+            if (Object.keys(aluno).length !== 2) {
+                throw new Error(`O JSON de ${aluno.nome} tem coisas a mais além do nome e do RA.`);
+            }
+        });
+        if (alunos.length > numeroMaximoDeAlunos) {
+            throw new Error(`Vocês só podem fazer grupo de até ${numeroMaximoDeAlunos} alunos(as).`);
+        }
+        return alunos;
+    }
+
+    function mostrarValidacaoJsonAlunos() {
+        try {
+            const alunos = validarJsonAlunos();
+            alunos.forEach(a => {
+                const li = document.createElement("li");
+                li.append(a.nome);
+                document.querySelector("#testefw-alunos").append(li);
+            });
+        } catch (e) {
+            erroGravissimo(""
+                    + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE VOCÊ NÃO DEFINIU CORRETAMENTE O JSON COM OS INTEGRANTES DO SEU GRUPO.</h1>"
+                    + "<p>Arrumar isto é a primeira coisa que você tem que fazer neste AC, e assim que o fizer esta mensagem vai desaparecer.</p>"
+                    + "<p>Procure a função dadosDosAlunos() no arquivo ac3.js.</p>"
+                    + "<p>Quem entregar para o professor um JavaScript que faça esta mensagem aparecer, vai ficar com nota zero!</p>"
+            );
+            throw e;
+        }
+    }
+
+    grupo("JSON com nomes dos alunos", "Verifica o JSON com a identificação do(a)(s) aluno(a)(s) está ok").naoFracionado.minimo(-10).testes([
+        teste("Listagem de alunos ok.", () => mostrarValidacaoJsonAlunos(), naoDeuErro(), undefined, setTestOk)
     ]);
 
-    grupo("Exercício 0", "JSON com a identificação do(a)(s) aluno(a)(s)", false, -10, () => {
-        function validarJsonAlunos() {
-            const alunos = dadosDosAlunos(), nomes = [], ras = [];
-            if (!(alunos instanceof Array)) throw new Error("Os dados do(a)(s) aluno(a)(s) deveriam estar em um array.");
-            if (alunos.length === 0) throw new Error("Você(s) se esqueceu(ram) de preencher os dados com o JSON do(a)(s) aluno(a)(s).");
- 
-            alunos.forEach((aluno, idx) => {
-                const numero = idx + 1;
+    // Exercício exemplo.
 
-                if (!aluno.hasOwnProperty("nome")) throw new Error(`O(a) aluno(a) ${numero} está sem nome no JSON.`);
+    grupo("Exemplos", "Verifica se não bagunçou os exemplos dados").minimo(-1).testes([
+        teste("O maior de 1 e 3 é 3.", () => maiorDosDois            (1, 3), igual(3), testOk),
+        teste("O maior de 5 e 3 é 5.", () => maiorDosDois            (5, 3), igual(5), testOk),
+        teste("O maior de 1 e 3 é 3.", () => maiorDosDoisSimplificado(1, 3), igual(3), testOk),
+        teste("O maior de 5 e 3 é 5.", () => maiorDosDoisSimplificado(5, 3), igual(5), testOk)
+    ]);
 
-                if (typeof aluno.nome !== "string") throw new Error(`O nome do(a) aluno(a) ${numero} deveria ser uma string.`);
-                if (["João da Silva", "Maria da Silva", ""].indexOf(aluno.nome.trim()) >= 0) {
-                    throw new Error(`O nome do(a) aluno(a) ${numero} não está correto.`);
-                }
-                if (aluno.nome !== aluno.nome.trim()) {
-                    throw new Error(`Não deixe espaços em branco sobrando no começo ou no final do nome de ${aluno.nome} no JSON.`);
-                }
-                if (nomes.indexOf(aluno.nome) >= 0) throw new Error("Há nomes de alunos(as) repetidos no JSON.");
-                nomes.push(aluno.nome);
+    // Exercício 1.
 
-                if (!aluno.hasOwnProperty("ra")) throw new Error(`O RA de ${aluno.nome} está faltando no JSON.`);
-                if (typeof aluno.ra !== "number") throw new Error(`O RA de ${aluno.nome} deveria ser um número.`);
-                if (Number.isNaN(aluno.ra) || aluno.ra !== Math.floor(aluno.ra) || aluno.ra <= 0 || aluno.ra === 123456 || aluno.ra === 654321) {
-                    throw new Error(`O RA de ${aluno.nome} não está correto.`);
-                }
-                if (ras.indexOf(aluno.ra) >= 0) throw new Error("Há RAs repetidos no JSON.");
-                ras.push(aluno.ra);
-
-                if (Object.keys(aluno).length !== 2) {
-                    throw new Error(`O JSON de ${aluno.nome} tem coisas a mais além do nome e do RA.`);
-                }
-            });
-            if (alunos.length > numeroMaximoDeAlunos) {
-                throw new Error(`Vocês só podem fazer grupo de até ${numeroMaximoDeAlunos} alunos(as).`);
-            }
-            return alunos;
-        }
-
-        function mostrarValidacaoJsonAlunos() {
-            try {
-                const alunos = validarJsonAlunos();
-                alunos.forEach(a => {
-                    const li = document.createElement("li");
-                    li.append(a.nome);
-                    document.querySelector("#testefw-alunos").append(li);
-                });
-            } catch (e) {
-                const zoado = document.createElement("div");
-                zoado.classList.add("testefw-gravissimo");
-                zoado.innerHTML = ""
-                        + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE VOCÊ NÃO DEFINIU CORRETAMENTE O JSON COM OS INTEGRANTES DO SEU GRUPO.</h1>"
-                        + "<p>Arrumar isto é a primeira coisa que você tem que fazer neste AC, e assim que o fizer esta mensagem vai desaparecer.</p>"
-                        + "<p>Procure a função dadosDosAlunos() no arquivo ac3.js.</p>"
-                        + "<p>Quem entregar para o professor um JavaScript que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
-                document.body.prepend(zoado);
-                const nota = document.querySelector("#testefw-nota")
-                if (nota) nota.style.display = "none";
-                throw e;
-            }
-        }
-
-        return [
-            teste("Listagem de alunos ok.", () => mostrarValidacaoJsonAlunos(), naoDeuErro(), undefined, ok => jsonOk = ok),
-        ];
-    });
-
-    function testOk() { return jsonOk; }
-
-    grupo("Exercício 1", "Maior dos quatro", true, 0.2, () => [
+    grupo("Exercício 1", "Maior dos quatro").maximo(0.2).testes([
         teste("O maior de 1, 3, 5, 7 é 7."     , () => maiorDosQuatro( 1,  3,  5,  7), igual( 7), testOk),
         teste("O maior de 1, 3, 5, 9 é 9."     , () => maiorDosQuatro( 1,  3,  5,  9), igual( 9), testOk),
         teste("O maior de 1, 3, 5, 0 é 5."     , () => maiorDosQuatro( 1,  3,  5,  0), igual( 5), testOk),
         teste("O maior de 10, 3, 5, 7 é 10."   , () => maiorDosQuatro(10,  3,  5,  7), igual(10), testOk),
         teste("O maior de 1, 30, 5, 7 é 30."   , () => maiorDosQuatro( 1, 30,  5,  7), igual(30), testOk),
         teste("O maior de 1, 3, 50, 7 é 50."   , () => maiorDosQuatro( 1,  3, 50,  7), igual(50), testOk),
-        teste("O maior de -4, -2, -9, -3 é -2.", () => maiorDosQuatro(-4, -2, -9, -3), igual(-2), testOk),
+        teste("O maior de -4, -2, -9, -3 é -2.", () => maiorDosQuatro(-4, -2, -9, -3), igual(-2), testOk)
     ]);
 
-    grupo("Exercício 2 - parte 1 (caminho feliz)", "Operações", true, 0.3, () => [
+    // Exercício 2.
+
+    grupo("Exercício 2 - parte 1 (caminho feliz)", "Operações aritméticas").maximo(0.3).testes([
         teste("0 + 0 deve voltar 0."              , () => operacoesBasicas("A",  0  ,  0   ), igual(  0    ), testOk),
         teste("3.5 + 4 deve voltar 7.5."          , () => operacoesBasicas("A",  3.5,  4   ), igual(  7.5  ), testOk),
         teste("8 + -4 deve voltar 4."             , () => operacoesBasicas("A",  8  , -4   ), igual(  4    ), testOk),
@@ -125,7 +142,7 @@ const executarTestes = TesteFw(funcs => {
         teste("0 elevado a 33 deve voltar 0."     , () => operacoesBasicas("P",  0  , 33   ), igual(  0    ), testOk)
     ]);
 
-    grupo("Exercício 2 - parte 2 (caminho infeliz)", "Operações", true, 0.2, () => [
+    grupo("Exercício 2 - parte 2 (caminho infeliz)", "Operações aritméticas produzindo NaN ou undefined").maximo(0.2).testes([
         teste("0 elevado a 0 não deve ser possível."   , () => operacoesBasicas("P",  0,  0  ), igual(NaN), testOk),
         teste("0 elevado a -1 não deve ser possível."  , () => operacoesBasicas("P",  0, -1  ), igual(NaN), testOk),
         teste("-1 elevado a 0.5 não deve ser possível.", () => operacoesBasicas("P", -1,  0.5), igual(NaN), testOk),
@@ -138,73 +155,76 @@ const executarTestes = TesteFw(funcs => {
         teste("Operação Abacaxi que não existe deve voltar undefined." , () => operacoesBasicas("Abacaxi", 0, 8), igual(undefined), testOk),
         teste("Operação [branco] que não existe deve voltar undefined.", () => operacoesBasicas(""       , 7, 9), igual(undefined), testOk),
         teste("Operação @ que não existe deve voltar undefined."       , () => operacoesBasicas("@"      , 6, 1), igual(undefined), testOk),
-        teste("Operação !#& que não existe deve voltar undefined."     , () => operacoesBasicas("!#&"    , 3, 0), igual(undefined), testOk),
+        teste("Operação !#& que não existe deve voltar undefined."     , () => operacoesBasicas("!#&"    , 3, 0), igual(undefined), testOk)
     ]);
 
-    grupo("Exercício 3", "Comparador básico", true, 0.5, () => {
+    // Exercícios 3.
 
-        // Algumas classes bobas apenas para testarmos algo além dos tipos mais simples.
-        class Abacaxi    {} // Sem toString aqui.
-        class Laranja    {                                         toString() { return "laranja verde"; }}
-        class Cliente    { constructor(nome) { this.nome = nome; } toString() { return this.nome;       }}
-        class Fornecedor { constructor(nome) { this.nome = nome; } toString() { return this.nome;       }}
-        class Uva        {                                         toString() { return "1";             }}
+    // Algumas classes bobas apenas para testarmos algo além dos tipos mais simples.
+    class Abacaxi    {} // Sem toString aqui.
+    class Laranja    {                                         toString() { return "laranja verde"; }}
+    class Cliente    { constructor(nome) { this.nome = nome; } toString() { return this.nome;       }}
+    class Fornecedor { constructor(nome) { this.nome = nome; } toString() { return this.nome;       }}
+    class Uva        {                                         toString() { return "1";             }}
 
-        // Criamos algumas instâncias dessas classes.
-        const abcx1 = new Abacaxi(); // Temos um abacaxi aqui.
-        const abcx2 = new Abacaxi(); // E um outro abacaxi aqui.
-        const larnj = new Laranja();
-        const uva   = new Uva();
-        const rafa  = new Cliente("Rafaela");
-        const pedro = new Cliente("Pedro");
-        const xara  = new Cliente("Pedro");   // Homônimo do cara acima. Temos dois clientes chamados Pedro.
-        const paula = new Fornecedor("Paula");
-        const droga = "[E esse é um dos motivos pelo qual o == e o != são uma droga, prefira sempre o === e o !==]";
+    // Criamos algumas instâncias dessas classes.
+    const abcx1 = new Abacaxi(); // Temos um abacaxi aqui.
+    const abcx2 = new Abacaxi(); // E um outro abacaxi aqui.
+    const larnj = new Laranja();
+    const uva   = new Uva();
+    const rafa  = new Cliente("Rafaela");
+    const pedro = new Cliente("Pedro");
+    const xara  = new Cliente("Pedro");   // Homônimo do cara acima. Temos dois clientes chamados Pedro.
+    const paula = new Fornecedor("Paula");
+    const droga = "[E esse é um dos motivos pelo qual o == e o != são uma droga, prefira sempre o === e o !==]";
 
-        return [
-            teste("3 e 3 são estritamente iguais."                  , () => comparadorBasico(3    , 3    ), igual("Elemento 3 (number) é estritamente igual ao elemento 3 (number)."                      ), testOk),
-            teste("undefined e undefined são estritamente iguais."  , () => comparadorBasico(            ), igual("Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)."), testOk),
-            teste('"ABC" e "ABC" são estritamente iguais.'          , () => comparadorBasico("ABC", "ABC"), igual("Elemento ABC (string) é estritamente igual ao elemento ABC (string)."                  ), testOk),
-            teste('3 e "3" são equivalentes.'                       , () => comparadorBasico(3    , "3"  ), igual("Elemento 3 (number) é equivalente ao elemento 3 (string)."                             ), testOk),
-            teste("null e undefined são equivalentes."              , () => comparadorBasico(null        ), igual("Elemento null (null) é equivalente ao elemento undefined (undefined)."                 ), testOk),
-            teste("1 e 2 são diferentes."                           , () => comparadorBasico(1    , 2    ), igual("Elemento 1 (number) é diferente do elemento 2 (number)."                               ), testOk),
-            teste('"1" e 2 são diferentes.'                         , () => comparadorBasico(  "1", 2    ), igual("Elemento 1 (string) é diferente do elemento 2 (number)."                               ), testOk),
-            teste("Array e objeto são diferentes."                  , () => comparadorBasico([]   , {}   ), igual("Elemento  (Array) é diferente do elemento [object Object] (Object)."                   ), testOk),
-            teste("Abacaxi e laranja são diferentes."               , () => comparadorBasico(abcx1, larnj), igual("Elemento [object Object] (Abacaxi) é diferente do elemento laranja verde (Laranja)."   ), testOk),
-            teste("Cliente e fornecedor são diferentes."            , () => comparadorBasico(pedro, paula), igual("Elemento Pedro (Cliente) é diferente do elemento Paula (Fornecedor)."                  ), testOk),
-            teste("Dois clientes diferentes são diferentes."        , () => comparadorBasico(pedro, rafa ), igual("Elemento Pedro (Cliente) é diferente do elemento Rafaela (Cliente)."                   ), testOk),
-            teste("Um cliente é igual a si mesmo."                  , () => comparadorBasico(pedro, pedro), igual("Elemento Pedro (Cliente) é estritamente igual ao elemento Pedro (Cliente)."            ), testOk),
-            teste("Dois clientes homônimos são diferentes."         , () => comparadorBasico(pedro, xara ), igual("Elemento Pedro (Cliente) é diferente do elemento Pedro (Cliente)."                     ), testOk),
-            teste("Dois abacaxis são diferentes."                   , () => comparadorBasico(abcx1, abcx2), igual("Elemento [object Object] (Abacaxi) é diferente do elemento [object Object] (Abacaxi)." ), testOk),
-            teste("true e false são diferentes."                    , () => comparadorBasico(true , false), igual("Elemento true (boolean) é diferente do elemento false (boolean)."                      ), testOk),
-            teste("true e 1 são equivalentes."                      , () => comparadorBasico(true , 1    ), igual("Elemento true (boolean) é equivalente ao elemento 1 (number)."                         ), testOk),
-            teste("true e 1 são equivalentes."                      , () => comparadorBasico(true , "1"  ), igual("Elemento true (boolean) é equivalente ao elemento 1 (string)."                         ), testOk),
-            teste("false e 0 são equivalentes."                     , () => comparadorBasico(false, 0    ), igual("Elemento false (boolean) é equivalente ao elemento 0 (number)."                        ), testOk),
-            teste("true e 2 são diferentes."                        , () => comparadorBasico(true , 2    ), igual("Elemento true (boolean) é diferente do elemento 2 (number)."                           ), testOk),
+    grupo("Exercício 3", "Comparador básico").maximo(0.5).testes([
+        teste("3 e 3 são estritamente iguais."                  , () => comparadorBasico(3    , 3    ), igual("Elemento 3 (number) é estritamente igual ao elemento 3 (number)."                      ), testOk),
+        teste("undefined e undefined são estritamente iguais."  , () => comparadorBasico(            ), igual("Elemento undefined (undefined) é estritamente igual ao elemento undefined (undefined)."), testOk),
+        teste('"ABC" e "ABC" são estritamente iguais.'          , () => comparadorBasico("ABC", "ABC"), igual("Elemento ABC (string) é estritamente igual ao elemento ABC (string)."                  ), testOk),
+        teste('3 e "3" são equivalentes.'                       , () => comparadorBasico(3    , "3"  ), igual("Elemento 3 (number) é equivalente ao elemento 3 (string)."                             ), testOk),
+        teste("null e undefined são equivalentes."              , () => comparadorBasico(null        ), igual("Elemento null (null) é equivalente ao elemento undefined (undefined)."                 ), testOk),
+        teste("1 e 2 são diferentes."                           , () => comparadorBasico(1    , 2    ), igual("Elemento 1 (number) é diferente do elemento 2 (number)."                               ), testOk),
+        teste('"1" e 2 são diferentes.'                         , () => comparadorBasico(  "1", 2    ), igual("Elemento 1 (string) é diferente do elemento 2 (number)."                               ), testOk),
+        teste("Array e objeto são diferentes."                  , () => comparadorBasico([]   , {}   ), igual("Elemento  (Array) é diferente do elemento [object Object] (Object)."                   ), testOk),
+        teste("Abacaxi e laranja são diferentes."               , () => comparadorBasico(abcx1, larnj), igual("Elemento [object Object] (Abacaxi) é diferente do elemento laranja verde (Laranja)."   ), testOk),
+        teste("Cliente e fornecedor são diferentes."            , () => comparadorBasico(pedro, paula), igual("Elemento Pedro (Cliente) é diferente do elemento Paula (Fornecedor)."                  ), testOk),
+        teste("Dois clientes diferentes são diferentes."        , () => comparadorBasico(pedro, rafa ), igual("Elemento Pedro (Cliente) é diferente do elemento Rafaela (Cliente)."                   ), testOk),
+        teste("Um cliente é igual a si mesmo."                  , () => comparadorBasico(pedro, pedro), igual("Elemento Pedro (Cliente) é estritamente igual ao elemento Pedro (Cliente)."            ), testOk),
+        teste("Dois clientes homônimos são diferentes."         , () => comparadorBasico(pedro, xara ), igual("Elemento Pedro (Cliente) é diferente do elemento Pedro (Cliente)."                     ), testOk),
+        teste("Dois abacaxis são diferentes."                   , () => comparadorBasico(abcx1, abcx2), igual("Elemento [object Object] (Abacaxi) é diferente do elemento [object Object] (Abacaxi)." ), testOk),
+        teste("true e false são diferentes."                    , () => comparadorBasico(true , false), igual("Elemento true (boolean) é diferente do elemento false (boolean)."                      ), testOk),
+        teste("true e 1 são equivalentes."                      , () => comparadorBasico(true , 1    ), igual("Elemento true (boolean) é equivalente ao elemento 1 (number)."                         ), testOk),
+        teste("true e 1 são equivalentes."                      , () => comparadorBasico(true , "1"  ), igual("Elemento true (boolean) é equivalente ao elemento 1 (string)."                         ), testOk),
+        teste("false e 0 são equivalentes."                     , () => comparadorBasico(false, 0    ), igual("Elemento false (boolean) é equivalente ao elemento 0 (number)."                        ), testOk),
+        teste("true e 2 são diferentes."                        , () => comparadorBasico(true , 2    ), igual("Elemento true (boolean) é diferente do elemento 2 (number)."                           ), testOk),
 
-            // E eis aqui um forte motivo para nunca se usar == e != e sempre usar === e !==.
-            teste(`Fornecedora Paula e nome Paula são equivalentes. ${droga}`, () => comparadorBasico(paula, "Paula"), igual("Elemento Paula (Fornecedor) é equivalente ao elemento Paula (string)."), testOk),
-            teste(`Uva e true são equivalentes. ${droga}`                    , () => comparadorBasico(uva  ,   true ), igual("Elemento 1 (Uva) é equivalente ao elemento true (boolean)."           ), testOk),
-        ];
-    });
+        // E eis aqui um forte motivo para nunca se usar == e != e sempre usar === e !==.
+        teste(`Fornecedora Paula e nome Paula são equivalentes. ${droga}`, () => comparadorBasico(paula, "Paula"), igual("Elemento Paula (Fornecedor) é equivalente ao elemento Paula (string)."), testOk),
+        teste(`Uva e true são equivalentes. ${droga}`                    , () => comparadorBasico(uva  ,   true ), igual("Elemento 1 (Uva) é equivalente ao elemento true (boolean)."           ), testOk)
+    ]);
 
-    grupo("Exercício 4", "Primeiro nome", true, 0.3, () => [
+    // Exercícios 4 e 5.
+
+    grupo("Exercício 4", "Primeiro nome").maximo(0.3).testes([
         teste("Yuri Dirickson deve retornar Yuri.", () => primeiroNome("Yuri Dirickson"), igual("Yuri"  ), testOk),
         teste("Marina Silva deve retornar Marina.", () => primeiroNome("Marina Silva"  ), igual("Marina"), testOk),
         teste("Tatá Wernerck deve retornar Tatá." , () => primeiroNome("Tatá"          ), igual("Tatá"  ), testOk),
         teste("Robson deve retornar Robson."      , () => primeiroNome("Robson"        ), igual("Robson"), testOk),
         teste("Victor deve retornar Victor."      , () => primeiroNome("Victor"        ), igual("Victor"), testOk),
-        teste("Ana Júlia deve retornar Ana."      , () => primeiroNome("Ana Júlia"     ), igual("Ana"   ), testOk),
+        teste("Ana Júlia deve retornar Ana."      , () => primeiroNome("Ana Júlia"     ), igual("Ana"   ), testOk)
     ]);
 
-    grupo("Exercício 5", "Nome abreviado", true, 0.3, () => [
+    grupo("Exercício 5", "Nome abreviado").maximo(0.3).testes([
         teste("Yuri Dirickson deve retornar Yuri D.", () => abreviadorNomes("Yuri Dirickson"), igual("Yuri D."  ), testOk),
         teste("Marina Silva deve retornar Marina S.", () => abreviadorNomes("Marina Silva"  ), igual("Marina S."), testOk),
         teste("Tatá Wernerck deve retornar Tatá W." , () => abreviadorNomes("Tatá Wernerck" ), igual("Tatá W."  ), testOk),
         teste("Robson deve retornar Robson."        , () => abreviadorNomes("Robson"        ), igual("Robson"   ), testOk),
         teste("Victor deve retornar Victor."        , () => abreviadorNomes("Victor"        ), igual("Victor"   ), testOk),
-        teste("Ana Júlia deve retornar Ana J."      , () => abreviadorNomes("Ana Júlia"     ), igual("Ana J."   ), testOk),
+        teste("Ana Júlia deve retornar Ana J."      , () => abreviadorNomes("Ana Júlia"     ), igual("Ana J."   ), testOk)
     ]);
+
+    // Exercícios 6 e 7.
 
     const datasBoas = {
         "31/01/1975": "31 de Janeiro de 1975",
@@ -239,7 +259,7 @@ const executarTestes = TesteFw(funcs => {
         "31/05/2029": "31 de Maio de 2029",
         "31/07/2023": "31 de Julho de 2023",
         "31/08/1997": "31 de Agosto de 1997",
-        "31/10/1453": "31 de Outubro de 1453",
+        "31/10/1453": "31 de Outubro de 1453"
     };
 
     const datasRuins = [
@@ -272,44 +292,31 @@ const executarTestes = TesteFw(funcs => {
         "WT/Fw/tfWTF",
         ""
     ];
+    
+    const testes6p1 = [];
+    const testes7p1 = [];
+    for (const chave in datasBoas) {
+        const valor = datasBoas[chave];
+        testes6p1.push(teste(`Data ${chave} é válida.`, () => dataValida(chave), igual(true), testOk));
+        testes7p1.push(teste(`Data ${chave} deve devolver ${valor}.`, () => converteDataParaFormaCompleta(chave), igual(valor), testOk));
+    }
 
-    grupo("Exercício 6 - parte 1 (caminho feliz)", "Datas", true, 0.3, () => {
-        const testes = [];
-        for (const chave in datasBoas) {
-            const valor = datasBoas[chave];
-            testes.push(teste(`Data ${chave} é válida.`, () => dataValida(chave), igual(true), testOk));
-        }
-        return testes;
-    });
+    const testes6p2 = [];
+    const testes7p2 = [];
+    for (const chave in datasRuins) {
+        const valor = datasRuins[chave];
+        testes6p2.push(teste(`Data ${chave} é inválida.`, () => dataValida(chave), igual(false), testOk));
+        testes7p2.push(teste(`Data ${chave} é inválida.`, () => converteDataParaFormaCompleta(chave), igual("Data inválida"), testOk));
+    }
 
-    grupo("Exercício 6 - parte 2 (caminho infeliz)", "Datas", true, 0.2, () => {
-        const testes = [];
-        for (const chave in datasRuins) {
-            const valor = datasRuins[chave];
-            testes.push(teste(`Data ${chave} é inválida.`, () => dataValida(chave), igual(false), testOk));
-        }
-        return testes;
-    });
+    grupo("Exercício 6 - parte 1 (caminho feliz)"  , "Datas válidas").maximo(0.3).testes(testes6p1);
+    grupo("Exercício 6 - parte 2 (caminho infeliz)", "Datas inválidas").maximo(0.3).testes(testes6p2);
+    grupo("Exercício 7 - parte 1 (caminho feliz)"  , "Datas válidas por extenso").maximo(0.3).testes(testes7p1);
+    grupo("Exercício 7 - parte 2 (caminho infeliz)", "Datas inválidas por extenso").maximo(0.1).testes(testes7p2);
 
-    grupo("Exercício 7 - parte 1 (caminho feliz)", "Datas", true, 0.3, () => {
-        const testes = [];
-        for (const chave in datasBoas) {
-            const valor = datasBoas[chave];
-            testes.push(teste(`Data ${chave} deve devolver ${valor}.`, () => converteDataParaFormaCompleta(chave), igual(valor), testOk));
-        }
-        return testes;
-    });
+    // Exercícios 8 ao 11.
 
-    grupo("Exercício 7 - parte 2 (caminho infeliz)", "Datas", true, 0.2, () => {
-        const testes = [];
-        for (const chave in datasRuins) {
-            const valor = datasRuins[chave];
-            testes.push(teste(`Data ${chave} é inválida.`, () => converteDataParaFormaCompleta(chave), igual("Data inválida"), testOk));
-        }
-        return testes;
-    });
-
-    grupo("Exercício 8", "Somar pares", true, 0.4, () => [
+    grupo("Exercício 8", "Somar pares").maximo(0.4).testes([
         teste("1 e 4 deve devolver 6."    , () => somadorPares(  1,  4), igual(  6), testOk),
         teste("2 e 9 deve devolver 20."   , () => somadorPares(  2,  9), igual( 20), testOk),
         teste("2 e 10 deve devolver 30."  , () => somadorPares(  2, 10), igual( 30), testOk),
@@ -321,30 +328,30 @@ const executarTestes = TesteFw(funcs => {
         teste("8 e 8 deve devolver 8."    , () => somadorPares(  8,  8), igual(  8), testOk),
         teste("3 e 3 deve devolver 0."    , () => somadorPares(  3,  3), igual(  0), testOk),
         teste("-20 e 20 deve devolver 0." , () => somadorPares(-20, 20), igual(  0), testOk),
-        teste("-20 e 10 deve devolver 80.", () => somadorPares(-20, 10), igual(-80), testOk),
+        teste("-20 e 10 deve devolver 80.", () => somadorPares(-20, 10), igual(-80), testOk)
     ]);
 
-    grupo("Exercício 9", "Achar o menor", true, 0.3, () => [
+    grupo("Exercício 9", "Achar o menor").maximo(0.3).testes([
         teste("Se o vetor estiver vazio, devolve undefined."  , () => acharMenor([                            ]), igual(undefined), testOk),
         teste("Para [42] retorna 42."                         , () => acharMenor([                          42]), igual(       42), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna 1."               , () => acharMenor([         1,   2,  3,   4,  5]), igual(        1), testOk),
         teste("Para [1, 2, 3, 4, 0] retorna 0."               , () => acharMenor([         1,   2,  3,   4,  0]), igual(        0), testOk),
         teste("Para [1, 2, -3, 4, 0] retorna -3."             , () => acharMenor([         1,   2, -3,   4,  0]), igual(       -3), testOk),
         teste("Para [42, 12, 21] retorna 12."                 , () => acharMenor([                 42,  12, 21]), igual(       12), testOk),
-        teste("Para [42, 12, 21, -27, 8, -22, 9] retorna -27.", () => acharMenor([42, 12, 21, -27,  8, -22,  9]), igual(      -27), testOk),
+        teste("Para [42, 12, 21, -27, 8, -22, 9] retorna -27.", () => acharMenor([42, 12, 21, -27,  8, -22,  9]), igual(      -27), testOk)
     ]);
 
-    grupo("Exercício 10", "Achar os pares", true, 0.4, () => [
+    grupo("Exercício 10", "Achar os pares").maximo(0.4).testes([
         teste("Se o vetor estiver vazio, devolve um vetor vazio.", () => acharPares([               ]), igual([           ]), testOk),
         teste("Para [1, 3, 5, 7, 9] retorna vazio."              , () => acharPares([1, 3,  5,  7, 9]), igual([           ]), testOk),
         teste("Para [1, 2, 3, 4, 5] retorna [2, 4]."             , () => acharPares([1, 2,  3,  4, 5]), igual([   2,  4   ]), testOk),
         teste("Para [1, 2, 3, 4, 0] retorna [2, 4, 0]."          , () => acharPares([1, 2,  3,  4, 0]), igual([   2,  4, 0]), testOk),
         teste("Para [1, 2, 3, -4, 0] retorna [2, -4, 0]."        , () => acharPares([1, 2,  3, -4, 0]), igual([   2, -4, 0]), testOk),
         teste("Para [6, 2, -3, -4, 0] retorna [6, 2, -4, 0]."    , () => acharPares([6, 2, -3, -4, 0]), igual([6, 2, -4, 0]), testOk),
-        teste("Para [6, 2, 6, 2, 3] retorna [6, 2, 6, 2]."       , () => acharPares([6, 2,  6,  2, 3]), igual([6, 2,  6, 2]), testOk),
+        teste("Para [6, 2, 6, 2, 3] retorna [6, 2, 6, 2]."       , () => acharPares([6, 2,  6,  2, 3]), igual([6, 2,  6, 2]), testOk)
     ]);
 
-    grupo("Exercício 11", "IMC", true, 0.6, () => [
+    grupo("Exercício 11", "IMC").maximo(0.6).testes([
         teste('Deve devolver "Abaixo do peso" para IMC abaixo de 18,5.'                           , () => calcularImc({ peso:  50    , altura: 1.7  }), igual("Abaixo do peso"              ), testOk),
         teste('Deve devolver "Normal" para IMC a partir de 18,5 e abaixo de 25.'                  , () => calcularImc({ peso:  60    , altura: 1.7  }), igual("Normal"                      ), testOk),
         teste('Deve devolver "Excesso de peso" para IMC a partir de 25 e abaixo de 30.'           , () => calcularImc({ peso:  72.25 , altura: 1.7  }), igual("Excesso de peso"             ), testOk),
@@ -389,45 +396,61 @@ const executarTestes = TesteFw(funcs => {
         teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 100    , altura: 1.69 }), igual("Obesidade severa (Grau II)"  ), testOk),
         teste('Deve devolver "Obesidade severa (Grau II)" para IMC a partir de 35 e abaixo de 40.', () => calcularImc({ peso: 100    , altura: 1.59 }), igual("Obesidade severa (Grau II)"  ), testOk),
         teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 100    , altura: 1.58 }), igual("Obesidade mórbida (Grau III)"), testOk),
-        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 100    , altura: 0.01 }), igual("Obesidade mórbida (Grau III)"), testOk),
+        teste('Deve devolver "Obesidade mórbida (Grau III)" para IMC a parte de 40.'              , () => calcularImc({ peso: 100    , altura: 0.01 }), igual("Obesidade mórbida (Grau III)"), testOk)
     ]);
+
+    // Exercícios 12 e 13.
 
     function testeTrianguloFeliz(func) {
         return [
-            teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , eval(`() => ${func}( 5  ,   5,  5  )`), igual("Equilátero"        ), testOk),
-            teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , eval(`() => ${func}( 8  ,   8,  8  )`), igual("Equilátero"        ), testOk),
-            teste('Deve devolver "Equilátero" para 3.3, 3.3 e 3.3.', eval(`() => ${func}( 3.3, 3.3,  3.3)`), igual("Equilátero"        ), testOk),
-            teste('Deve devolver "Isósceles" para 12, 8 e 12.'     , eval(`() => ${func}(12  ,   8, 12  )`), igual("Isósceles"         ), testOk),
-            teste('Deve devolver "Isósceles" para 12, 12 e 8.8.'   , eval(`() => ${func}(12  ,  12,  8.8)`), igual("Isósceles"         ), testOk),
-            teste('Deve devolver "Isósceles" para 5, 13 e 13.'     , eval(`() => ${func}( 5  ,  13, 13  )`), igual("Isósceles"         ), testOk),
-            teste('Deve devolver "Escaleno" para 4, 2 e 3.'        , eval(`() => ${func}( 4  ,   2,  3  )`), igual("Escaleno"          ), testOk),
-            teste('Deve devolver "Escaleno" para 3, 2.5 e 1.'      , eval(`() => ${func}( 3  , 2.5,  1  )`), igual("Escaleno"          ), testOk),
-            teste('Deve devolver "Escaleno" para 7.2, 2.5 e 5.1.'  , eval(`() => ${func}( 7.2, 2.5,  5.1)`), igual("Escaleno"          ), testOk),
+            teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , () => func( 5  ,   5,  5  ), igual("Equilátero"        ), testOk),
+            teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , () => func( 8  ,   8,  8  ), igual("Equilátero"        ), testOk),
+            teste('Deve devolver "Equilátero" para 3.3, 3.3 e 3.3.', () => func( 3.3, 3.3,  3.3), igual("Equilátero"        ), testOk),
+            teste('Deve devolver "Isósceles" para 12, 8 e 12.'     , () => func(12  ,   8, 12  ), igual("Isósceles"         ), testOk),
+            teste('Deve devolver "Isósceles" para 12, 12 e 8.8.'   , () => func(12  ,  12,  8.8), igual("Isósceles"         ), testOk),
+            teste('Deve devolver "Isósceles" para 5, 13 e 13.'     , () => func( 5  ,  13, 13  ), igual("Isósceles"         ), testOk),
+            teste('Deve devolver "Escaleno" para 4, 2 e 3.'        , () => func( 4  ,   2,  3  ), igual("Escaleno"          ), testOk),
+            teste('Deve devolver "Escaleno" para 3, 2.5 e 1.'      , () => func( 3  , 2.5,  1  ), igual("Escaleno"          ), testOk),
+            teste('Deve devolver "Escaleno" para 7.2, 2.5 e 5.1.'  , () => func( 7.2, 2.5,  5.1), igual("Escaleno"          ), testOk)
         ];
     }
 
     function testeTrianguloInfeliz(func) {
         return [
-            teste('Deve devolver "Não é um triângulo" para 7.2, 1.5 e 3.', eval(`() => ${func}( 7.2, 2.5,  3  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 1, 2 e 3.'    , eval(`() => ${func}( 1  , 2  ,  3  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 2 e 4.'    , eval(`() => ${func}( 2  , 2  ,  4  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 5 e 1.'    , eval(`() => ${func}( 2  , 5  ,  1  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 2 e 0.'    , eval(`() => ${func}( 2  , 2  ,  0  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 0, 2 e 1.'    , eval(`() => ${func}( 0  , 2  ,  1  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 0, 2 e 0.'    , eval(`() => ${func}( 0  , 2  ,  0  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 0, 0 e 0.'    , eval(`() => ${func}( 0  , 0  ,  0  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -1, -1 e -1.' , eval(`() => ${func}(-1  ,-1  , -1  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 2 e -1.'   , eval(`() => ${func}( 2  , 2  , -1  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, -2 e 5.'   , eval(`() => ${func}( 2  ,-2  ,  5  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -7, 8 e 2.'   , eval(`() => ${func}(-7  , 8  ,  2  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -5, -5 e -5.' , eval(`() => ${func}(-5  ,-5  , -5  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -5, -5 e 4.'  , eval(`() => ${func}(-5  ,-5  ,  4  )`), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -3, -4 e 5.'  , eval(`() => ${func}(-3  ,-4  , -5  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 7.2, 1.5 e 3.', () => func( 7.2, 2.5,  3  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 1, 2 e 3.'    , () => func( 1  , 2  ,  3  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 2 e 4.'    , () => func( 2  , 2  ,  4  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 5 e 1.'    , () => func( 2  , 5  ,  1  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 2 e 0.'    , () => func( 2  , 2  ,  0  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 0, 2 e 1.'    , () => func( 0  , 2  ,  1  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 0, 2 e 0.'    , () => func( 0  , 2  ,  0  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 0, 0 e 0.'    , () => func( 0  , 0  ,  0  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -1, -1 e -1.' , () => func(-1  ,-1  , -1  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 2 e -1.'   , () => func( 2  , 2  , -1  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, -2 e 5.'   , () => func( 2  ,-2  ,  5  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -7, 8 e 2.'   , () => func(-7  , 8  ,  2  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -5, -5 e -5.' , () => func(-5  ,-5  , -5  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -5, -5 e 4.'  , () => func(-5  ,-5  ,  4  ), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -3, -4 e 5.'  , () => func(-3  ,-4  , -5  ), igual("Não é um triângulo"), testOk)
         ];
     }
 
-    grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo", true, 0.4, () => testeTrianguloFeliz  ("tipoTriangulo"));
-    grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo", true, 0.4, () => testeTrianguloInfeliz("tipoTriangulo"));
+    function testeTrianguloMuitoInfeliz() {
+        return [
+            teste('Deve devolver "Informe o número A corretamente." para entrada com letras no A.', () => informarLados("a",   5,   5), igual("Informe o número A corretamente."), testOk),
+            teste('Deve devolver "Informe o número B corretamente." para entrada com letras no B.', () => informarLados(  5, "b",   5), igual("Informe o número B corretamente."), testOk),
+            teste('Deve devolver "Informe o número C corretamente." para entrada com letras no C.', () => informarLados(  5,   5, "c"), igual("Informe o número C corretamente."), testOk),
+            teste('Deve devolver "Informe o número A corretamente." para entrada vazia no A.'     , () => informarLados( "",   5,   5), igual("Informe o número A corretamente."), testOk),
+            teste('Deve devolver "Informe o número B corretamente." para entrada vazia no B.'     , () => informarLados(  5,  "",   5), igual("Informe o número B corretamente."), testOk),
+            teste('Deve devolver "Informe o número C corretamente." para entrada vazia no C.'     , () => informarLados(  5,   5,  ""), igual("Informe o número C corretamente."), testOk),
+            teste(
+                'Deve devolver "Informe o número A corretamente." para entrada com palavras.',
+                () => informarLados("Willy Wonka - Rachadinha de chocolate com laranja", "Tonho da Lua - Senhor dos exércitos de robôs", "Dudu Bananinha - Sheik chapeiro"),
+                igual("Informe o número A corretamente."),
+                testOk
+            )
+        ];
+    }
 
     function informarLados(a, b, c) {
         document.querySelector("#ladoA").value = "" + a;
@@ -450,27 +473,19 @@ const executarTestes = TesteFw(funcs => {
         return resultado;
     }
 
-    function testeTrianguloMuitoInfeliz() {
-        return [
-            teste('Deve devolver "Informe o número A corretamente." para entrada com letras no A.', () => informarLados("a",   5,   5), igual("Informe o número A corretamente."), testOk),
-            teste('Deve devolver "Informe o número B corretamente." para entrada com letras no B.', () => informarLados(  5, "b",   5), igual("Informe o número B corretamente."), testOk),
-            teste('Deve devolver "Informe o número C corretamente." para entrada com letras no C.', () => informarLados(  5,   5, "c"), igual("Informe o número C corretamente."), testOk),
-            teste('Deve devolver "Informe o número A corretamente." para entrada vazia no A.'     , () => informarLados( "",   5,   5), igual("Informe o número A corretamente."), testOk),
-            teste('Deve devolver "Informe o número B corretamente." para entrada vazia no B.'     , () => informarLados(  5,  "",   5), igual("Informe o número B corretamente."), testOk),
-            teste('Deve devolver "Informe o número C corretamente." para entrada vazia no C.'     , () => informarLados(  5,   5,  ""), igual("Informe o número C corretamente."), testOk),
-            teste(
-                'Deve devolver "Informe o número A corretamente." para entrada com palavras.',
-                () => informarLados("Willy Wonka - Rachadinha de chocolate com laranja", "Tonho da Lua - Senhor dos exércitos de robôs", "Dudu Bananinha - Sheik chapeiro"),
-                igual("Informe o número A corretamente."),
-                testOk
-            ),
-        ];
-    }
+    grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo - equilátero, isósceles e escaleno")
+            .maximo(0.4).testes(testeTrianguloFeliz  (tipoTriangulo));
+    grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo - não é um triângulo")
+            .maximo(0.4).testes(testeTrianguloInfeliz(tipoTriangulo));
 
-    grupo("Exercício 13 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário", true, 0.3, () => testeTrianguloFeliz  ("informarLados"));
-    grupo("Exercício 13 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário", true, 0.3, () => testeTrianguloInfeliz("informarLados"));
-    grupo("Exercício 13 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário", true, 0.3, testeTrianguloMuitoInfeliz                  );
+    grupo("Exercício 13 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário - equilátero, isósceles e escaleno")
+            .maximo(0.3).testes(testeTrianguloFeliz  (informarLados));
+    grupo("Exercício 13 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário - não é um triângulo")
+            .maximo(0.3).testes(testeTrianguloInfeliz(informarLados));
+    grupo("Exercício 13 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário - usuário preencheu o formulário com porcaria")
+            .maximo(0.3).testes(testeTrianguloMuitoInfeliz()        );
 
+    // Usado em todos os exercícios do 14 ao 20.
     const alunosMatriculasValidos = [
         {
             criar: () => new AlunoMatricula("Maria Luiza", "F", "Desenvolvimento Web", Object.freeze([8, 7, 9, 4.5, 8]), 9, 0, 84),
@@ -561,64 +576,68 @@ const executarTestes = TesteFw(funcs => {
                 status: "Zerinho tem média 0 na disciplina de fazer algo útil e foi reprovado por média e falta com 0% de presença."
             },
             instanciavel: false
-        },
+        }
     ];
 
-    grupo("Exercício 14", "Construtor da classe AlunoMatricula", true, 0.3, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir instanciar um aluno corretamente [${aluno.json.nome}].`,
-                eval(aluno.criar.toString()),
-                naoDeuErro(),
-                testOk,
-                ok => aluno.instanciavel = ok
-            )
+    // Exercício 14.
+
+    const testes14 = alunosMatriculasValidos.map(aluno =>
+        teste(
+            `Deve conseguir instanciar um aluno corretamente [${aluno.json.nome}].`,
+            eval(aluno.criar.toString()),
+            naoDeuErro(),
+            testOk,
+            ok => aluno.instanciavel = ok
         )
     );
+    grupo("Exercício 14", "Construtor da classe AlunoMatricula").maximo(0.4).testes(testes14);
 
-    grupo("Exercício 15", "Getters da classe AlunoMatricula", true, 0.3, () => {
-        const testes = [];
-        const artigos = {nome: "o", genero: "o", disciplina: "a", acs: "as", prova: "a", sub: "a", presenca: "a"};
-        ["nome", "genero", "disciplina", "acs", "prova", "sub", "presenca"].forEach(getter => {
-            alunosMatriculasValidos.forEach(aluno =>
-                testes.push(
-                    teste(
-                        `Deve conseguir obter ${artigos[getter]} ${getter} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
-                        eval(aluno.criar.toString() + "." + getter),
-                        igual(aluno.json[getter]),
-                        () => jsonOk && aluno.instanciavel,
-                        ok => aluno["funciona" + getter] = ok
-                    )
+    // Exercício 15.
+
+    const testes15 = [];
+    const artigos = {nome: "o", genero: "o", disciplina: "a", acs: "as", prova: "a", sub: "a", presenca: "a"};
+    ["nome", "genero", "disciplina", "acs", "prova", "sub", "presenca"].forEach(getter => {
+        alunosMatriculasValidos.forEach(aluno =>
+            testes15.push(
+                teste(
+                    `Deve conseguir obter ${artigos[getter]} ${getter} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
+                    eval(aluno.criar.toString() + "." + getter),
+                    igual(aluno.json[getter]),
+                    () => jsonOk && aluno.instanciavel,
+                    ok => aluno["funciona" + getter] = ok
                 )
-            );
-        });
-        return testes;
+            )
+        );
     });
+    grupo("Exercício 15", "Getters simples da classe AlunoMatricula").maximo(0.3).testes(testes15);
 
-    const ex15_18 = [
-        ["media", 16, "Média", "a"],
-        ["situacao", 17, "Situação", "a"],
-        ["situacaoPorExtenso", 18, "Situação por extenso", "a"],
-        ["status", 19, "Status", "o"]
+    // Exercícos 16 a 19.
+
+    const ex16_19 = [
+        ["media", 16, "média", "a"],
+        ["situacao", 17, "situação", "a"],
+        ["situacaoPorExtenso", 18, "situação por extenso", "a"],
+        ["status", 19, "status", "o"]
     ];
-    ex15_18.forEach(exercicio => {
-        const getter = exercicio[0];
-        grupo(`Exercício ${exercicio[1]}`, `${exercicio[2]} na classe AlunoMatricula`, true, 0.4, () => {
-            const testes = [];
-            alunosMatriculasValidos.forEach(aluno =>
-                testes.push(
-                    teste(
-                        `Deve conseguir obter ${exercicio[3]} ${exercicio[2]} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
-                        eval(aluno.criar.toString() + "." + getter),
-                        igual(aluno.json[getter]),
-                        () => jsonOk && aluno.instanciavel,
-                        ok => aluno["funciona" + getter] = ok
-                    )
+
+    ex16_19.forEach(exercicio => {
+        const [getter, numero, nome, artigo] = exercicio;
+        const testes16_19 = [];
+        alunosMatriculasValidos.forEach(aluno =>
+            testes16_19.push(
+                teste(
+                    `Deve conseguir obter ${artigo} ${nome} de uma instância de AlunoMatricula corretamente [${aluno.json.nome}].`,
+                    eval(aluno.criar.toString() + "." + getter),
+                    igual(aluno.json[getter]),
+                    () => jsonOk && aluno.instanciavel,
+                    ok => aluno["funciona" + getter] = ok
                 )
-            );
-            return testes;
-        });
+            )
+        );
+        grupo(`Exercício ${numero}`, `Getter d${artigo} ${nome} na classe AlunoMatricula`).maximo(0.4).testes(testes16_19);
     });
+
+    // Exercício 20.
 
     function informarDados(nome, genero, disciplina, acs, prova, sub, presenca) {
         document.querySelector("#nome").value = nome;
@@ -646,17 +665,6 @@ const executarTestes = TesteFw(funcs => {
         if (crash) throw crash;
         return resultado;
     }
-
-    grupo("Exercício 20 - parte 1 (caminho feliz - entrada válida)", "Formulário com AlunoMatricula", true, 0.6, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${aluno.json.nome}].`,
-                eval(aluno.criar.toString().replace("new AlunoMatricula", "informarDados")),
-                igual(aluno.json.status),
-                () => jsonOk && aluno.funcionastatus
-            )
-        )
-    );
 
     const alunosMatriculasInvalidos = [
         {
@@ -707,17 +715,6 @@ const executarTestes = TesteFw(funcs => {
         });
     });
 
-    grupo("Exercício 20 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula", true, 0.6, () =>
-        alunosMatriculasInvalidos.map((aluno, i) =>
-            teste(
-                `Não deve conseguir preencher uma instância de AlunoMatricula com ${aluno.causa} [${i + 1}].`,
-                eval(aluno.criar),
-                igual(aluno.erro),
-                testOk
-            )
-        )
-    );
-
     const alunosMatriculasValidos2 = [];
 
     ["10.00", "10.0", "0.0", "0.00"].forEach(nota => {
@@ -742,16 +739,38 @@ const executarTestes = TesteFw(funcs => {
         });
     });
 
-    grupo("Exercício 20 - parte 3 (caminho feliz - casos especiais)", "Formulário com AlunoMatricula", true, 0.2, () =>
-        alunosMatriculasValidos2.map((aluno, i) =>
-            teste(
-                `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
-                aluno.criar,
-                igual("Teste tem média 10 na disciplina de Teste e foi aprovada com 84% de presença."),
-                () => jsonOk
-            )
+    const testes20p1 = alunosMatriculasValidos.map(aluno =>
+        teste(
+            `Deve conseguir preencher uma instância de AlunoMatricula corretamente no formulário [${aluno.json.nome}].`,
+            eval(aluno.criar.toString().replace("new AlunoMatricula", "informarDados")),
+            igual(aluno.json.status),
+            () => jsonOk && aluno.funcionastatus
         )
     );
+
+    const testes20p2 = alunosMatriculasInvalidos.map((aluno, i) =>
+        teste(
+            `Não deve conseguir preencher uma instância de AlunoMatricula com ${aluno.causa} [${i + 1}].`,
+            eval(aluno.criar),
+            igual(aluno.erro),
+            testOk
+        )
+    );
+
+    const testes20p3 = alunosMatriculasValidos2.map((aluno, i) =>
+        teste(
+            `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
+            aluno.criar,
+            igual("Teste tem média 10 na disciplina de Teste e foi aprovada com 84% de presença."),
+            () => jsonOk
+        )
+    );
+
+    grupo("Exercício 20 - parte 1 (caminho feliz - entrada válida)"    , "Formulário com AlunoMatricula - preenchido corretamente").maximo(0.6).testes(testes20p1);
+    grupo("Exercício 20 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula - preenchimento incorreto").maximo(0.6).testes(testes20p2);
+    grupo("Exercício 20 - parte 3 (caminho feliz - casos especiais)"   , "Formulário com AlunoMatricula - preenchido com 10"      ).maximo(0.1).testes(testes20p3);
+
+    // Teste de efeitos colaterais dos exercícios 14 ao 20.
 
     function testarEfeitosColaterais(coisa, jsonBase) {
         const doido = a => random.embaralhar(a);
@@ -775,76 +794,77 @@ const executarTestes = TesteFw(funcs => {
         igual(json1).testar(json7);
     }
 
-    grupo("Exercícios 14 a 20 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais", true, 0.2, () =>
-        alunosMatriculasValidos.map(aluno =>
-            teste(
-                `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${aluno.json.nome}].`,
-                () => testarEfeitosColaterais(aluno.criar(), aluno.json),
-                naoDeuErro(),
-                () => jsonOk && aluno.funcionastatus
-            )
+    const testesColaterais = alunosMatriculasValidos.map(aluno =>
+        teste(
+            `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${aluno.json.nome}].`,
+            () => testarEfeitosColaterais(aluno.criar(), aluno.json),
+            naoDeuErro(),
+            () => jsonOk && aluno.funcionastatus
         )
     );
 
-    grupo("Exercício 21", "Entrega", false, -0.5, () => {
-        const formas = [
-            "Eu vou entregar por meio do Google Forms.",
-            "Eu vou entregar por meio do One Drive.",
-            "Eu vou entregar por meio do Google Drive.",
-            "Eu vou entregar por e-mail.",
-            "Eu vou entregar um CD com o código para o professor.",
-            "Eu vou entregar um pen-drive com o código para o professor.",
-            "Eu vou entregar pelo WhatsApp.",
-            "Eu vou entregar pelo Telegram.",
-            "Eu vou entregar pelo MediaFire.",
-            "Eu vou entregar no Classroom.",
-            "Eu vou imprimir o código e entregar em papel pro professor.",
-            "Eu vou tirar uma foto do código e entregar essa foto.",
-            "Eu vou entregar o código em PDF.",
-            "Eu vou entregar pelos correios.",
-            "Eu não vou entregar nada.",
-            "Eu vou entregar o arquivo ac3.js que eu alterei e nada mais.",
-            "Eu vou entregar o arquivo ac3.js junto com outros arquivos.",
-            "Eu vou entregar o arquivo ac3-teste.js que eu alterei.",
-            "Eu vou entregar o arquivo ac3-teste.js junto com outros arquivos.",
-            "Eu vou entregar o arquivo ac3-testefw.js que eu alterei.",
-            "Eu vou entregar o arquivo ac3-testefw.js junto com outros arquivos.",
-            "Eu vou entregar o arquivo ac3.html que eu alterei e nada mais.",
-            "Eu vou entregar o arquivo ac3.html junto com outros arquivos.",
-            "Eu vou entregar o arquivo ac3.css que eu alterei e nada mais.",
-            "Eu vou entregar o arquivo ac3.css junto com outros arquivos.",
-            "Eu vou entregar o arquivo hot-xxx-video.mp4 que eu baixei e nada mais.",
-            "Eu vou entregar um arquivo RAR.",
-            "Eu vou pegar uma arma, sequestrar o professor e assim ele vai ter que me dar nota.",
-            "Eu vou arrumar uns quinhentos reais, mostrar a grana para o professor e perguntar se ele está a fim de negociar a nota.",
-            "Eu vou xingar o professor, ameaçar processar ele e reclamar na imprensa até ele me dar a nota que eu quero.",
-            "Oi, eu sou o Dollynho, seu amiguinho.",
-            "Vai querer o combo ou só o lanche? Acompanha McFritas para a viagem?",
-            "We don't need no validation. / "
-                    + "We don't need no version control. / "
-                    + "No dark sarcasm in the comments. / "
-                    + "Bugs leave my code alone. / "
-                    + "HEY, BUGS, LEAVE MY CODE ALONE. / "
-                    + "All in all, it was just a gambi in the code. / "
-                    + "All in all, it was all just gambis in the code.",
-            "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        ];
+    grupo("Exercícios 14 a 20 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais").maximo(0.2).testes(testesColaterais);
 
-        const correto = [
-            "Eu vou entregar o arquivo ac3.js que eu alterei e nada mais.",
-            "Eu vou entregar por meio do Google Forms.",
-        ];
+    // Exercício 21.
 
-        const testes = [];
-        for (let i = 1; i <= 10; i++) {
-            const copia = [...formas];
-            const bagunca = random.embaralhar(copia);
-            const resposta = [];
-            for (let i = 0; i < bagunca.length; i++) {
-                if (bagunca[i] === correto[0] || bagunca[i] === correto[1]) resposta.push(i);
-            }
-            testes.push(teste(`Deve achar a melhor forma de entregar [${i}].`, () => comoFazerEntrega(bagunca), igual(resposta), testOk));
+    const formas = [
+        "Eu vou entregar por meio do Google Forms.",
+        "Eu vou entregar por meio do One Drive.",
+        "Eu vou entregar por meio do Google Drive.",
+        "Eu vou entregar por e-mail.",
+        "Eu vou entregar um CD com o código para o professor.",
+        "Eu vou entregar um pen-drive com o código para o professor.",
+        "Eu vou entregar pelo WhatsApp.",
+        "Eu vou entregar pelo Telegram.",
+        "Eu vou entregar pelo MediaFire.",
+        "Eu vou entregar no Classroom.",
+        "Eu vou imprimir o código e entregar em papel pro professor.",
+        "Eu vou tirar uma foto do código e entregar essa foto.",
+        "Eu vou entregar o código em PDF.",
+        "Eu vou entregar pelos correios.",
+        "Eu não vou entregar nada.",
+        "Eu vou entregar o arquivo ac3.js que eu alterei e nada mais.",
+        "Eu vou entregar o arquivo ac3.js junto com outros arquivos.",
+        "Eu vou entregar o arquivo ac3-teste.js que eu alterei.",
+        "Eu vou entregar o arquivo ac3-teste.js junto com outros arquivos.",
+        "Eu vou entregar o arquivo ac3-testefw.js que eu alterei.",
+        "Eu vou entregar o arquivo ac3-testefw.js junto com outros arquivos.",
+        "Eu vou entregar o arquivo ac3.html que eu alterei e nada mais.",
+        "Eu vou entregar o arquivo ac3.html junto com outros arquivos.",
+        "Eu vou entregar o arquivo ac3.css que eu alterei e nada mais.",
+        "Eu vou entregar o arquivo ac3.css junto com outros arquivos.",
+        "Eu vou entregar o arquivo hot-xxx-video.mp4 que eu baixei e nada mais.",
+        "Eu vou entregar um arquivo RAR.",
+        "Eu vou pegar uma arma, sequestrar o professor e assim ele vai ter que me dar nota.",
+        "Eu vou arrumar uns quinhentos reais, mostrar a grana para o professor e perguntar se ele está a fim de negociar a nota.",
+        "Eu vou xingar o professor, ameaçar processar ele e reclamar na imprensa até ele me dar a nota que eu quero.",
+        "Oi, eu sou o Dollynho, seu amiguinho.",
+        "Vai querer o combo ou só o lanche? Acompanha McFritas para a viagem?",
+        "We don't need no validation. / "
+                + "We don't need no version control. / "
+                + "No dark sarcasm in the comments. / "
+                + "Bugs leave my code alone. / "
+                + "HEY, BUGS, LEAVE MY CODE ALONE. / "
+                + "All in all, it was just a gambi in the code. / "
+                + "All in all, it was all just gambis in the code.",
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    ];
+
+    const correto = [
+        "Eu vou entregar o arquivo ac3.js que eu alterei e nada mais.",
+        "Eu vou entregar por meio do Google Forms.",
+    ];
+
+    const testes21 = [];
+    for (let i = 1; i <= 10; i++) {
+        const copia = [...formas];
+        const bagunca = random.embaralhar(copia);
+        const resposta = [];
+        for (let i = 0; i < bagunca.length; i++) {
+            if (bagunca[i] === correto[0] || bagunca[i] === correto[1]) resposta.push(i);
         }
-        return testes;
-    });
+        testes21.push(teste(`Deve achar a melhor forma de entregar [${i}].`, () => comoFazerEntrega(bagunca), igual(resposta), testOk));
+    }
+
+    grupo("Exercício 21", "Entrega").naoFracionado.minimo(-0.5).testes(testes21);
 });

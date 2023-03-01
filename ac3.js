@@ -1,5 +1,23 @@
 "use strict";
 
+// ANTES DE MAIS NADA, IMPLEMENTE ESTA FUNÇÃO.
+/**
+ * Função que retorna um Array contendo os nomes e os RAs dos alunos que fizeram este exercício.
+ * @returns {Array} Os dados dos alunos que fizeram este exercício.
+ */
+function dadosDosAlunos() {
+    return [
+        {
+            "nome": "João da Silva",
+            "ra": 6123456
+        },
+        {
+            "nome": "Maria da Silva",
+             "ra": 6654321
+        }
+    ];
+}
+
 // Implemente as funções abaixo, conforme pede o enunciado.
 // Carregue o arquivo ac3.html para ver os resultados e a sua nota.
 
@@ -27,24 +45,6 @@ function maiorDosDois(a, b) {
  */
 function maiorDosDoisSimplificado(a, b) {
     return a > b ? a : b;
-}
-
-// EXERCÍCIO 0.
-/**
- * Função que retorna um Array contendo os nomes e os RAs dos alunos que fizeram este exercício.
- * @returns {Array} Os dados dos alunos que fizeram este exercício.
- */
-function dadosDosAlunos() {
-    return [
-        {
-            "nome": "João da Silva",
-            "ra": 6123456
-        },
-        {
-            "nome": "Maria da Silva",
-             "ra": 6654321
-        }
-    ];
 }
 
 // EXERCÍCIO 1.

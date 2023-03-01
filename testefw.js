@@ -10,7 +10,7 @@ function naoFizIssoAinda() {
     throw new NaoImplementadoAinda();
 }
 
-const TesteFw = (() => {
+const prepararTestes = (() => {
 
     // Funções utilitárias.
 
@@ -186,27 +186,17 @@ const TesteFw = (() => {
         #elemento;
         #atualizarSuite;
 
-        constructor(nome, subtitulo, fracionado, intervalo, fazTestes, atualizarSuite) {
-            let minima = 0, maxima = 0;
-            if (typeof intervalo === "number") {
-                if (intervalo < 0) this.#minima = intervalo;
-                if (intervalo > 0) this.#maxima = intervalo;
-            } else if (intervalo instanceof Array && intervalo.length === 2) {
-                this.#minima = intervalo[0];
-                this.#maxima = intervalo[1];
-            } else {
-                throw new Error("O intervalo foi definido de forma incorreta.");
-            }
-            let peso = this.#maxima - this.#minima;
+        constructor(nome, subtitulo, fracionado, pararNoPrimeiroErro, minima, maxima, testes, atualizarSuite) {
+            this.#minima = minima;
+            this.#maxima = maxima;
+            const peso = this.#maxima - this.#minima;
             this.#peso = peso;
-            try {
-                this.#testes = fazTestes();
-            } catch (e) {
-                this.#testes = [new Teste("A inicialização deveria ter sido bem sucedida!", () => { throw e; }, naoDeuErro())];
-            }
-            let elemento = document.createElement("li");
             this.#fracionado = fracionado;
+
+            const elemento = document.createElement("li");
             this.#elemento = elemento;
+
+            this.#testes = testes;
             this.#totalTestes = this.#testes.length;
 
             elemento.classList.add("testefw-grupo", "testefw-futuro");
@@ -239,6 +229,16 @@ const TesteFw = (() => {
 
             this.#testes.forEach(proximoTeste => proximoTeste.agrupar(detalhes, this));
             this.#atualizarSuite = atualizarSuite;
+
+            if (pararNoPrimeiroErro) {
+                for (let i = 0; i < testes.length - 1; i++) {
+                    const a = testes[i];
+                    const b = testes[i + 1];
+                    const x = [false];
+                    a.maisPosOperacao(ok => x[0] = ok);
+                    b.maisPreCondicao(() => x[0]);
+                }
+            }
         }
 
         get sucessos() { return this.#sucessos; }
@@ -249,8 +249,10 @@ const TesteFw = (() => {
         get totalTestes() { return this.#totalTestes; }
 
         get nota() {
-            if (!this.#fracionado && this.#sucessos !== this.#totalTestes) return this.#minima;
-            return this.#minima + this.#peso * this.#sucessos / this.#totalTestes;
+            if (!this.#fracionado && this.#sucessos !== this.#percorridos) return this.#minima;
+            const ganho = this.#maxima * this.#sucessos / this.#totalTestes;
+            const perda = this.#minima * (this.#percorridos - this.#sucessos) / this.#totalTestes;
+            return ganho + perda;
         }
 
         atualizar(tipo) {
@@ -287,7 +289,10 @@ const TesteFw = (() => {
     }
 
     class Teste {
-        #executar;
+        #execucao;
+        #testeDoResultado;
+        #preCondicao;
+        #posOperacao;
         #elemento;
         #grupo;
 
@@ -302,48 +307,53 @@ const TesteFw = (() => {
                     + `<div class="testefw-regra">Regra: <span>${escapeRegra}</span></div>`
                     + `<div class="testefw-codigo">Código: <span>${escapeCodigo}</span></div>`
                     + `<div class="resultado-esperado">${testeDoResultado.esperado}</div>`
-                    + `<div class="resultado-obtido">Aguardando a execução.</div>`
+                    + `<div class="resultado-obtido">Aguardando a execução.</div>`;
 
-            function atualizarHtml(tipo, esperado, obtido) {
-                elemento.classList.remove("testefw-ok", "testefw-niy", "testefw-erro", "testefw-skip", "testefw-executando", "testefw-futuro");
-                elemento.classList.add(`testefw-${tipo}`);
-                if (esperado !== undefined) elemento.querySelector(".resultado-esperado").innerHTML = esperado;
-                elemento.querySelector(".resultado-obtido").innerHTML = obtido;
-                return tipo;
-            }
-
-            function executar() {
-                if (preCondicao && !preCondicao()) {
-                    return atualizarHtml(
-                            "skip",
-                            undefined,
-                            `Resultado obtido: <span class="testefw-skip">O teste não pôde ser executado por causa de erros detectados em testes anteriores.</span>`
-                    );
-                }
-                let ok = false;
-                try {
-                    let resultado = execucao();
-                    testeDoResultado.testar(resultado);
-                    ok = true;
-                    return atualizarHtml("ok", undefined, `Resultado obtido: <span class="testefw-funcionou">Funcionou como esperado.</span>`);
-                } catch (e) {
-                    if (e instanceof NaoImplementadoAinda) {
-                        return atualizarHtml("niy", undefined, `Resultado obtido: <span class="testefw-naoimplementado">Não implementado ainda.</span>`);
-                    }
-                    if (e instanceof ErroFormatado) return atualizarHtml("erro", e.esperado, e.obtido);
-                    console.log(e);
-                    const msg = ``
-                            + `Resultado obtido: Um erro inesperado - `
-                            + `<span class="testefw-inesperado">[${e.constructor.name}] ${Utilitarios.escapeHtml(e.message)}</span>`;
-                    return atualizarHtml("erro", undefined, msg);
-                } finally {
-                    if (posOperacao) posOperacao(ok);
-                }
-            }
-
-            this.#executar = executar;
+            this.#execucao = execucao;
+            this.#testeDoResultado = testeDoResultado;
+            this.#preCondicao = preCondicao;
+            this.#posOperacao = posOperacao;
             this.#elemento = elemento;
             this.#grupo = null;
+        }
+
+        #atualizarHtml(tipo, esperado, obtido) {
+            this.#elemento.classList.remove("testefw-ok", "testefw-niy", "testefw-erro", "testefw-skip", "testefw-executando", "testefw-futuro");
+            this.#elemento.classList.add(`testefw-${tipo}`);
+            if (esperado !== undefined) this.#elemento.querySelector(".resultado-esperado").innerHTML = esperado;
+            this.#elemento.querySelector(".resultado-obtido").innerHTML = obtido;
+            return tipo;
+        }
+
+        executar() {
+            if (this.#preCondicao && !this.#preCondicao()) {
+                return this.#atualizarHtml(
+                        "skip",
+                        undefined,
+                        `Resultado obtido: <span class="testefw-skip">O teste não pôde ser executado por causa de erros detectados em testes anteriores.</span>`
+                );
+            }
+            let ok = false;
+            try {
+                let resultado = this.#execucao();
+                this.#testeDoResultado.testar(resultado);
+                ok = true;
+                return this.#atualizarHtml("ok", undefined, `Resultado obtido: <span class="testefw-funcionou">Funcionou como esperado.</span>`);
+            } catch (e) {
+                if (e instanceof NaoImplementadoAinda) {
+                    return this.#atualizarHtml("niy", undefined, `Resultado obtido: <span class="testefw-naoimplementado">Não implementado ainda.</span>`);
+                }
+                if (e instanceof ErroFormatado) {
+                    return this.#atualizarHtml("erro", e.esperado, e.obtido);
+                }
+                console.log(e);
+                const msg = ``
+                        + `Resultado obtido: Um erro inesperado - `
+                        + `<span class="testefw-inesperado">[${e.constructor.name}] ${Utilitarios.escapeHtml(e.message)}</span>`;
+                return this.#atualizarHtml("erro", undefined, msg);
+            } finally {
+                if (this.#posOperacao) this.#posOperacao(ok);
+            }
         }
 
         agrupar(onde, grupo) {
@@ -356,7 +366,28 @@ const TesteFw = (() => {
         }
 
         testar() {
-            this.#grupo.atualizar(this.#executar());
+            this.#grupo.atualizar(this.executar());
+        }
+
+        maisPreCondicao(novaCondicao) {
+            if (!this.#preCondicao) {
+                this.#preCondicao = novaCondicao;
+            } else {
+                const antigaCondicao = this.#preCondicao;
+                this.#preCondicao = () => antigaCondicao() && novaCondicao();
+            }
+        }
+
+        maisPosOperacao(novaOperacao) {
+            if (!this.#posOperacao) {
+                this.#posOperacao = novaOperacao;
+            } else {
+                const antigaOperacao = this.#posOperacao;
+                this.#posOperacao = ok => {
+                    antigaOperacao(ok);
+                    novaOperacao(ok);
+                };
+            }
         }
     }
 
@@ -379,14 +410,14 @@ const TesteFw = (() => {
         };
     }
 
-    function erroSerio(ev, arquivo, linha, coluna, erro) {
-        const zoado = document.createElement("div");
-        zoado.classList.add("testefw-gravissimo");
-        zoado.innerHTML = ""
-                + "<h1>SE VOCÊ ESTÁ VENDO ISSO, É PORQUE O JAVASCRIPT NÃO RODOU CORRETAMENTE.</h1>"
-                + "<p>Este é um erro gravíssimo. Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
-                + "<p>Quem entregar para o professor algo que faça esta mensagem aparecer, vai ficar com nota zero!</p>";
-        document.body.prepend(zoado);
+    function erroGravissimo(texto) {
+        let zoado = document.querySelector(".testefw-gravissimo");
+        if (!zoado) {
+            zoado = document.createElement("div");
+            zoado.classList.add("testefw-gravissimo");
+            document.body.prepend(zoado);
+        }
+        zoado.innerHTML = texto;
     }
 
     class Suite {
@@ -397,8 +428,6 @@ const TesteFw = (() => {
         }
 
         static #preparoGlobal() {
-            window.onerror = erroSerio;
-
             const jaTemR = document.querySelector("#testefw-resultados");
             if (jaTemR) jaTemR.remove();
             const jaTemN = document.querySelector("#testefw-nota");
@@ -419,9 +448,9 @@ const TesteFw = (() => {
         }
 
         testarTudo(delay, preparacao) {
+            Suite.#preparoGlobal();
             const atualizar = () => this.#atualizar();
             const adicionouGrupo = g => this.#grupos.push(g);
-            Suite.#preparoGlobal();
             if (document.querySelectorAll(".testefw-gravissimo").length > 0) return;
             preparacao(new Callbacks(adicionouGrupo, atualizar));
             this.#executarTestes(delay);
@@ -479,6 +508,71 @@ const TesteFw = (() => {
             document.querySelector("#testefw-contaerros").innerHTML = totalErros + " / " + totalTestes;
             document.querySelector("#testefw-contapulos").innerHTML = totalPulos + " / " + totalTestes;
             document.querySelector("#testefw-contaniy").innerHTML = totalNiy + " / " + totalTestes;
+            const divNota = document.querySelector("#testefw-nota");
+            if (divNota) divNota.style.display = "block";
+        }
+    }
+
+    class GrupoBuilder {
+        #adicionouGrupo;
+        #atualizarSuite;
+        #nome;
+        #subtitulo;
+        #minimo = 0;
+        #maximo = 0;
+        #fracionado = true;
+        #pararNoPrimeiroErro = false;
+        #queimado = false;
+
+        constructor(adicionouGrupo, atualizarSuite, nome, subtitulo) {
+            this.#adicionouGrupo = adicionouGrupo;
+            this.#atualizarSuite = atualizarSuite;
+            this.#nome = nome;
+            this.#subtitulo = subtitulo;
+        }
+
+        get fracionado() {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            this.#fracionado = true;
+            return this;
+        }
+
+        get naoFracionado() {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            this.#fracionado = false;
+            return this;
+        }
+
+        get pararNoPrimeiroErro() {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            this.#pararNoPrimeiroErro = true;
+            return this;
+        }
+
+        get naoPararNoPrimeiroErro() {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            this.#pararNoPrimeiroErro = false;
+            return this;
+        }
+
+        minimo(valor) {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            this.#minimo = valor;
+            return this;
+        }
+
+        maximo(valor) {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            this.#maximo = valor;
+            return this;
+        }
+
+        testes(arrayTestes) {
+            if (this.#queimado) throw new Error("O Builder já foi fechado.");
+            const g = new Grupo(this.#nome, this.#subtitulo, this.#fracionado, this.#pararNoPrimeiroErro, this.#minimo, this.#maximo, arrayTestes, this.#atualizarSuite);
+            this.#adicionouGrupo(g);
+            this.#queimado = true;
+            return g;
         }
     }
 
@@ -500,11 +594,9 @@ const TesteFw = (() => {
         get grupo() {
             const adicionouGrupo = this.#adicionouGrupo;
             const atualizarSuite = this.#atualizarSuite;
-            return function(nome, subtitulo, fracionado, intervalo, fazTestes) {
-                const g = new Grupo(nome, subtitulo, fracionado, intervalo, fazTestes, atualizarSuite);
-                adicionouGrupo(g);
-                return g;
-            };
+            return function(nome, subtitulo) {
+                return new GrupoBuilder(adicionouGrupo, atualizarSuite, nome, subtitulo);
+            }
         }
 
         get igual() {
@@ -513,6 +605,10 @@ const TesteFw = (() => {
 
         get naoDeuErro() {
             return naoDeuErro;
+        }
+
+        get erroGravissimo() {
+            return erroGravissimo;
         }
 
         get Utilitarios() {

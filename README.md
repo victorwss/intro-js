@@ -6,9 +6,9 @@ Exercícios de Introdução ao JavaScript, passando pelos tipos, estruturas e fu
 
 Basicamente, o que você tem/têm que fazer é abrir o arquivo `ac3.js` e desenvolver o código necessário para cada função/método funcionar de acordo com as respectivas documentações.
 
-Comece pelo exercício 0, que nada mais é do que o nome e o RA dos alunos. Se você não conseguir fazer esse corretamente, sua nota também será zero.
+Comece pela função que fornece um JSON com o nome e o RA dos alunos. Se você não conseguir fazer isso corretamente, sua nota será zero independente de todo o resto.
 
-Os nomes das funções não devem ser trocados (se você fizer isso, os testes não vão te perdoar). No entanto, você pode criar outras funções que/se julgar necessário. Não é recomendado mudar o nome dos parâmetros.
+Os nomes das funções não devem ser trocados (se você fizer isso, os testes não vão te perdoar). No entanto, você pode criar outras funções que/se julgar necessário. Não é recomendado mudar o nome dos parâmetros, embora você possa fazer isso.
 
 Faça o AC em grupos de 1 até 5 pessoas.
 
@@ -16,9 +16,9 @@ Faça o AC em grupos de 1 até 5 pessoas.
 
 Para executar e testar este AC, basta abrir o `ac3.html` em um navegador moderno (Chrome ou Firefox) e a mágica toda vai acontecer automaticamente.
 
-Esta página vai automaticamente rodar um montão de testes (exatos 415, para ser preciso) e se houverem problemas, ela vai descrever quais foram os testes que falharam.
+Esta página vai automaticamente rodar um montão de testes (exatos 600, para ser preciso) e se houverem problemas, ela vai descrever quais foram os testes que falharam.
 
-Obviamente, o arquivo `ac3.js` dado aqui vai tirar uma nota zero. Não só isso, já te dará de cara uma caixa de mensagem de erro amarela com letras grandes vermelhas piscando bem chamativas dizendo que você precisa configurar o JSON com o nome dos alunos (exercício 0). 
+Obviamente, o arquivo `ac3.js` dado aqui vai tirar uma nota zero. Não só isso, já te dará de cara uma caixa de mensagem de erro amarela com letras grandes vermelhas piscando bem chamativas dizendo que você precisa configurar o JSON com o nome dos alunos.
 
 Você deverá alterar este arquivo até conseguir a nota 10 (ou até desistir de fazê-lo, mas espero que não seja o caso).
 
@@ -28,10 +28,10 @@ No arquivo `ac3.html`, também há 2 formulários, um para o exercício 12 e out
 
 ## E os demais arquivos?
 
-Os testes estão no arquivo `ac3-teste.js`. O código responsável por gerenciar os testes está no `ac3-testefw.js`.
+Os testes estão no arquivo `ac3-teste.js`. O código responsável por gerenciar os testes está no `lib/testefw.js`.
 É recomendável você deixar estes arquivos como estão, pois o professsor sempre usará os originais na correção, logo não há porque alterá-los.
 Se você tiver coragem, você até pode mexer nesses arquivos para fazer algum experimento, colocar linhas de `console.log` para tentar entender como o código funciona, desmontar ou alterar pedaços para fazer debugging, etc.
-No entanto, o funcionamento interno desses arquivos está em um nível bastante avançado e complexo e não é esperado que alunos que estejam recém-omeçando em JavaScript os entendam.
+No entanto, o funcionamento interno desses arquivos está em um nível bastante avançado e complexo e não é esperado que alunos que estejam recém-começando em JavaScript os entendam.
 De toda forma, se quiser fuçar neles, sempre tenha em mão os arquivos originais para se certificar de que não bagunçou nada.
 
 Por fim, há os arquivos `ac3.html` e `ac3.css`. A esta altura, o que eles fazem e como se comportam deve estar claro para a maioria dos alunos.
@@ -43,17 +43,15 @@ A página `ac3.html` já calculará a nota automaticamente, da seguinte forma:
 
 - Faça o exercício 0 antes de qualquer coisa. Ele se chama exercício 0 porque se você não o fizer direito, a sua nota também será 0.
 
-- Cada exercício do 1 ao 19 tem um peso diferente e uma quantidade de testes diferentes. Se todos os testes passarem, o peso correspondente é somado. Se nenhum passar, nada acontece. Se somente alguns passarem, a nota proporcional a quantidade de testes do exercício e ao peso do exercício será aplicada.
+- Cada exercício do 1 ao 21 tem um peso diferente e uma quantidade de testes diferentes. Se todos os testes passarem, o peso correspondente é somado. Se nenhum passar, nada acontece. Se somente alguns passarem, a nota proporcional a quantidade de testes do exercício e ao peso do exercício será aplicada.
 
 - Se você bagunçar com os dois exemplos dados, sofrerá uma penalidade de -1 ponto. Eles servem apenas para você ter alguma ideia do que deve ser feito, mas não é para zoar com eles.
 
-- O exercício 20 é só para relembrar a alguns alunos que insistem em fazer a entrega da forma incorreta em como fazê-la da forma correta. Se você errar esse exercício, sofrerá uma penalidade de -1 ponto.
-
 No entanto, há algumas observações a serem feitas:
 
-- Se você fizer a entrega incorretamente mesmo tendo feito o exercício 20 corretamente, será penalizado em -1 ponto da mesma forma.
+- Se você fizer a entrega incorretamente mesmo tendo feito o exercício 21 corretamente, será penalizado em -1 ponto da mesma forma.
 
-- Vocês só devem entregar o arquivo `ac3.js`. Vou ignorar quaisquer mudanças realizadas em outros arquivos e sempre fazer a correção com os demais arquivos originais.
+- Você só deve entregar o arquivo `ac3.js`. Vou ignorar quaisquer mudanças realizadas em outros arquivos e sempre fazer a correção com os demais arquivos originais.
 
 - Quem tentar colocar algum tipo de malware ou código malicioso no `ac3.js` fica com nota zero.
 

@@ -8,13 +8,12 @@ prepararTestes(funcs => {
                 + "<p>Este é um erro gravíssimo. Veja mais detalhes no console do navegador para tentar entender onde ocorreu o erro.</p>"
                 + "<p>Quem entregar para o professor algo que faça esta mensagem aparecer, vai ficar com nota zero!</p>"
         );
-        document.querySelector("#botaoExecutar").disabled = true;
+        document.querySelector("#testefw-botao-executar").disabled = true;
     };
     const divNota = document.querySelector("#testefw-nota");
     if (divNota) divNota.style.display = "none";
-})(-1);
-
-const executarTestes = prepararTestes(funcs => {
+},
+funcs => {
     const grupo = funcs.grupo;
     const teste = funcs.teste;
     const igual = funcs.igual;
@@ -107,7 +106,7 @@ const executarTestes = prepararTestes(funcs => {
 
     // Exercício 1.
 
-    grupo("Exercício 1", "Maior dos quatro").maximo(0.2).testes([
+    grupo("Exercício 1", "Maior dos quatro").maximo(0.3).testes([
         teste("O maior de 1, 3, 5, 7 é 7."     , () => maiorDosQuatro( 1,  3,  5,  7), igual( 7), testOk),
         teste("O maior de 1, 3, 5, 9 é 9."     , () => maiorDosQuatro( 1,  3,  5,  9), igual( 9), testOk),
         teste("O maior de 1, 3, 5, 0 é 5."     , () => maiorDosQuatro( 1,  3,  5,  0), igual( 5), testOk),
@@ -295,21 +294,21 @@ const executarTestes = prepararTestes(funcs => {
     
     const testes6p1 = [];
     const testes7p1 = [];
-    for (const chave in datasBoas) {
-        const valor = datasBoas[chave];
-        testes6p1.push(teste(`Data ${chave} é válida.`, () => dataValida(chave), igual(true), testOk));
-        testes7p1.push(teste(`Data ${chave} deve devolver ${valor}.`, () => converteDataParaFormaCompleta(chave), igual(valor), testOk));
+    for (const ddMMyyyy in datasBoas) {
+        const porExtenso = datasBoas[ddMMyyyy];
+        testes6p1.push(teste(`A data ${ddMMyyyy} é válida.`, eval(`() => dataValida("${ddMMyyyy}")`), igual(true), testOk));
+        testes7p1.push(teste(`A data ${ddMMyyyy} deve devolver ${porExtenso}.`, eval(`() => converteDataParaFormaCompleta("${ddMMyyyy}")`), igual(porExtenso), testOk));
     }
 
     const testes6p2 = [];
     const testes7p2 = [];
-    for (const chave in datasRuins) {
-        const valor = datasRuins[chave];
-        testes6p2.push(teste(`Data ${chave} é inválida.`, () => dataValida(chave), igual(false), testOk));
-        testes7p2.push(teste(`Data ${chave} é inválida.`, () => converteDataParaFormaCompleta(chave), igual("Data inválida"), testOk));
+    for (const idx in datasRuins) {
+        const ddMMyyyy = datasRuins[idx];
+        testes6p2.push(teste(`A data ${ddMMyyyy} é inválida.`, eval(`() => dataValida("${ddMMyyyy}")`), igual(false), testOk));
+        testes7p2.push(teste(`A data ${ddMMyyyy} é inválida.`, eval(`() => converteDataParaFormaCompleta("${ddMMyyyy}")`), igual("Data inválida"), testOk));
     }
 
-    grupo("Exercício 6 - parte 1 (caminho feliz)"  , "Datas válidas").maximo(0.3).testes(testes6p1);
+    grupo("Exercício 6 - parte 1 (caminho feliz)"  , "Datas válidas").maximo(0.4).testes(testes6p1);
     grupo("Exercício 6 - parte 2 (caminho infeliz)", "Datas inválidas").maximo(0.3).testes(testes6p2);
     grupo("Exercício 7 - parte 1 (caminho feliz)"  , "Datas válidas por extenso").maximo(0.3).testes(testes7p1);
     grupo("Exercício 7 - parte 2 (caminho infeliz)", "Datas inválidas por extenso").maximo(0.1).testes(testes7p2);
@@ -403,15 +402,15 @@ const executarTestes = prepararTestes(funcs => {
 
     function testeTrianguloFeliz(func) {
         return [
-            teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , () => func( 5  ,   5,  5  ), igual("Equilátero"        ), testOk),
-            teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , () => func( 8  ,   8,  8  ), igual("Equilátero"        ), testOk),
-            teste('Deve devolver "Equilátero" para 3.3, 3.3 e 3.3.', () => func( 3.3, 3.3,  3.3), igual("Equilátero"        ), testOk),
-            teste('Deve devolver "Isósceles" para 12, 8 e 12.'     , () => func(12  ,   8, 12  ), igual("Isósceles"         ), testOk),
-            teste('Deve devolver "Isósceles" para 12, 12 e 8.8.'   , () => func(12  ,  12,  8.8), igual("Isósceles"         ), testOk),
-            teste('Deve devolver "Isósceles" para 5, 13 e 13.'     , () => func( 5  ,  13, 13  ), igual("Isósceles"         ), testOk),
-            teste('Deve devolver "Escaleno" para 4, 2 e 3.'        , () => func( 4  ,   2,  3  ), igual("Escaleno"          ), testOk),
-            teste('Deve devolver "Escaleno" para 3, 2.5 e 1.'      , () => func( 3  , 2.5,  1  ), igual("Escaleno"          ), testOk),
-            teste('Deve devolver "Escaleno" para 7.2, 2.5 e 5.1.'  , () => func( 7.2, 2.5,  5.1), igual("Escaleno"          ), testOk)
+            teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , () => func( 5  ,   5,  5  ), igual("Equilátero"), testOk),
+            teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , () => func( 8  ,   8,  8  ), igual("Equilátero"), testOk),
+            teste('Deve devolver "Equilátero" para 3.3, 3.3 e 3.3.', () => func( 3.3, 3.3,  3.3), igual("Equilátero"), testOk),
+            teste('Deve devolver "Isósceles" para 12, 8 e 12.'     , () => func(12  ,   8, 12  ), igual("Isósceles" ), testOk),
+            teste('Deve devolver "Isósceles" para 12, 12 e 8.8.'   , () => func(12  ,  12,  8.8), igual("Isósceles" ), testOk),
+            teste('Deve devolver "Isósceles" para 5, 13 e 13.'     , () => func( 5  ,  13, 13  ), igual("Isósceles" ), testOk),
+            teste('Deve devolver "Escaleno" para 4, 2 e 3.'        , () => func( 4  ,   2,  3  ), igual("Escaleno"  ), testOk),
+            teste('Deve devolver "Escaleno" para 3, 2.5 e 1.'      , () => func( 3  , 2.5,  1  ), igual("Escaleno"  ), testOk),
+            teste('Deve devolver "Escaleno" para 7.2, 2.5 e 5.1.'  , () => func( 7.2, 2.5,  5.1), igual("Escaleno"  ), testOk)
         ];
     }
 
@@ -468,7 +467,7 @@ const executarTestes = prepararTestes(funcs => {
         };
         bt.click();
         bt.onclick = oldClick;
-        limparForm12();
+        limparForm13();
         if (crash) throw crash;
         return resultado;
     }
@@ -660,8 +659,8 @@ const executarTestes = prepararTestes(funcs => {
         };
         bt.click();
         bt.onclick = oldClick;
-        limparForm19();
-        limparListasForm19();
+        limparForm20();
+        limparListasForm20();
         if (crash) throw crash;
         return resultado;
     }
@@ -691,7 +690,7 @@ const executarTestes = prepararTestes(funcs => {
             const arr = [8, 7, 9, 4.5, 8];
             arr[j] = lixo;
             alunosMatriculasInvalidos.push({
-                criar: `() => informarDados("Teste", "F", "Teste", Object.freeze(${JSON.stringify(arr)}), 9, 0, 84)`,
+                criar: `() => informarDados("Teste", "F", "Teste", Object.freeze(${JSON.stringify(arr).replaceAll(",", ", ")}), 9, 0, 84)`,
                 erro: "Informe a nota corretamente.",
                 causa: `o valor inválido "${lixo}" para o AC ${j + 1}`,
             });
@@ -722,18 +721,18 @@ const executarTestes = prepararTestes(funcs => {
             const arr = ["10", "10", "10", "10", "10"];
             arr[j] = nota;
             alunosMatriculasValidos2.push({
-                criar: () => informarDados("Teste", "F", "Teste", arr, "10", "10", 84),
+                criar: `() => informarDados("Teste", "F", "Teste", ${JSON.stringify(arr).replaceAll(",", ", ")}, "10", "10", 84)`,
                 campo: "AC " + (j + 1),
                 valor: nota,
             });
         });
         alunosMatriculasValidos2.push({
-            criar: () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], nota, "10", 84),
+            criar: `() => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], ${nota}, "10", 84)`,
             campo: "prova",
             valor: nota,
         });
         alunosMatriculasValidos2.push({
-            criar: () => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", nota, 84),
+            criar: `() => informarDados("Teste", "F", "Teste", ["10", "10", "10", "10", "10"], "10", ${nota}, 84)`,
             campo: "sub",
             valor: nota,
         });
@@ -760,28 +759,34 @@ const executarTestes = prepararTestes(funcs => {
     const testes20p3 = alunosMatriculasValidos2.map((aluno, i) =>
         teste(
             `Deve aceitar o valor ${aluno.valor} no campo ${aluno.campo}.`,
-            aluno.criar,
+            eval(aluno.criar),
             igual("Teste tem média 10 na disciplina de Teste e foi aprovada com 84% de presença."),
             () => jsonOk
         )
     );
 
-    grupo("Exercício 20 - parte 1 (caminho feliz - entrada válida)"    , "Formulário com AlunoMatricula - preenchido corretamente").maximo(0.6).testes(testes20p1);
-    grupo("Exercício 20 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula - preenchimento incorreto").maximo(0.6).testes(testes20p2);
+    grupo("Exercício 20 - parte 1 (caminho feliz - entrada válida)"    , "Formulário com AlunoMatricula - preenchido corretamente").maximo(0.4).testes(testes20p1);
+    grupo("Exercício 20 - parte 2 (caminho infeliz - entrada inválida)", "Formulário com AlunoMatricula - preenchimento incorreto").maximo(0.4).testes(testes20p2);
     grupo("Exercício 20 - parte 3 (caminho feliz - casos especiais)"   , "Formulário com AlunoMatricula - preenchido com 10"      ).maximo(0.1).testes(testes20p3);
 
     // Teste de efeitos colaterais dos exercícios 14 ao 20.
 
+    function jsonBonito(dados, keys) {
+        if (!keys) keys = Object.keys(dados).sort();
+        return JSON.stringify(dados, keys).replaceAll(",", ", ").replaceAll(":", ": ").replaceAll(",  g", ", g");
+    }
+
     function testarEfeitosColaterais(coisa, jsonBase) {
         const doido = a => random.embaralhar(a);
         const keys = Object.keys(jsonBase).sort();
-        const json1 = JSON.stringify(jsonBase, keys);
-        const json2 = JSON.stringify(Utilitarios.extractGetters(coisa), keys);
-        const json3 = JSON.stringify(Utilitarios.extractGetters(coisa, a => a.sort()), keys);
-        const json4 = JSON.stringify(Utilitarios.extractGetters(coisa, a => a.sort().reverse()), keys);
-        const json5 = JSON.stringify(Utilitarios.extractGetters(coisa, doido), keys);
-        const json6 = JSON.stringify(Utilitarios.extractGetters(coisa, doido), keys);
-        const json7 = JSON.stringify(Utilitarios.extractGetters(coisa, doido), keys);
+        console.log(keys);
+        const json1 = jsonBonito(jsonBase, keys);
+        const json2 = jsonBonito(Utilitarios.extractGetters(coisa), keys);
+        const json3 = jsonBonito(Utilitarios.extractGetters(coisa, a => a.sort()), keys);
+        const json4 = jsonBonito(Utilitarios.extractGetters(coisa, a => a.sort().reverse()), keys);
+        const json5 = jsonBonito(Utilitarios.extractGetters(coisa, doido), keys);
+        const json6 = jsonBonito(Utilitarios.extractGetters(coisa, doido), keys);
+        const json7 = jsonBonito(Utilitarios.extractGetters(coisa, doido), keys);
 
         igual(json1).testar(json2);
         igual(json1).testar(json3);
@@ -797,13 +802,13 @@ const executarTestes = prepararTestes(funcs => {
     const testesColaterais = alunosMatriculasValidos.map(aluno =>
         teste(
             `Deve se certificar que chamar os getters de AlunoMatricula não causa efeitos colaterais estranhos [${aluno.json.nome}].`,
-            () => testarEfeitosColaterais(aluno.criar(), aluno.json),
+            eval(`() => testarEfeitosColaterais(${aluno.criar.toString().replace("() => ", "")}, ${jsonBonito(aluno.json)})`),
             naoDeuErro(),
             () => jsonOk && aluno.funcionastatus
         )
     );
 
-    grupo("Exercícios 14 a 20 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais").maximo(0.2).testes(testesColaterais);
+    grupo("Exercícios 14 a 20 - testar efeitos colaterais indesejados", "Getters não devem causar efeitos colaterais").maximo(0.1).testes(testesColaterais);
 
     // Exercício 21.
 
@@ -827,8 +832,8 @@ const executarTestes = prepararTestes(funcs => {
         "Eu vou entregar o arquivo ac3.js junto com outros arquivos.",
         "Eu vou entregar o arquivo ac3-teste.js que eu alterei.",
         "Eu vou entregar o arquivo ac3-teste.js junto com outros arquivos.",
-        "Eu vou entregar o arquivo ac3-testefw.js que eu alterei.",
-        "Eu vou entregar o arquivo ac3-testefw.js junto com outros arquivos.",
+        "Eu vou entregar o arquivo testefw.js que eu alterei.",
+        "Eu vou entregar o arquivo testefw.js junto com outros arquivos.",
         "Eu vou entregar o arquivo ac3.html que eu alterei e nada mais.",
         "Eu vou entregar o arquivo ac3.html junto com outros arquivos.",
         "Eu vou entregar o arquivo ac3.css que eu alterei e nada mais.",
@@ -840,13 +845,14 @@ const executarTestes = prepararTestes(funcs => {
         "Eu vou xingar o professor, ameaçar processar ele e reclamar na imprensa até ele me dar a nota que eu quero.",
         "Oi, eu sou o Dollynho, seu amiguinho.",
         "Vai querer o combo ou só o lanche? Acompanha McFritas para a viagem?",
-        "We don't need no validation. / "
+        ""
+                + "We don't need no validation. / "
                 + "We don't need no version control. / "
                 + "No dark sarcasm in the comments. / "
                 + "Bugs leave my code alone. / "
                 + "HEY, BUGS, LEAVE MY CODE ALONE. / "
-                + "All in all, it was just a gambi in the code. / "
-                + "All in all, it was all just gambis in the code.",
+                + "All in all, it's just another gambi in the code. / "
+                + "All in all, you're just a huge gambi in the code.",
         "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     ];
 
@@ -863,8 +869,15 @@ const executarTestes = prepararTestes(funcs => {
         for (let i = 0; i < bagunca.length; i++) {
             if (bagunca[i] === correto[0] || bagunca[i] === correto[1]) resposta.push(i);
         }
-        testes21.push(teste(`Deve achar a melhor forma de entregar [${i}].`, () => comoFazerEntrega(bagunca), igual(resposta), testOk));
+        testes21.push(
+            teste(
+                `Deve achar a melhor forma de entregar [${i}].`,
+                eval(`() => comoFazerEntrega(${JSON.stringify(bagunca).replaceAll(',"', ', "')})`),
+                igual(resposta),
+                testOk
+            )
+        );
     }
 
-    grupo("Exercício 21", "Entrega").naoFracionado.minimo(-0.5).testes(testes21);
+    grupo("Exercício 21", "Entrega").naoFracionado.maximo(0.3).testes(testes21);
 });

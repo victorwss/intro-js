@@ -12,49 +12,23 @@
         <script>
             "use strict";
 
-            function limparForm12() {
-                document.querySelectorAll(".ex12 input[type='text']").forEach(e => e.value = "");
+            function limparForm13() {
+                document.querySelectorAll(".ex13 input[type='text']").forEach(e => e.value = "");
             }
 
-            function limparForm19() {
-                document.querySelectorAll(".ex19 input[type='text']").forEach(e => e.value = "");
-                document.querySelectorAll(".ex19 input[type='radio']").forEach(e => e.checked = "");
+            function limparForm20() {
+                document.querySelectorAll(".ex20 input[type='text']").forEach(e => e.value = "");
+                document.querySelectorAll(".ex20 input[type='radio']").forEach(e => e.checked = "");
             }
 
-            function limparListasForm19() {
+            function limparListasForm20() {
                 document.querySelector("#notas").innerHTML = "";
-            }
-
-            function clickBotaoExecutar() {
-                let numero;
-                try {
-                    numero = lerNumero(document.querySelector("#delay").value);
-                } catch (e) {
-                    alert(e);
-                    return;
-                }
-                executarTestes(numero);
-                document.querySelector("#delay").value = "" + numero;
             }
         </script>
     </head>
     <body>
-        <div class="formzinho">
-            <p>
-                <label for="delay">Delay dos testes:</label>
-                <input type="text" id="delay" value="-1">
-            </p>
-            <p>
-                <label for="botaoExecutar">&nbsp;</label>
-                <button type="button" id="botaoExecutar" onclick="clickBotaoExecutar();">EXECUTAR OS TESTES!</button>
-            </p>
-            <p>
-                <label>Delay em milissegundos entre um teste e outro.</label>
-                <label>Coloque -1 para testar tudo de uma vez sem delay.</label>
-            </p>
-        </div>
-        <div class="formzinho ex12">
-            <h1>Formulário para o exercício 12</h1>
+        <div class="formzinho ex13">
+            <h1>Formulário para o exercício 13</h1>
             <p>
                 <label for="ladoA">Lado A:</label>
                 <input type="text" id="ladoA">
@@ -67,7 +41,7 @@
                 <label for="ladoC">Lado C:</label>
                 <input type="text" id="ladoC">
             </p>
-            <p class="ex12e19-botao">
+            <p class="ex13e20-botao">
                 <label for="botaoTriangulo">&nbsp;</label>
                 <button type="button" id="botaoTriangulo" onclick="verificarTriangulo();">Verificar</button>
             </p>
@@ -75,22 +49,22 @@
                 <label for="tipoTriangulo">Resultado:</label>
                 <input type="text" id="tipoTriangulo" class="grande" readonly>
             </p>
-            <p class="ex12e19-botao">
+            <p class="ex13e20-botao">
                 <label for="btLimpar1">&nbsp;</label>
-                <button type="button" id="btLimpar1" onclick="limparForm12();">Limpar</button>
+                <button type="button" id="btLimpar1" onclick="limparForm13();">Limpar</button>
             </p>
         </div>
-        <div class="formzinho ex19">
-            <h1>Formulário para o exercício 19</h1>
+        <div class="formzinho ex20">
+            <h1>Formulário para o exercício 20</h1>
             <p>
                 <label for="nome">Nome:</label>
                 <input type="text" id="nome" class="grande">
             </p>
-            <p class="ex12e19-radio">
+            <p class="ex13e20-radio">
                 <label for="ele">Ele</label>
                 <input type="radio" id="ele" value="M" class="genero" name="genero">
             </p>
-            <p class="ex12e19-radio">
+            <p class="ex13e20-radio">
                 <label for="ela">Ela</label>
                 <input type="radio" id="ela" value="F" class="genero" name="genero">
             </p>
@@ -118,17 +92,17 @@
                 <label for="presenca">Presença:</label>
                 <input type="text" id="presenca">
             </p>
-            <p class="ex12e19-botao">
+            <p class="ex13e20-botao">
                 <label for="botaoCadastrar">&nbsp;</label>
                 <button type="button" id="botaoCadastrar" onclick="verificarAlunoMatriculado();">Verificar</button>
             </p>
-            <p class="ex12e19-botao">
+            <p class="ex13e20-botao">
                 <label for="btLimpar2">&nbsp;</label>
-                <button type="button" id="btLimpar2" onclick="limparForm19();">Limpar campos</button>
+                <button type="button" id="btLimpar2" onclick="limparForm20();">Limpar campos</button>
             </p>
-            <p class="ex12e19-botao">
+            <p class="ex13e20-botao">
                 <label for="btLimpar3">&nbsp;</label>
-                <button type="button" id="btLimpar3" onclick="limparListasForm19();">Limpar lista</button>
+                <button type="button" id="btLimpar3" onclick="limparListasForm20();">Limpar lista</button>
             </p>
             <div>
                 <label>Matrículas registradas:</label>

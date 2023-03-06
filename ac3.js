@@ -1,6 +1,6 @@
 "use strict";
 
-// ANTES DE MAIS NADA, IMPLEMENTE ESTA FUNÇÃO.
+// EXERCÍCIO 0 - ANTES DE MAIS NADA, IMPLEMENTE ESTA FUNÇÃO.
 /**
  * Função que retorna um Array contendo os nomes e os RAs dos alunos que fizeram este exercício.
  * @returns {Array} Os dados dos alunos que fizeram este exercício.
@@ -470,7 +470,7 @@ function verificarAlunoMatriculado() {
     // Comece a mexer no código daqui para baixo.
     let texto;
     try {
-        const nome = lerTexto(document.querySelector("#nome").value,);
+        const nome = lerTexto(document.querySelector("#nome").value);
         const escolheuEle = naoFizIssoAinda();
         const escolheuEla = naoFizIssoAinda();
         if (!escolheuEle && !escolheuEla) throw new Error("Escolha o gênero do(a) aluno(a) corretamente.");

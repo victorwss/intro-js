@@ -402,35 +402,35 @@ funcs => {
 
     function testeTrianguloFeliz(func) {
         return [
-            teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , () => func( 5  ,   5,  5  ), igual("Equilátero"), testOk),
-            teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , () => func( 8  ,   8,  8  ), igual("Equilátero"), testOk),
-            teste('Deve devolver "Equilátero" para 3.3, 3.3 e 3.3.', () => func( 3.3, 3.3,  3.3), igual("Equilátero"), testOk),
-            teste('Deve devolver "Isósceles" para 12, 8 e 12.'     , () => func(12  ,   8, 12  ), igual("Isósceles" ), testOk),
-            teste('Deve devolver "Isósceles" para 12, 12 e 8.8.'   , () => func(12  ,  12,  8.8), igual("Isósceles" ), testOk),
-            teste('Deve devolver "Isósceles" para 5, 13 e 13.'     , () => func( 5  ,  13, 13  ), igual("Isósceles" ), testOk),
-            teste('Deve devolver "Escaleno" para 4, 2 e 3.'        , () => func( 4  ,   2,  3  ), igual("Escaleno"  ), testOk),
-            teste('Deve devolver "Escaleno" para 3, 2.5 e 1.'      , () => func( 3  , 2.5,  1  ), igual("Escaleno"  ), testOk),
-            teste('Deve devolver "Escaleno" para 7.2, 2.5 e 5.1.'  , () => func( 7.2, 2.5,  5.1), igual("Escaleno"  ), testOk)
+            teste('Deve devolver "Equilátero" para 5, 5 e 5.'      , eval(`() => ${func}( 5  ,   5,  5  )`), igual("Equilátero"), testOk),
+            teste('Deve devolver "Equilátero" para 8, 8 e 8.'      , eval(`() => ${func}( 8  ,   8,  8  )`), igual("Equilátero"), testOk),
+            teste('Deve devolver "Equilátero" para 3.3, 3.3 e 3.3.', eval(`() => ${func}( 3.3, 3.3,  3.3)`), igual("Equilátero"), testOk),
+            teste('Deve devolver "Isósceles" para 12, 8 e 12.'     , eval(`() => ${func}(12  ,   8, 12  )`), igual("Isósceles" ), testOk),
+            teste('Deve devolver "Isósceles" para 12, 12 e 8.8.'   , eval(`() => ${func}(12  ,  12,  8.8)`), igual("Isósceles" ), testOk),
+            teste('Deve devolver "Isósceles" para 5, 13 e 13.'     , eval(`() => ${func}( 5  ,  13, 13  )`), igual("Isósceles" ), testOk),
+            teste('Deve devolver "Escaleno" para 4, 2 e 3.'        , eval(`() => ${func}( 4  ,   2,  3  )`), igual("Escaleno"  ), testOk),
+            teste('Deve devolver "Escaleno" para 3, 2.5 e 1.'      , eval(`() => ${func}( 3  , 2.5,  1  )`), igual("Escaleno"  ), testOk),
+            teste('Deve devolver "Escaleno" para 7.2, 2.5 e 5.1.'  , eval(`() => ${func}( 7.2, 2.5,  5.1)`), igual("Escaleno"  ), testOk)
         ];
     }
 
     function testeTrianguloInfeliz(func) {
         return [
-            teste('Deve devolver "Não é um triângulo" para 7.2, 1.5 e 3.', () => func( 7.2, 2.5,  3  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 1, 2 e 3.'    , () => func( 1  , 2  ,  3  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 2 e 4.'    , () => func( 2  , 2  ,  4  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 5 e 1.'    , () => func( 2  , 5  ,  1  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 2 e 0.'    , () => func( 2  , 2  ,  0  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 0, 2 e 1.'    , () => func( 0  , 2  ,  1  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 0, 2 e 0.'    , () => func( 0  , 2  ,  0  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 0, 0 e 0.'    , () => func( 0  , 0  ,  0  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -1, -1 e -1.' , () => func(-1  ,-1  , -1  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, 2 e -1.'   , () => func( 2  , 2  , -1  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para 2, -2 e 5.'   , () => func( 2  ,-2  ,  5  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -7, 8 e 2.'   , () => func(-7  , 8  ,  2  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -5, -5 e -5.' , () => func(-5  ,-5  , -5  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -5, -5 e 4.'  , () => func(-5  ,-5  ,  4  ), igual("Não é um triângulo"), testOk),
-            teste('Deve devolver "Não é um triângulo" para -3, -4 e 5.'  , () => func(-3  ,-4  , -5  ), igual("Não é um triângulo"), testOk)
+            teste('Deve devolver "Não é um triângulo" para 7.2, 1.5 e 3.', eval(`() => ${func}( 7.2, 2.5,  3  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 1, 2 e 3.'    , eval(`() => ${func}( 1  , 2  ,  3  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 2 e 4.'    , eval(`() => ${func}( 2  , 2  ,  4  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 5 e 1.'    , eval(`() => ${func}( 2  , 5  ,  1  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 2 e 0.'    , eval(`() => ${func}( 2  , 2  ,  0  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 0, 2 e 1.'    , eval(`() => ${func}( 0  , 2  ,  1  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 0, 2 e 0.'    , eval(`() => ${func}( 0  , 2  ,  0  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 0, 0 e 0.'    , eval(`() => ${func}( 0  , 0  ,  0  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -1, -1 e -1.' , eval(`() => ${func}(-1  ,-1  , -1  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, 2 e -1.'   , eval(`() => ${func}( 2  , 2  , -1  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para 2, -2 e 5.'   , eval(`() => ${func}( 2  ,-2  ,  5  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -7, 8 e 2.'   , eval(`() => ${func}(-7  , 8  ,  2  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -5, -5 e -5.' , eval(`() => ${func}(-5  ,-5  , -5  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -5, -5 e 4.'  , eval(`() => ${func}(-5  ,-5  ,  4  )`), igual("Não é um triângulo"), testOk),
+            teste('Deve devolver "Não é um triângulo" para -3, -4 e 5.'  , eval(`() => ${func}(-3  ,-4  , -5  )`), igual("Não é um triângulo"), testOk)
         ];
     }
 
@@ -473,14 +473,14 @@ funcs => {
     }
 
     grupo("Exercício 12 - parte 1 (caso feliz - é um triângulo)"   , "Tipo de triângulo - equilátero, isósceles e escaleno")
-            .maximo(0.4).testes(testeTrianguloFeliz  (tipoTriangulo));
+            .maximo(0.4).testes(testeTrianguloFeliz  ("tipoTriangulo"));
     grupo("Exercício 12 - parte 2 (caso infeliz - não é triângulo)", "Tipo de triângulo - não é um triângulo")
-            .maximo(0.4).testes(testeTrianguloInfeliz(tipoTriangulo));
+            .maximo(0.4).testes(testeTrianguloInfeliz("tipoTriangulo"));
 
     grupo("Exercício 13 - parte 1 (caso feliz - é um triângulo)"          , "Tipo de triângulo no formulário - equilátero, isósceles e escaleno")
-            .maximo(0.3).testes(testeTrianguloFeliz  (informarLados));
+            .maximo(0.3).testes(testeTrianguloFeliz  ("informarLados"));
     grupo("Exercício 13 - parte 2 (caso infeliz - não é triângulo)"       , "Tipo de triângulo no formulário - não é um triângulo")
-            .maximo(0.3).testes(testeTrianguloInfeliz(informarLados));
+            .maximo(0.3).testes(testeTrianguloInfeliz("informarLados"));
     grupo("Exercício 13 - parte 3 (caso muito infeliz - entrada inválida)", "Tipo de triângulo no formulário - usuário preencheu o formulário com porcaria")
             .maximo(0.3).testes(testeTrianguloMuitoInfeliz()        );
 

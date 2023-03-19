@@ -3,7 +3,7 @@
 // EXERCÍCIO 0 - ANTES DE MAIS NADA, IMPLEMENTE ESTA FUNÇÃO.
 /**
  * Função que retorna um Array contendo os nomes e os RAs dos alunos que fizeram este exercício.
- * @returns {Array} Os dados dos alunos que fizeram este exercício.
+ * @return {Object[]} Os dados dos alunos que fizeram este exercício.
  */
 function dadosDosAlunos() {
     return [
@@ -26,7 +26,7 @@ function dadosDosAlunos() {
  * Função que recebe dois números e retorna o maior deles.
  * @param {number} a O primeiro número.
  * @param {number} b O segundo número.
- * @returns {number} O resultado da operação.
+ * @return {number} O resultado da operação.
  */
 function maiorDosDois(a, b) {
     if (a > b) {
@@ -41,7 +41,7 @@ function maiorDosDois(a, b) {
  * Função que recebe dois números e retorna o maior deles.
  * @param {number} a O primeiro número.
  * @param {number} b O segundo número.
- * @returns {number} O resultado da operação.
+ * @return {number} O resultado da operação.
  */
 function maiorDosDoisSimplificado(a, b) {
     return a > b ? a : b;
@@ -54,7 +54,7 @@ function maiorDosDoisSimplificado(a, b) {
  * @param {number} b O segundo número.
  * @param {number} c O terceiro número.
  * @param {number} d O quarto número.
- * @returns {number} O resultado da operação.
+ * @return {number} O resultado da operação.
  */
 function maiorDosQuatro(a, b, c, d) {
     naoFizIssoAinda();
@@ -83,10 +83,10 @@ function maiorDosQuatro(a, b, c, d) {
  * Ah, as letras sempre devem ser maiúsculas. Em caso de minúsculas (ou símbolos, ou palavras com várias letras,
  * ou qualquer outra coisa), retorne undefined também.
  *
- * @param {String} operacao A letra que identifica a operação a ser realizada.
+ * @param {string} operacao A letra que identifica a operação a ser realizada.
  * @param {number} numero1 O primeiro operando.
  * @param {number} numero2 O segundo operando.
- * @returns {number} O resultado da operação.
+ * @return {number} O resultado da operação.
  */
 function operacoesBasicas(operacao, numero1, numero2) {
     naoFizIssoAinda();
@@ -107,7 +107,7 @@ function operacoesBasicas(operacao, numero1, numero2) {
  *
  * @param {*} elemento1 O primeiro operando.
  * @param {*} elemento2 O segundo operando.
- * @returns {String} A mensagem com o resultado da comparação.
+ * @return {string} A mensagem com o resultado da comparação.
  */
 function comparadorBasico(elemento1, elemento2) {
     naoFizIssoAinda();
@@ -123,8 +123,8 @@ function comparadorBasico(elemento1, elemento2) {
  *  - João Silva -> João
  *  - Maria -> Maria
  *
- * @param {String} nomeCompleto Nome completo da pessoa.
- * @returns {String} String com o primeiro nome apenas.
+ * @param {string} nomeCompleto Nome completo da pessoa.
+ * @return {string} String com o primeiro nome apenas.
  */
 function primeiroNome(nomeCompleto) {
     naoFizIssoAinda();
@@ -141,8 +141,8 @@ function primeiroNome(nomeCompleto) {
  *  - João Silva -> João S.
  *  - Maria -> Maria
  *
- * @param {String} nomeCompleto Nome completo da pessoa.
- * @returns {String} String com o primeiro nome conforme dado e o segundo nome abreviado.
+ * @param {string} nomeCompleto Nome completo da pessoa.
+ * @return {string} String com o primeiro nome conforme dado e o segundo nome abreviado.
  */
 function abreviadorNomes(nomeCompleto) {
     naoFizIssoAinda();
@@ -164,8 +164,8 @@ function abreviadorNomes(nomeCompleto) {
  * Embora o calendário gregoriano tenha sido instituído em 1582, considere como se fosse válido retroativamente
  * desde o ano 0001.
  *
- * @param {String} data String com a data no formato brasileiro (dia/mês/ano).
- * @returns {boolean} Verdadeiro se a data for válida, falso em caso contrário.
+ * @param {string} data String com a data no formato brasileiro (dia/mês/ano).
+ * @return {boolean} Verdadeiro se a data for válida, falso em caso contrário.
  */
 function dataValida(data) {
     naoFizIssoAinda();
@@ -187,8 +187,8 @@ function dataValida(data) {
  *
  * Observação: Note a letra maiúscula do mês.
  *
- * @param {String} data String com a data no formato brasileiro (dia/mês/ano).
- * @returns {String} Data no formato "Dia de Nome-do-Mês-por-Extenso de Ano" ou "Data inválida".
+ * @param {string} data String com a data no formato brasileiro (dia/mês/ano).
+ * @return {string} Data no formato "Dia de Nome-do-Mês-por-Extenso de Ano" ou "Data inválida".
  */
 function converteDataParaFormaCompleta(data) {
     naoFizIssoAinda();
@@ -216,7 +216,7 @@ function somadorPares(inicio, fim) {
 /**
  * Recebe um vetor de números e retorna o menor elemento do vetor.
  * Se o vetor estiver vazio, retorna undefined.
- * @param {Array<number>} vetor O vetor de números (nunca indefinido).
+ * @param {number[]} vetor O vetor de números (nunca indefinido).
  * @return {number|undefined} O menor valor do vetor ou undefined se o vetor estiver vazio.
  */
 function acharMenor(vetor) {
@@ -227,8 +227,8 @@ function acharMenor(vetor) {
 /**
  * Recebe um vetor de números e devolve um outro vetor apenas com os números pares deste vetor.
  * Se o vetor estiver vazio, devolve um vetor vazio.
- * @param {Array<number>} O vetor com números inteiros (nunca indefinido).
- * @returns {Array<number>} O vetor contendo apenas números pares do original (ou vazio se não houver nenhum).
+ * @param {number[]} O vetor com números inteiros (nunca indefinido).
+ * @return {number[]} O vetor contendo apenas números pares do original (ou vazio se não houver nenhum).
  */
 function acharPares(vetor) {
     naoFizIssoAinda();
@@ -251,10 +251,10 @@ function acharPares(vetor) {
  *  - Maior e igual a 40,0 -> "Obesidade mórbida (Grau III)"
  * 
  * @param {Object} pessoa Dicionário com dados da pessoa.
- * @param {String} pessoa.nome O nome da pessoa.
+ * @param {string} pessoa.nome O nome da pessoa.
  * @param {number} pessoa.peso A massa da pessoa em kg.
  * @param {number} pessoa.altura A altura da pessoa em metros.
- * @returns {String} Estado do peso da pessoa.
+ * @return {string} Estado do peso da pessoa.
  */
 function calcularImc(pessoa) {
     naoFizIssoAinda();
@@ -272,7 +272,7 @@ function calcularImc(pessoa) {
  * @param {number} a O tamanho do primeiro lado do triângulo.
  * @param {number} a O tamanho do segundo lado do triângulo.
  * @param {number} a O tamanho do terceiro lado do triângulo.
- * @returns {String} O tipo de triângulo resultante.
+ * @return {string} O tipo de triângulo resultante.
  */
 function tipoTriangulo(a, b, c) {
     naoFizIssoAinda();
@@ -334,10 +334,10 @@ class AlunoMatricula {
      * razoavelmente complicado de se fazer e vocês só estão começando com LP II, POO e JavaScript,
      * então, deixemos esse aspecto pra uma outra ocasião.
      *
-     * @param {String} nome O nome do(a) aluno(a).
-     * @param {String} genero "M" se for um aluno ou "F" se for uma aluna.
-     * @param {String} disciplina O nome da disciplina.
-     * @param {Array<number>} acs Os 5 ACs feitos pelo(a) aluno(a).
+     * @param {string} nome O nome do(a) aluno(a).
+     * @param {string} genero "M" se for um aluno ou "F" se for uma aluna.
+     * @param {string} disciplina O nome da disciplina.
+     * @param {number[]} acs Os 5 ACs feitos pelo(a) aluno(a).
      * @param {number} prova A nota da prova do(a) aluno(a).
      * @param {number} sub A nota da prova substitutiva do aluno(a).
      * @param {number} presenca A quantidade de presença que o(a) aluno(a) teve na aula.
@@ -368,7 +368,7 @@ class AlunoMatricula {
      * apenas números inteiros, você vai precisar de um pouquinho de "criatividade com matemática".
      * Dica 2: Lembra da função acharMenor do exercício 9? Ela pode ser útil aqui.
      *
-     * @returns {number} A média final do(a) aluno(a) na disciplina.
+     * @return {number} A média final do(a) aluno(a) na disciplina.
      */
     get media() {
         naoFizIssoAinda();
@@ -389,7 +389,7 @@ class AlunoMatricula {
      *
      * Dica: Use o método media() do exercício 16.
      *
-     * @returns {String} A situação final do(a) aluno(a) na disciplina.
+     * @return {string} A situação final do(a) aluno(a) na disciplina.
      */
     get situacao() {
         naoFizIssoAinda();
@@ -406,7 +406,7 @@ class AlunoMatricula {
      *
      * Dica: Use o método situacao definido no exercício 17 e use também o gênero do(a) aluno(a) para decidir o que retornar.
      *
-     * @returns {String} A situação final do(a) aluno(a) na disciplina, escrito por extenso.
+     * @return {string} A situação final do(a) aluno(a) na disciplina, escrito por extenso.
      */
     get situacaoPorExtenso() {
         naoFizIssoAinda();
@@ -433,7 +433,7 @@ class AlunoMatricula {
      * const c3 = new AlunoMatricula("Chiquinha", "F", "Química Orgânica III", [9, 8, 7, 6, 5], 4, 3, 21);
      * const s3 = c3.status; // Isso vai ser "Chiquinha tem média 6 na disciplina de Química Orgânica III e foi reprovada por falta com 21% de presença."
      *
-     * @returns {String} O status descritivo do(a) aluno(a).
+     * @return {string} O status descritivo do(a) aluno(a).
      */
     get status() {
         naoFizIssoAinda();
@@ -498,8 +498,8 @@ function verificarAlunoMatriculado() {
  *
  * Dica: Use o console.log para ver o que é recebido no array.
  *
- * @param {Array<string>} array Várias possibilidades de como fazer a entrega deste AC.
- * @returns {Array<string>} As opções corretas de entrega.
+ * @param {string[]} array Várias possibilidades de como fazer a entrega deste AC.
+ * @return {string[]} As opções corretas de entrega.
  */
 function comoFazerEntrega(array) {
     naoFizIssoAinda();

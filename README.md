@@ -29,7 +29,7 @@ Mas antes deles, há um pequeno formulário com um botão de executar os testes.
 Clique nesse botão e veja toda a mágica dos testes acontecer!
 
 Este botão dispara a execução de um montão de testes (exatos 600, para ser preciso).
-O relatório de testes é colocado logo após ao HTML do exercício 4.
+O relatório de testes é colocado logo após o HTML dos formulários.
 Se houverem problemas, esses testes vão descrever o que foi que deu errado.
 
 Obviamente, o arquivo `ac3.js` dado aqui falhará em todos os testes e vai te dar uma nota zero.

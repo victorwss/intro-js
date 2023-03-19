@@ -33,7 +33,6 @@ funcs => {
     function setTestOk(ok) { jsonOk = ok; }
 
     function JSONbonito(dados, keys) {
-        if (!keys) keys = Object.keys(dados).sort();
         return JSON.stringify(dados, keys, 1);
     }
 
@@ -52,7 +51,7 @@ funcs => {
     const sobrenomes = Object.freeze([
         "de Souza", "de Oliveira", "dos Santos", "de Gusmões", "de Andrade", "da Silva", "Melo", "da Cunha", "Brito", "da Luz",
         "Fernandes", "Teixeira", "Pereira", "Freitas", "do Amaral", "da Cruz", "Machado", "Assis", "Figueiredo", "da Conceição",
-        "Ferreira", "Matos", "de Campos", "dos Reis", "Rainha", "Valete", "de Ouros", "de Copas", "de Paus", "de Espadas"
+        "Ferreira", "Matos", "de Campos", "dos Reis", "Rainha", "Valete"
     ]);
 
     function nomeAleatorio() {

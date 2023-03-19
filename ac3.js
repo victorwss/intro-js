@@ -18,8 +18,10 @@ function dadosDosAlunos() {
     ];
 }
 
-// Implemente as funções abaixo, conforme pede o enunciado.
-// Carregue o arquivo ac3.html para ver os resultados e a sua nota.
+// Observe esses dois exemplos. O que vocês têm que desenvolver são funções semelhantes a essas.
+// São funções que recebem alguns parâmetros fazem alguma coisa com esses parâmetros e retornam
+// alguma coisa. Nada de variáveis globais ou código fora das funções.
+// Ah, e não bagunce esses exemplos!
 
 // EXEMPLO 1.
 /**
@@ -46,6 +48,9 @@ function maiorDosDois(a, b) {
 function maiorDosDoisSimplificado(a, b) {
     return a > b ? a : b;
 }
+
+// Implemente as funções abaixo, conforme pede o enunciado.
+// Carregue o arquivo ac3.html para ver os resultados e a sua nota.
 
 // EXERCÍCIO 1.
 /**
